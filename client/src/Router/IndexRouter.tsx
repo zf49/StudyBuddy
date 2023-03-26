@@ -15,7 +15,7 @@ export default function IndexRouter() {
             path:'/',
             element:localStorage.getItem("token")?<SandBox/>:<Navigate to='/login'></Navigate>,
             children:[
-                {index:true, element: < Profile/>}
+                {index:true, element: <Profile/>}
                 ,
                 {
                     path:"profile",
