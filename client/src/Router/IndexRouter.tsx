@@ -7,6 +7,7 @@ import Login from '../view/Login/Login_Auth0'
 import Profile from '../view/Profile/Profile'
 import Search from '../view/Search/Search'
 import SandBox from '../view/SandBox'
+import Home from '../view/Home/Home'
 
 export default function IndexRouter() {
 
@@ -15,8 +16,12 @@ export default function IndexRouter() {
             path:'/',
             element:localStorage.getItem("token")?<SandBox/>:<Navigate to='/login'></Navigate>,
             children:[
-                {index:true, element: <Profile/>}
+                {index:true, element: <Home/>}
                 ,
+                {
+                    path:"home",
+                    element:<Home/>
+                },
                 {
                     path:"profile",
                     element:<Profile/>
