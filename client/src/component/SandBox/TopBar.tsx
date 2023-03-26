@@ -1,8 +1,7 @@
-import React from 'react'
+import * as React from 'react';
 import logo from './../../ICON/dog.png'
-import Box from '@mui/material/Box';
-
 import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -12,39 +11,41 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-// import AdbIcon from '@mui/icons-material/Adb';
+import PetsIcon from '@mui/icons-material/Pets';
 
 
-    const pages = ['Products', 'Pricing', 'Blog'];
-    const settings = ['Account', 'Search','Friends','Logout'];
-    
-    export default  function TopBar() {
-      const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-      const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-    
-      const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElNav(event.currentTarget);
-      };
-      const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
-      };
-    
-      const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-      };
-    
-      const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-      };
-    
+
+const pages = ['Products', 'Pricing', 'Blog'];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 
-    return (
+
+function TopBar() {
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+      console.log('123')
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
-          <Typography
+          {/* <Typography
             variant="h6"
             noWrap
             component="a"
@@ -59,10 +60,10 @@ import MenuItem from '@mui/material/MenuItem';
               textDecoration: 'none',
             }}
           >
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-          </Typography>
+            StuddyBuddy
+          </Typography> */}
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          {/* <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -70,10 +71,9 @@ import MenuItem from '@mui/material/MenuItem';
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
-            >
+            > */}
               {/* <MenuIcon /> */}
-              <Avatar alt="Remy Sharp" src={logo} />
-            </IconButton>
+            {/* </IconButton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -93,13 +93,17 @@ import MenuItem from '@mui/material/MenuItem';
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={handleCloseNavMenu} 
+                >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
-          
+          </Box> */}
+          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
+
+
+          <PetsIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -116,7 +120,7 @@ import MenuItem from '@mui/material/MenuItem';
               textDecoration: 'none',
             }}
           >
-            StudyBuddy
+            StuddyBuddy
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
@@ -162,6 +166,6 @@ import MenuItem from '@mui/material/MenuItem';
         </Toolbar>
       </Container>
     </AppBar>
-
-    )
+  );
 }
+export default TopBar;
