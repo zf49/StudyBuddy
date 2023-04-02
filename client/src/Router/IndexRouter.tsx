@@ -8,8 +8,15 @@ import Profile from '../view/Profile/Profile'
 import Search from '../view/Search/Search'
 import SandBox from '../view/SandBox'
 import Home from '../view/Home/Home'
+import SignUp from '../view/SignUp/SignUp'
+import { useAuth0 } from "@auth0/auth0-react";
+
+
 
 export default function IndexRouter() {
+
+
+    const { user, isAuthenticated, isLoading } = useAuth0();
 
     let element = useRoutes([
         {
@@ -33,6 +40,10 @@ export default function IndexRouter() {
                 {
                     path:"search",
                     element:<Search/>
+                },
+                {
+                    path:"signup",
+                    element:<SignUp/>
                 },
                 {
                     path:'*',

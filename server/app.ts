@@ -7,7 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var majorRouter = require('./routes/major')
-import connectToDatabase from "./db-connect";
+import connectToDatabase from "./config/db-connect";
 import mongoose from "mongoose";
 
 var app = express();
@@ -47,7 +47,7 @@ mongoose.connection.on('open',function (error) {
   if(error){
   console.log("failed")
   }else{
-      console.log("successful")
+      console.log("DB connection is successful")
   }
 })
 
