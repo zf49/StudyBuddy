@@ -8,6 +8,8 @@ import Button from '@mui/material/Button';
 import axios from 'axios'
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
+import { useAuth0 } from '@auth0/auth0-react';
+
 import Joi from 'joi';
 
 
@@ -59,8 +61,10 @@ const apiGetMajor = async (option: IApiOptions): Promise<IMajorApiReturn | null>
     return validationResult.value;
 }
 
+
 export default function SignUp() {
 
+    const {user,isAuthenticated} = useAuth0()
     const [name, setName] = React.useState('');
     const [uniID, setUniID] = React.useState('');
     const [gender, setGender] = React.useState('');
@@ -68,6 +72,7 @@ export default function SignUp() {
     const [faculty, setFaculty] = React.useState('');
     const [major, setMajor] = React.useState('');
     const [message, setMessage] = React.useState('');
+    const [loginEmail, setLoginEmail] = React.useState<any>('');
     const [faculties, setFaculties] = React.useState<string[]>([]);
     const [majors, setMajors] = React.useState<IMajor[]>([]);
 
@@ -77,6 +82,7 @@ export default function SignUp() {
         // error: tried to update state of unloaded component
         apiGetMajor({ signal: controller.signal }).then(data => {
             if (data != null) {
+                isAuthenticated && setLoginEmail(user?.email)
                 setFaculties(data.faculties)
                 setMajors(data.majors)
             }
@@ -85,6 +91,7 @@ export default function SignUp() {
         // this function is run on return, and will disable the api request and state update
         return () => {
             controller.abort()
+
         }
     }, [])
 
@@ -116,14 +123,16 @@ export default function SignUp() {
             gender: String,
             email: String,
             faculty: String,
-            major: String
+            major: String,
+            loginEmail:String
         } = {
             name: name,
             uniID: uniID,
             gender: gender,
             email: email,
             faculty: faculty,
-            major: major
+            major: major,
+            loginEmail:loginEmail
         }
 
         if (sessionData.name && sessionData.uniID) {
@@ -134,8 +143,9 @@ export default function SignUp() {
     }
 
     async function createUser(user: object) {
+        console.log(user)
         const response = await axios.post(
-            "http://localhost:3000/users/register/",
+            "http://localhost:8080/users/register",
             user
         )
     }

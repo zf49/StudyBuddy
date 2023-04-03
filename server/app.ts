@@ -7,11 +7,12 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var majorRouter = require('./routes/major')
-import connectToDatabase from "./db-connect";
+import connectToDatabase from "./config/db-connect";
 import mongoose from "mongoose";
+const cors = require('cors');
 
 var app = express();
-
+app.use(cors())
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -25,6 +26,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/major', majorRouter);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -47,7 +50,7 @@ mongoose.connection.on('open',function (error) {
   if(error){
   console.log("failed")
   }else{
-      console.log("successful")
+      console.log("DB connection is successful")
   }
 })
 

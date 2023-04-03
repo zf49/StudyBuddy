@@ -8,7 +8,8 @@ const userSchema = new Schema({
     gender: String,
     email: String,
     faculty: String,
-    major: String
+    major: String,
+    loginEmail:String,
 })
 
 const User = mongoose.model("User", userSchema)

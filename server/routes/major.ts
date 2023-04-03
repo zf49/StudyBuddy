@@ -11,6 +11,7 @@ const HTTP_BAD_REQUEST = 400;
 
 
 router.get('/', async (req, res) => {
+
   try {
     const faculties: string[] = await retriveFaculties();
     const majors: IMajor[] = await retriveMajors();
@@ -24,6 +25,7 @@ router.get('/', async (req, res) => {
   }
 
 });
+
 
 
 module.exports = router;
