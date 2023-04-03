@@ -8,11 +8,59 @@ import Button from '@mui/material/Button';
 import axios from 'axios'
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
-import { useAuth0 } from '@auth0/auth0-react';
+import Joi from 'joi';
+
+
+// move to own file
+
+export interface IMajor {
+    faculty: string
+    major: string
+}
+export interface IMajorApiReturn {
+    faculties: string[]
+    majors: IMajor[]
+}
+
+// move to own file
+interface IApiOptions {
+    token?: string // optional, else undefiled
+    signal?: AbortSignal
+}
+// move to own api folder + file
+// @param - possibly give authentication token to this api function
+// @param - possibly give abort signal (research this!)
+
+const apiGetMajor = async (option: IApiOptions): Promise<IMajorApiReturn | null> => {
+    const res = await axios.get("http://localhost:3000/major/", {
+        signal: option.signal
+    })
+
+    // consider console.error to log the failure
+    if (res.status != 200) return null;
+
+    // you can validate data here as well
+    // consider doing this serverside for any user submission data
+    const validationResult = Joi.object<IMajorApiReturn>({
+        faculties: Joi.array().items(Joi.string()),
+        majors: Joi.array().items(
+            Joi.object({
+                faculty: Joi.string().required(),
+                major: Joi.string().required()
+            }).unknown(true)
+        )
+    }).validate(res.data)
+
+    if (validationResult.error) {
+        console.error(validationResult.error)
+        return null;
+    }
+
+    return validationResult.value;
+}
 
 export default function SignUp() {
 
-    const {user,isAuthenticated} = useAuth0()
     const [name, setName] = React.useState('');
     const [uniID, setUniID] = React.useState('');
     const [gender, setGender] = React.useState('');
@@ -20,20 +68,24 @@ export default function SignUp() {
     const [faculty, setFaculty] = React.useState('');
     const [major, setMajor] = React.useState('');
     const [message, setMessage] = React.useState('');
-    const [faculties, setFaculties] = React.useState<any>([]);
-    const [majors, setMajors] = React.useState<any>([]);
-    const [loginEmail, setLoginEmail] = React.useState<any>('');
-
-
+    const [faculties, setFaculties] = React.useState<string[]>([]);
+    const [majors, setMajors] = React.useState<IMajor[]>([]);
 
     useEffect(() => {
-        async function fetchData() {
-            isAuthenticated && setLoginEmail(user?.email)
-            const res = await axios.get("http://localhost:8080/major")
-            setMajors(res.data.majors)
-            setFaculties(res.data.faculties)
+        const controller = new AbortController();
+        // what happens if user navigates away from this page while this request is running?
+        // error: tried to update state of unloaded component
+        apiGetMajor({ signal: controller.signal }).then(data => {
+            if (data != null) {
+                setFaculties(data.faculties)
+                setMajors(data.majors)
+            }
+        })
+
+        // this function is run on return, and will disable the api request and state update
+        return () => {
+            controller.abort()
         }
-        fetchData()
     }, [])
 
 
@@ -64,16 +116,14 @@ export default function SignUp() {
             gender: String,
             email: String,
             faculty: String,
-            major: String,
-            loginEmail:String
+            major: String
         } = {
             name: name,
             uniID: uniID,
             gender: gender,
             email: email,
             faculty: faculty,
-            major: major,
-            loginEmail:loginEmail
+            major: major
         }
 
         if (sessionData.name && sessionData.uniID) {
@@ -84,9 +134,8 @@ export default function SignUp() {
     }
 
     async function createUser(user: object) {
-        console.log(user)
         const response = await axios.post(
-            "http://localhost:8080/users/register",
+            "http://localhost:3000/users/register/",
             user
         )
     }
@@ -171,7 +220,7 @@ export default function SignUp() {
                         <MenuItem value="">
                             <em>Prefer Not To Tell</em>
                         </MenuItem>
-                        {majors.map((major: any) => {
+                        {majors.map((major: IMajor) => {
                             if (major.faculty == faculty)
                                 return (<MenuItem value={major.major}>{major.major}</MenuItem>)
 
@@ -190,7 +239,7 @@ export default function SignUp() {
             <div>
                 {message && <Alert severity="error">{message}</Alert>}
             </div>
-            
+
 
 
         </div>
