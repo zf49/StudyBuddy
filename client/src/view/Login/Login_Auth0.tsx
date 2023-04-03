@@ -1,28 +1,3 @@
-// import React from 'react'
-
-// import { useAuth0 } from "@auth0/auth0-react";
-
-
-// export default function Login() {
-//     const { loginWithRedirect } = useAuth0();
-
-//     const {isAuthenticated} = useAuth0();
-
-
-//     const login = ()=>{
-//         loginWithRedirect()
-//         isAuthenticated && localStorage.setItem('token','123')
-//     }
-
-//     return (
-//        <>
-//         {/* {login()} */}
-        
-//        </>     
-//     )
-// }
-
-
 
 import React,{useEffect, useState} from 'react';
 import { styled } from '@mui/material/styles';
@@ -30,7 +5,10 @@ import { Box, Button } from '@mui/material';
 import image from './../../ICON/hdog.png';
 import dogPic from './../../ICON/dog.png' 
 import { useAuth0 } from "@auth0/auth0-react";
-import  { useNavigate } from 'react-router-dom'
+import  { Navigate, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+
+
 
 const RootBox = styled(Box)({
   background: '#BFEFFF',
@@ -76,17 +54,17 @@ export default function Login() {
 
     const navigate = useNavigate()
    
-    
-   
     const { user, isAuthenticated, isLoading,loginWithRedirect,getAccessTokenSilently } = useAuth0();
 
-  
+
      const handleLoginClick = async () => {
-        await loginWithRedirect()
-        
+        await loginWithRedirect().then(()=>{
+            localStorage.setItem('token','123')
+        })
   };
 
   return (
+      <>
     <RootBox>
       <ImageBox>
         <StyledImage src={image} alt="example" />
@@ -95,6 +73,9 @@ export default function Login() {
         }}>Login</StyledButton>
       </ImageBox>
     </RootBox>
+
+</>
+    
   );
 }
 

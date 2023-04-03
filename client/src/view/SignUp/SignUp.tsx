@@ -10,8 +10,11 @@ import { create } from 'domain';
 import axios from 'axios'
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export default function SignUp() {
+
+    const {user,isAuthenticated} = useAuth0()
 
     const [name, setName] = React.useState('');
     const [uniID, setUniID] = React.useState('');
@@ -22,12 +25,14 @@ export default function SignUp() {
     const [message, setMessage] = React.useState('');
     const [faculties, setFaculties] = React.useState<any>([]);
     const [majors, setMajors] = React.useState<any>([]);
+    const [loginEmail, setLoginEmail] = React.useState<any>('');
 
 
 
     useEffect(() => {
         async function fetchData() {
-            const res = await axios.get("http://localhost:3000/major/")
+            isAuthenticated && setLoginEmail(user?.email)
+            const res = await axios.get("http://localhost:8080/major")
             setMajors(res.data.majors)
             setFaculties(res.data.faculties)
         }
@@ -62,14 +67,16 @@ export default function SignUp() {
             gender: String,
             email: String,
             faculty: String,
-            major: String
+            major: String,
+            loginEmail:String
         } = {
             name: name,
             uniID: uniID,
             gender: gender,
             email: email,
             faculty: faculty,
-            major: major
+            major: major,
+            loginEmail:loginEmail
         }
 
         if (sessionData.name && sessionData.uniID) {
@@ -80,8 +87,9 @@ export default function SignUp() {
     }
 
     async function createUser(user: object) {
+        console.log(user)
         const response = await axios.post(
-            "http://localhost:3000/users/register/",
+            "http://localhost:8080/users/register",
             user
         )
     }

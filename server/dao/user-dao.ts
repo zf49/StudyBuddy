@@ -5,3 +5,7 @@ export async function createUser(user: object) {
     await dbUser.save();
     return dbUser;
 }
+
+export async function checkLoginEmail(loginEmail:String) {
+    return await await User.find({'loginEmail':loginEmail})
+}

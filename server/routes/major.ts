@@ -13,12 +13,12 @@ router.get('/', async (req, res) => {
     try{
   const faculties: object = await retriveFaculties();
   const majors: object = await retriveMajors();
-  res.json({faculties: faculties, majors: majors})
+  res.send({faculties: faculties, majors: majors})
     }catch {
         
     }
-
 });
+
 
 
 module.exports = router;
