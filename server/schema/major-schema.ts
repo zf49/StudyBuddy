@@ -2,7 +2,12 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-const majorSchema = new Schema({
+export interface IMajor {
+    faculty: string,
+    major: string
+}
+
+const majorSchema = new Schema<IMajor>({
     faculty: {type: String, required: true},
     major: {type: String, required: true},
 })

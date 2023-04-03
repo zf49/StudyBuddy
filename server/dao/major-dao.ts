@@ -3,7 +3,7 @@ import { User } from "../schema/user-schema";
 
 
 export async function retriveMajors() {
-    return await Major.find();
+    return await Major.find({});
 }
 
 export async function retriveFaculties() {
