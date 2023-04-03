@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -9,6 +9,7 @@ import axios from 'axios'
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
 import Joi from 'joi';
+import { useAuth0 } from '@auth0/auth0-react';
 
 
 // move to own file
@@ -32,7 +33,7 @@ interface IApiOptions {
 // @param - possibly give abort signal (research this!)
 
 const apiGetMajor = async (option: IApiOptions): Promise<IMajorApiReturn | null> => {
-    const res = await axios.get("http://localhost:3000/major/", {
+    const res = await axios.get("http://localhost:8080/major/", {
         signal: option.signal
     })
 
@@ -70,6 +71,10 @@ export default function SignUp() {
     const [message, setMessage] = React.useState('');
     const [faculties, setFaculties] = React.useState<string[]>([]);
     const [majors, setMajors] = React.useState<IMajor[]>([]);
+    const [loginEmail, setLoginEmail] = useState<any>('')
+
+
+    const {user,isAuthenticated} = useAuth0()
 
     useEffect(() => {
         const controller = new AbortController();
@@ -79,14 +84,19 @@ export default function SignUp() {
             if (data != null) {
                 setFaculties(data.faculties)
                 setMajors(data.majors)
+                if(isAuthenticated && user){
+                    setLoginEmail(user.email)
+                }
             }
         })
+
+        
 
         // this function is run on return, and will disable the api request and state update
         return () => {
             controller.abort()
         }
-    }, [])
+    }, [isAuthenticated,user])
 
 
     const handleName = (event: ChangeEvent<HTMLInputElement>) => {
@@ -116,14 +126,16 @@ export default function SignUp() {
             gender: String,
             email: String,
             faculty: String,
-            major: String
+            major: String,
+            loginEmail:String
         } = {
             name: name,
             uniID: uniID,
             gender: gender,
             email: email,
             faculty: faculty,
-            major: major
+            major: major,
+            loginEmail:loginEmail
         }
 
         if (sessionData.name && sessionData.uniID) {
@@ -135,7 +147,7 @@ export default function SignUp() {
 
     async function createUser(user: object) {
         const response = await axios.post(
-            "http://localhost:3000/users/register/",
+            "http://localhost:8080/users/register/",
             user
         )
     }

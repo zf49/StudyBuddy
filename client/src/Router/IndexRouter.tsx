@@ -27,7 +27,6 @@ export default function IndexRouter() {
           if(response.data.length===0){
               navigate('/signup')
           }
-          
         })
        }
 
