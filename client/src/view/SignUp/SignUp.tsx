@@ -2,11 +2,9 @@ import React, { ChangeEvent, useEffect } from 'react'
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Button from '@mui/material/Button';
-import { create } from 'domain';
 import axios from 'axios'
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
@@ -15,7 +13,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 export default function SignUp() {
 
     const {user,isAuthenticated} = useAuth0()
-
     const [name, setName] = React.useState('');
     const [uniID, setUniID] = React.useState('');
     const [gender, setGender] = React.useState('');
