@@ -9,7 +9,7 @@ const userSchema = new Schema({
     email: String,
     faculty: String,
     major: String,
-    loginEmail:String,
+    authID:String,
 })
 
 const User = mongoose.model("User", userSchema)

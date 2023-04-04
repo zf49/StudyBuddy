@@ -6,6 +6,14 @@ export async function createUser(user: object) {
     return dbUser;
 }
 
-export async function checkLoginEmail(loginEmail:String) {
-    return await await User.find({'loginEmail':loginEmail})
+export async function checkLoginEmail(authID:String) {
+    return await User.find({'authID':authID})
+}
+
+
+export const getUserProfile = async (uniId:string)=>{
+   const userProfile =  await User.find({'uniID':uniId})
+   
+   return userProfile
+
 }

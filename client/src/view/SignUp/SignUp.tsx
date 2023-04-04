@@ -71,7 +71,7 @@ export default function SignUp() {
     const [message, setMessage] = React.useState('');
     const [faculties, setFaculties] = React.useState<string[]>([]);
     const [majors, setMajors] = React.useState<IMajor[]>([]);
-    const [loginEmail, setLoginEmail] = useState<any>('')
+    const [authID, setAuthID] = useState<any>('')
 
 
     const {user,isAuthenticated} = useAuth0()
@@ -85,12 +85,10 @@ export default function SignUp() {
                 setFaculties(data.faculties)
                 setMajors(data.majors)
                 if(isAuthenticated && user){
-                    setLoginEmail(user.email)
+                    setAuthID(user.sub)
                 }
             }
         })
-
-        
 
         // this function is run on return, and will disable the api request and state update
         return () => {
@@ -127,7 +125,7 @@ export default function SignUp() {
             email: String,
             faculty: String,
             major: String,
-            loginEmail:String
+            authID:String,
         } = {
             name: name,
             uniID: uniID,
@@ -135,7 +133,7 @@ export default function SignUp() {
             email: email,
             faculty: faculty,
             major: major,
-            loginEmail:loginEmail
+            authID:authID
         }
 
         if (sessionData.name && sessionData.uniID) {
