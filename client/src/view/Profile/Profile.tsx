@@ -7,6 +7,8 @@ import { useState } from "react";
 import { TextField, Button } from "@mui/material";
 import styled from "@mui/styled-engine";
 
+import Avatar from '@mui/joy/Avatar';
+// import Avatar from '@mui/material/Avatar';
 
 const StyledContainer = styled("div")({
     display: "flex",
@@ -27,7 +29,6 @@ const StyledContainer = styled("div")({
 
 
   interface IUser {
-    _id: string;
     name: string;
     uniID: string;
     gender: string;
@@ -45,7 +46,6 @@ export default function Profile() {
     const [password, setPassword] = useState("");
     const {user,isAuthenticated} = useAuth0()
     const [userProfile, setUserProfile] = useState<IUser>({
-        _id: "",
         name: "",
         uniID: "",
         gender: "",
@@ -91,19 +91,22 @@ export default function Profile() {
       };
     
 
+    
 
 
     return (
         <>
           <StyledContainer>
                 <h1>Edit Profile</h1>
+
+
+                {/* <Avatar>qqq</Avatar> */}
+
+        //TODO user Avater can be changed
+
                 <form onSubmit={handleSubmit}>
-                    <StyledTextField
-                    label="ID"
-                    name="_id"
-                    value={userProfile._id}
-                    onChange={handleChange}
-                    />
+               
+
                     <StyledTextField
                     label="Name"
                     name="name"
@@ -128,13 +131,17 @@ export default function Profile() {
                     value={userProfile.email}
                     onChange={handleChange}
                     />
+
+//TODO fixed faculty and major inpit
+
                     <StyledTextField
                     label="Faculty"
                     name="faculty"
                     value={userProfile.faculty}
                     onChange={handleChange}
                     />
-                    //TODO fixed faculty and major inpit
+
+
                     <StyledTextField
                     label="Major"
                     name="major"
