@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-import {checkLoginEmail, createUser,getUserProfile} from '../dao/user-dao'
+import {checkAuthID, createUser,getUserProfile} from '../dao/user-dao'
 
 const HTTP_CREATED = 201;
 const HTTP_NOT_FOUND = 404;
@@ -22,8 +22,9 @@ router.get('/:uniID', async (req, res, next) => {
 
 
 // Get users login Email
-router.get('/email/:address', async (req, res, next) => {
-  const isHave: object = await checkLoginEmail(req.params.address);
+router.get('/authID/:authID', async (req, res, next) => {
+  const isHave: object = await checkAuthID(req.params.authID);
+  console.log(isHave)
   res.send(isHave)
 
 });

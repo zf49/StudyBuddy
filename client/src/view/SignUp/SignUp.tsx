@@ -62,6 +62,8 @@ const apiGetMajor = async (option: IApiOptions): Promise<IMajorApiReturn | null>
 
 export default function SignUp() {
 
+    
+    // TODO save all things to redux
     const [name, setName] = React.useState('');
     const [uniID, setUniID] = React.useState('');
     const [gender, setGender] = React.useState('');
@@ -75,6 +77,8 @@ export default function SignUp() {
 
 
     const {user,isAuthenticated} = useAuth0()
+
+
 
     useEffect(() => {
         const controller = new AbortController();

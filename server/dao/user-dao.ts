@@ -6,13 +6,13 @@ export async function createUser(user: object) {
     return dbUser;
 }
 
-export async function checkLoginEmail(authID:String) {
+export async function checkAuthID(authID:String) {
     return await User.find({'authID':authID})
 }
 
 
-export const getUserProfile = async (uniId:string)=>{
-   const userProfile =  await User.find({'uniID':uniId})
+export const getUserProfile = async (authId:string)=>{
+   const userProfile =  await User.find({'authID':authId})
    
    return userProfile
 

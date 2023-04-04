@@ -4,40 +4,38 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useState } from "react";
-import { Button, TextField } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { Box } from "@mui/system";
+import { TextField, Button } from "@mui/material";
+import styled from "@mui/styled-engine";
 
-const Container = styled(Box)({
+
+const StyledContainer = styled("div")({
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
-    height: "100vh",
+    width: "60%",
+    margin: "0 auto",
   });
   
-  const FormContainer = styled(Box)({
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "24px",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
+  const StyledTextField = styled(TextField)({
+    width: "100%",
+    marginBottom: "1rem",
   });
   
-  const Input = styled(TextField)({
-    marginBottom: "16px",
+  const StyledButton = styled(Button)({
     width: "100%",
   });
-  
-  const ButtonContainer = styled(Box)({
-    display: "flex",
-    justifyContent: "center",
-    marginTop: "16px",
-  });
 
 
+  interface IUser {
+    _id: string;
+    name: string;
+    uniID: string;
+    gender: string;
+    email: string;
+    faculty: string;
+    major: string;
+    authID: string;
+  }
 
 export default function Profile() {
 
@@ -46,7 +44,19 @@ export default function Profile() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const {user,isAuthenticated} = useAuth0()
-    const [userProfile,setUserProfile] = useState([])
+    const [userProfile, setUserProfile] = useState<IUser>({
+        _id: "",
+        name: "",
+        uniID: "",
+        gender: "",
+        email: "",
+        faculty: "",
+        major: "",
+        authID: "",
+      });
+
+
+
     const handleSaveChanges = () => {
       // TODO: Save changes to user profile
     };
@@ -58,6 +68,7 @@ export default function Profile() {
 
             axios.get(`http://localhost:8080/users/${user.sub}`).then((res)=>{
                 console.log(res.data)
+                setUserProfile(res.data)
             })
 
         }
@@ -66,10 +77,77 @@ export default function Profile() {
 
     const {userID} = useSelector((state: RootState) => state.userID)
 
+
+      const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setUserProfile({
+          ...userProfile,
+          [event.target.name]: event.target.value,
+        });
+      };
+    
+      const handleSubmit= (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        console.log(userProfile);
+      };
+    
+
+
+
     return (
-        <div>
-            Profile 
-            ID: {userID}
-        </div>
+        <>
+          <StyledContainer>
+                <h1>Edit Profile</h1>
+                <form onSubmit={handleSubmit}>
+                    <StyledTextField
+                    label="ID"
+                    name="_id"
+                    value={userProfile._id}
+                    onChange={handleChange}
+                    />
+                    <StyledTextField
+                    label="Name"
+                    name="name"
+                    value={userProfile.name}
+                    onChange={handleChange}
+                    />
+                    <StyledTextField
+                    label="University ID"
+                    name="uniID"
+                    value={userProfile.uniID}
+                    onChange={handleChange}
+                    />
+                    <StyledTextField
+                    label="Gender"
+                    name="gender"
+                    value={userProfile.gender}
+                    onChange={handleChange}
+                    />
+                    <StyledTextField
+                    label="Email"
+                    name="email"
+                    value={userProfile.email}
+                    onChange={handleChange}
+                    />
+                    <StyledTextField
+                    label="Faculty"
+                    name="faculty"
+                    value={userProfile.faculty}
+                    onChange={handleChange}
+                    />
+                    //TODO fixed faculty and major inpit
+                    <StyledTextField
+                    label="Major"
+                    name="major"
+                    value={userProfile.major}
+                    onChange={handleChange}
+                    />
+                    <StyledButton variant="contained" type="submit">
+                    Save Changes
+                    </StyledButton>
+                </form>
+            </StyledContainer>
+        </>
+         
+  
     )
 }
