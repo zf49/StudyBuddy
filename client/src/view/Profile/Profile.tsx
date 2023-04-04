@@ -7,8 +7,8 @@ import { useState } from "react";
 import { TextField, Button } from "@mui/material";
 import styled from "@mui/styled-engine";
 
-import Avatar from '@mui/joy/Avatar';
-// import Avatar from '@mui/material/Avatar';
+import Avatar from '@mui/material/Avatar';
+import { deepPurple } from '@mui/material/colors';
 
 const StyledContainer = styled("div")({
     display: "flex",
@@ -26,6 +26,8 @@ const StyledContainer = styled("div")({
   const StyledButton = styled(Button)({
     width: "100%",
   });
+
+
 
 
   interface IUser {
@@ -100,8 +102,7 @@ export default function Profile() {
                 <h1>Edit Profile</h1>
 
 
-                {/* <Avatar>qqq</Avatar> */}
-
+                <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56 }} >OP</Avatar>
         //TODO user Avater can be changed
 
                 <form onSubmit={handleSubmit}>
