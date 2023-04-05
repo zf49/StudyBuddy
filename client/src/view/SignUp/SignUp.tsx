@@ -143,9 +143,6 @@ export default function SignUp() {
         }
 
         if (sessionData.name && sessionData.uniID) {
-            // TODO : persisting stoer data
-            dispatch(storeUser(sessionData))
-
             await createUser(sessionData)
         } else {
             setMessage("All required fields must be filled in!")
@@ -153,6 +150,11 @@ export default function SignUp() {
     }
 
     async function createUser(user: object) {
+        // TODO : persisting stoer data
+
+         dispatch(storeUser(user))
+
+
          await axios.post(
             "http://localhost:8080/users/register/",
             user

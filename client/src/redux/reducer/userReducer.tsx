@@ -1,7 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUserDetail } from "../../view/Profile/Profile";
+import { persistReducer } from "redux-persist";
+import storageSession from "redux-persist/lib/storage/session";
 
-interface IUser {
+
+export interface IUser {
   user:IUserDetail|undefined
 }
 
@@ -20,5 +23,14 @@ const userSlice = createSlice({
   },
 });
 
+const persistConfig = {
+  key: 'root',
+  storage:storageSession,
+}
+
+const persistedReducer = persistReducer(persistConfig, userSlice.reducer);
+
+
+
 export const { storeUser } = userSlice.actions;
-export default userSlice.reducer;
+export default persistedReducer;

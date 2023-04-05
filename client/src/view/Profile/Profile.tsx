@@ -52,11 +52,23 @@ export default function Profile() {
   const userStore = useSelector((state: RootState) => state.storeUser);
 
   useEffect(() => {
+
+    const abort = new AbortController()
+
     if (user && isAuthenticated) {
-      axios.get(`http://localhost:8080/users/${user.sub}`).then((res) => {
-        console.log(res.data);
-        setUserProfile(res.data);
+        // setUserProfile({...userStore.user});
+
+
+      axios.get(`http://localhost:8080/users/${user.sub}`, {
+          signal: abort.signal
+      }).then((res) => {
+        // console.log(res.data);
+        
       });
+    }
+
+    return () => {
+        abort.abort();        
     }
   }, [user, isAuthenticated]);
 
@@ -69,11 +81,12 @@ export default function Profile() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     console.log(e);
-
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = (e: React.FormEvent<HTMLFormElement>) => {
     // TODO: Save changes to user profile
+    console.log(e);
+
   };
 
   return (
