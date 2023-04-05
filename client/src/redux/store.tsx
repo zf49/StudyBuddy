@@ -5,7 +5,7 @@ const store = configureStore({
   reducer: {
 
     //define reducer here
-    userID:userReducer
+    storeUser:userReducer
   },
   middleware: (getDefaultMiddleware) => {
     // define middleware

@@ -12,7 +12,7 @@ import SignUp from '../view/SignUp/SignUp'
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios'
 import { useDispatch } from "react-redux";
-import { setUserID } from "../redux/reducer/userReducer";
+import { storeUser } from "../redux/reducer/userReducer";
 
 
 
@@ -23,11 +23,11 @@ export default function IndexRouter() {
     const navigate = useNavigate()
 
 
-
     useEffect( () => {
        if(isAuthenticated && user){
+           
+           dispatch(storeUser({  authID: user.sub }));
 
-           dispatch(setUserID(user.sub))
            axios.get(`http://localhost:8080/users/authID/${user.sub}`)
         .then(response => {
           console.log(response.data.length);

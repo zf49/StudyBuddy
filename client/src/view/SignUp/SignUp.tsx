@@ -10,7 +10,8 @@ import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
 import Joi from 'joi';
 import { useAuth0 } from '@auth0/auth0-react';
-
+import { useDispatch } from "react-redux";
+import { storeUser } from "../../redux/reducer/userReducer";
 
 // move to own file
 
@@ -62,7 +63,7 @@ const apiGetMajor = async (option: IApiOptions): Promise<IMajorApiReturn | null>
 
 export default function SignUp() {
 
-    
+
     // TODO save all things to redux
     const [name, setName] = React.useState('');
     const [uniID, setUniID] = React.useState('');
@@ -77,6 +78,7 @@ export default function SignUp() {
 
 
     const {user,isAuthenticated} = useAuth0()
+    const dispatch = useDispatch();
 
 
 
@@ -141,6 +143,9 @@ export default function SignUp() {
         }
 
         if (sessionData.name && sessionData.uniID) {
+            // TODO : persisting stoer data
+            dispatch(storeUser(sessionData))
+
             await createUser(sessionData)
         } else {
             setMessage("All required fields must be filled in!")
@@ -148,7 +153,7 @@ export default function SignUp() {
     }
 
     async function createUser(user: object) {
-        const response = await axios.post(
+         await axios.post(
             "http://localhost:8080/users/register/",
             user
         )
