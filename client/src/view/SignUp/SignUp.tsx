@@ -61,7 +61,11 @@ const apiGetMajor = async (option: IApiOptions): Promise<IMajorApiReturn | null>
     return validationResult.value;
 }
 
-export default function SignUp() {
+interface ISignUpProps {
+    changeUserState: (state: boolean) => void;
+}
+
+export default function SignUp(props:ISignUpProps) {
 
 
     // TODO save all things to redux
@@ -143,9 +147,10 @@ export default function SignUp() {
         }
 
         if (sessionData.name && sessionData.uniID) {
-            await createUser(sessionData).then(()=>
-                navigate('/home'
-            ))
+            await createUser(sessionData).then(()=>{
+                props.changeUserState(true)
+                navigate('/home')
+            })
         } else {
             setMessage("All required fields must be filled in!")
         }
