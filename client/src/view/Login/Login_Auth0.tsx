@@ -56,11 +56,19 @@ export default function Login() {
    
     const { user, isAuthenticated, isLoading,loginWithRedirect,getAccessTokenSilently } = useAuth0();
 
+    // const handleLoginClick = async () => {
+    //   await loginWithRedirect().then(()=>{
+    //       localStorage.setItem('token','123')
+    //   })
+    // }
 
-     const handleLoginClick = async () => {
-        await loginWithRedirect().then(()=>{
-            localStorage.setItem('token','123')
-        })
+  const handleLoginClick = async () => {
+    try {
+      await loginWithRedirect()
+     
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

@@ -1,12 +1,20 @@
 var express = require('express');
 var router = express.Router();
-import {checkAuthID, createUser,getUserProfile} from '../dao/user-dao'
+import {checkAuthID, createUser,getUserProfile, updateUserProfile} from '../dao/user-dao'
+
 
 const HTTP_CREATED = 201;
 const HTTP_NOT_FOUND = 404;
 const HTTP_NO_CONTENT = 204;
 const HTTP_BAD_REQUEST = 400;
 
+
+
+// update userProfile
+router.patch('/:authID', async (req, res, next) => {
+  const updatedUser = await updateUserProfile(req.params.authID,req.body)
+  res.json(updatedUser);
+});
 
 
 /* GET users listing. */
@@ -16,10 +24,6 @@ router.get('/:uniID', async (req, res, next) => {
 
   res.json(user);
 });
-
-
-
-
 
 // Get users login Email
 router.get('/authID/:authID', async (req, res, next) => {

@@ -12,82 +12,143 @@ import SignUp from '../view/SignUp/SignUp'
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios'
 import { useDispatch } from "react-redux";
-import { storeUser } from "../redux/reducer/userReducer";
+import { storeUser } from '../redux/reducer/userReducer'
+// import { storeUser } from "../redux/reducer/facultySlice";
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store'
 
 
 
 export default function IndexRouter() {
     const dispatch = useDispatch();
-    
-    const {user,isAuthenticated} = useAuth0()
+    const [userExists, setUserExists] = useState(false);
+    const {user,isAuthenticated,isLoading} = useAuth0()
     const navigate = useNavigate()
 
+    const userStore = useSelector((state: RootState) => state.storeUser);
 
     useEffect( () => {
        if(isAuthenticated && user){
            
-           dispatch(storeUser({  authID: user.sub }));
-
            axios.get(`http://localhost:8080/users/authID/${user.sub}`)
         .then(response => {
           console.log(response.data.length);
-          // handle response
-          if(response.data.length===0){
-              navigate('/signup')
-          }
+          if(response.data.length==0){
+            // setUserExists(false);
+            dispatch(storeUser(false))
+            navigate('/signup')
+        }else{
+            // setUserExists(true)
+            dispatch(storeUser(true))
+
+        }
         })
        }
-
-    }, [user,isAuthenticated,dispatch])
-
+    }, [user,isAuthenticated,userStore,dispatch])
 
 
 
-    let element = useRoutes([
+
+    // let element = useRoutes([
+    //     {
+    //         path:'/',
+    //         element:
+    //         // localStorage.getItem('token')?<SandBox/>:<Navigate to="/login" />,
+    //         isLoading ? <div>Loading...</div> : (
+    //         isAuthenticated ? (
+    //           <SandBox />
+    //         ) : (
+    //           <Navigate to="/login" />
+    //         )
+    //       ),
+    //         children:[
+    //             {index:true, element: <Home/>}
+    //             ,
+    //             {
+    //                 path:"home",
+    //                 element:<Home/>
+    //             },
+    //             {
+    //                 path:"profile",
+    //                 element:<Profile/>
+    //             },
+    //             {
+    //                 path:"friends",
+    //                 element:<Friends/>
+    //             },
+    //             {
+    //                 path:"search",
+    //                 element:<Search/>
+    //             },
+    //             {
+    //                 path:"signup",
+    //                 element:<SignUp/>
+    //             },
+    //             {
+    //                 path:'*',
+    //                 element:<NotFound/>
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         path:'/login',
+    //         element:<Login/>
+    //     }
+    // ])
+
+
+    const element = useRoutes([
         {
-            path:'/',
-            element:localStorage.getItem('token')?<SandBox/>:<Navigate to='/login'></Navigate>,
-            children:[
-                {index:true, element: <Home/>}
-                ,
-                {
-                    path:"home",
-                    element:<Home/>
-                },
-                {
-                    path:"profile",
-                    element:<Profile/>
-                },
-                {
-                    path:"friends",
-                    element:<Friends/>
-                },
-                {
-                    path:"search",
-                    element:<Search/>
-                },
-                {
-                    path:"signup",
-                    element:<SignUp/>
-                },
-                {
-                    path:'*',
-                    element:<NotFound/>
-                }
-            ]
+          path: '/',
+          element: isLoading ? <div>Loading...</div> : (
+            isAuthenticated ? (
+              <SandBox />
+            ) : (
+              <Navigate to="/login" />
+            )
+          ),
+          children: [
+            { index: true, element: <Home /> },
+            {
+              path: 'home',
+              element: userStore ? <Home /> : <Navigate to="/signup" />,
+            },
+            {
+              path: 'profile',
+              element: userStore ? <Profile /> : <Navigate to="/signup" />,
+            },
+            {
+              path: 'friends',
+              element: userStore ? <Friends /> : <Navigate to="/signup" />,
+            },
+            {
+              path: 'search',
+              element: userStore ? <Search /> : <Navigate to="/signup" />,
+            },
+            {
+              path: 'signup',
+              element: <SignUp/>,
+            },
+            {
+              path: '*',
+              element: <NotFound />,
+            },
+          ],
         },
         {
-            path:'/login',
-            element:<Login/>
-        }
-    ])
+          path: '/login',
+          element: <Login />,
+        },
+      ]);
+
 
 
 
 
     return (
-        <div>
+        <>
+          {console.log(userStore)}
             {element}
-        </div>
+        </>
     )
 }

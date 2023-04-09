@@ -12,7 +12,7 @@ import Joi from 'joi';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useDispatch } from "react-redux";
 import { storeUser } from "../../redux/reducer/userReducer";
-
+import { useNavigate } from 'react-router';
 // move to own file
 
 export interface IMajor {
@@ -75,7 +75,7 @@ export default function SignUp() {
     const [faculties, setFaculties] = React.useState<string[]>([]);
     const [majors, setMajors] = React.useState<IMajor[]>([]);
     const [authID, setAuthID] = useState<any>('')
-
+    const navigate = useNavigate()
 
     const {user,isAuthenticated} = useAuth0()
     const dispatch = useDispatch();
@@ -143,7 +143,9 @@ export default function SignUp() {
         }
 
         if (sessionData.name && sessionData.uniID) {
-            await createUser(sessionData)
+            await createUser(sessionData).then(()=>
+                navigate('/home'
+            ))
         } else {
             setMessage("All required fields must be filled in!")
         }
@@ -153,8 +155,6 @@ export default function SignUp() {
         // TODO : persisting stoer data
 
          dispatch(storeUser(user))
-
-
          await axios.post(
             "http://localhost:8080/users/register/",
             user
