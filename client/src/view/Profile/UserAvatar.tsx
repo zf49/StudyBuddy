@@ -23,17 +23,17 @@ import Toolbar from '@mui/material/Toolbar';
 import Paper from '@mui/material/Paper';
 import ImageList from '@mui/material/ImageList';
 import { useAuth0 } from '@auth0/auth0-react';
-import ImageListItem from '@mui/material/ImageListItem'; import {  
-  Avatar,
-  Button,
-  Container,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Grid,
-  IconButton,
-  Typography,
+import ImageListItem from '@mui/material/ImageListItem'; import {
+    Avatar,
+    Button,
+    Container,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Grid,
+    IconButton,
+    Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -43,63 +43,32 @@ const StyledContainer = styled("div")({
     alignItems: "center",
     width: "60%",
     margin: "0 auto",
-  });
+});
 
 
-  
-interface IUserAvatar{
-    isOpen:boolean,
-    handleClose:(close:boolean)=>void
+
+interface IUserAvatar {
+    isOpen: boolean,
+    handleClose: (close: boolean) => void
 }
 
 interface Image {
     name: string;
     src: string;
-  }
+}
 
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
-      children: React.ReactElement;
+        children: React.ReactElement;
     },
     ref: React.Ref<unknown>,
-  ) {
+) {
     return <Slide direction="up" ref={ref} {...props} />;
-  });
+});
 
 
-export default function UserAvatar(props:IUserAvatar) {
-     // dialog open or not
-
-  const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
-  const { user } = useAuth0();
-  const [avatar, setAvatar] = useState("")
-
-//   const handleClose = () => {
-//     setOpen(false);
-//   };
-
-//   const handleOpenDialog = () => {
-//     setOpen(true);
-//   };
-
-  const handleCloseDialog = () => {
-    props.handleClose(false)
-  };
-
-  const handleAvatarClick = (index: number) => {
-    setSelectedAvatar(index);
-    
-
-  };
-
-  const saveAvatar = ()=>{
-      console.log('save')
-      console.log(images[0].src)
-  }
-
-
-  const avatars = [
+const avatars = [
     'https://i.pravatar.cc/150?img=1',
     'https://i.pravatar.cc/150?img=2',
     'https://i.pravatar.cc/150?img=3',
@@ -109,107 +78,128 @@ export default function UserAvatar(props:IUserAvatar) {
     'https://i.pravatar.cc/150?img=7',
     'https://i.pravatar.cc/150?img=8',
     'https://i.pravatar.cc/150?img=9',
-  ];
+];
 
 
-// upload
-const [images, setImages] = useState<Image[]>([]);
-
-const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target?.files?.[0];
-  
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const image: Image = {
-          name: file.name,
-          src: event.target?.result as string
-        };
-        setImages([...images, image]);
-      };
-  
-      reader.readAsDataURL(file);
-    }
-  };
-  
-  
-
-  
-    return (
-        <>
-        <Dialog
-            fullScreen
-            open={props.isOpen}
-            onClose={handleCloseDialog}
-            TransitionComponent={Transition}
-          >
-            <AppBar sx={{ position: 'relative' }}>
-              <Toolbar>
-                <IconButton
-                  edge="start"
-                  color="inherit"
-                  onClick={handleCloseDialog}
-                  aria-label="close"
-                >
-                  <CloseIcon />
-                </IconButton>
-                <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                </Typography>
-                <Button autoFocus color="inherit" 
-                onClick={saveAvatar}
-                >
-                  save
-            </Button>
-              </Toolbar>
-            </AppBar>
-            <DialogContent  >
-              <StyledContainer>
-                  <Avatar
-                    sx={{ width: 200, height: 200 }}
-                    src={selectedAvatar ? avatars[selectedAvatar - 1] : user?.picture}
-                  />
-                  <Button variant="contained" component="label">
-        Upload
-        <input hidden accept="image/*" type="file"  onChange={handleFileChange}
- />
-      </Button>
-        
-      <div>
-   
-    {images.length > 0 && (
-      <div>
-        <div>
-          <Avatar src={images[images.length - 1].src} sx={{ width: 200, height: 200 }} alt={images[images.length - 1].name} />
-        </div>
-      </div>
-    )}
-  </div>
+export default function UserAvatar(props: IUserAvatar) {
+    // dialog open or not
 
     
+    const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
+    const { user } = useAuth0();
+    const [defaultAvatar, setDefaultAvatar] = useState<string[]|null>(avatars)
+    const [avatar, setAvatar] = useState("")
 
-                </StyledContainer>
-                <StyledContainer>
-                <ImageList sx={{ width: 500, height: 450 }} cols={3} >
-                  {avatars.map((avatar, index) => (
+
+    const handleCloseDialog = () => {
+        props.handleClose(false)
+    };
+
+    const handleAvatarClick = (index: number) => {
+        setSelectedAvatar(index);
+
+
+    };
+
+
+    // TODO: save user Avatar: option 1. upload to auth0, 2: upload to db
+    const saveAvatar = () => {
+        console.log('save')
+        console.log(images[0].src)
+    }
+
+
+
+
+    // upload
+    const [images, setImages] = useState<Image[]>([]);
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target?.files?.[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const image: Image = {
+                    name: file.name,
+                    src: event.target?.result as string
+                };
+                setImages([...images, image]);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    };
+
+
+
+
+    return (
+        <>
+            <Dialog
+                fullScreen
+                open={props.isOpen}
+                onClose={handleCloseDialog}
+                TransitionComponent={Transition}
+            >
+                <AppBar sx={{ position: 'relative' }}>
+                    <Toolbar>
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            onClick={handleCloseDialog}
+                            aria-label="close"
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                        </Typography>
+                        <Button autoFocus color="inherit"
+                            onClick={saveAvatar}
+                        >
+                            save
+            </Button>
+                    </Toolbar>
+                </AppBar>
+                <DialogContent  >
                     <StyledContainer>
-
-                      <ImageListItem key={index}>
                         <Avatar
-                          sx={{ width: 80, height: 80 }}
-                          src={avatar}
-                          onClick={() => handleAvatarClick(index + 1)}
-                          className={selectedAvatar === index + 1 ? 'selected' : ''}
+                            sx={{ width: 200, height: 200 }}
+                            src={(selectedAvatar ? avatars[selectedAvatar - 1] : user?.picture) || (images.length > 0 ? images[images.length - 1].src : user?.picture)}
+                            // TODO click default pic to change user avatar
+                            // src={images.length > 0 ? images[images.length - 1].src : user?.picture}
                         />
-                      </ImageListItem>
+                        <Button variant="contained" component="label">
+                            Upload
+                            <input hidden accept="image/*" type="file" onChange={handleFileChange}/>
+                        </Button>
+
+
+
+
+                    </StyledContainer>
+                    <StyledContainer>
+                        <ImageList sx={{ width: 500, height: 450 }} cols={3} >
+                            {avatars.map((avatar, index) => (
+                                <StyledContainer>
+
+                                    <ImageListItem key={index}>
+                                        <Avatar
+                                            sx={{ width: 80, height: 80 }}
+                                            src={avatar}
+                                            onClick={() => handleAvatarClick(index + 1)}
+                                            className={selectedAvatar === index + 1 ? 'selected' : ''}
+                                        />
+                                    </ImageListItem>
+                                </StyledContainer>
+
+                            ))}
+                        </ImageList>
+
                     </StyledContainer>
 
-                  ))}
-                </ImageList>
-
-              </StyledContainer>
-
-            </DialogContent>
-          </Dialog>
-          </>
+                </DialogContent>
+            </Dialog>
+        </>
     )
 }
