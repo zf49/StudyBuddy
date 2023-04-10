@@ -4,17 +4,40 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useState } from "react";
-import { TextField, Button } from "@mui/material";
+import { TextField } from "@mui/material";
 import styled from "@mui/styled-engine";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { Alert, Slide } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
 import { deepPurple } from '@mui/material/colors';
 import { IMajor, IMajorApiReturn } from '../SignUp/SignUp';
 import Stack from '@mui/material/Stack';
 import Fade from '@mui/material/Fade';
-import { Collapse } from '@mui/material';
+import { Collapse, } from '@mui/material';
+import { TransitionProps } from '@mui/material/transitions';
+import ListItemText from '@mui/material/ListItemText';
+import ListItem from '@mui/material/ListItem';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Paper from '@mui/material/Paper';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem'; import {
+  Avatar,
+  Button,
+  Container,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Grid,
+  IconButton,
+  Typography,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import UserAvatar from './UserAvatar';
+
 
 
 
@@ -43,6 +66,20 @@ export interface IUserDetail {
   major: string,
   authID: string,
 }
+
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+
+
+
 export default function Profile() {
   const [facmjor, setfacmjor] = useState<IMajorApiReturn>({
     faculties: [],
@@ -113,7 +150,7 @@ export default function Profile() {
         setSelectedFaculty(res.data[0].faculty)
         console.log(res.data[0])
       });
-      axios.get("http://localhost:8080/major/",{
+      axios.get("http://localhost:8080/major/", {
         signal: abort.signal
       }).then((res) => {
         console.log("major", res.data.majors)
@@ -164,14 +201,36 @@ export default function Profile() {
   };
 
 
+  const changeAva = () => {
+    console.log('asd')
+
+
+
+  }
+
+
+  // dialog open or not
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = (close:boolean) => {
+    setOpen(close)
+  };
+
+
+
   return (
     <>
+      {console.log(user?.picture)}
+
       {/* {console.log(facmjor.faculties)} */}
       <Stack sx={{ width: '100%' }} spacing={2}>
         {showSuccessAlert && (
           <Fade in={showSuccessAlert} timeout={1000}>
             {/* <Collapse in={showSuccessAlert}> */}
-          <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)}>
+            <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)}>
               This is a success alert — check it out!
           </Alert>
             {/* </Collapse> */}
@@ -189,9 +248,29 @@ export default function Profile() {
       </Stack>
       <StyledContainer>
         <h1>Edit Profile</h1>
-        <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56 }}>OP</Avatar>
-
+        {/* <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56 }} 
+        src={user?.picture}
+        onClick={changeAva}
+        >{user?.picture}</Avatar> */}
         //TODO: user Avatar can be changed
+
+        <div>
+          {/* <Button variant="outlined" onClick={handleClickOpen}>
+        Open full-screen dialog
+      </Button> */}
+
+          <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56, marginBottom: "1rem" }}
+            src={user?.picture}
+            onClick={handleClickOpen}
+          >{user?.picture}</Avatar>
+
+
+          {/* user Avatar */}
+          <UserAvatar isOpen={open} handleClose={handleClose}/>
+          
+        </div>
+
+
 
         <form>
           <StyledTextField
