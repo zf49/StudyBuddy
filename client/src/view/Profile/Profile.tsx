@@ -113,7 +113,9 @@ export default function Profile() {
         setSelectedFaculty(res.data[0].faculty)
         console.log(res.data[0])
       });
-      axios.get("http://localhost:8080/major/").then((res) => {
+      axios.get("http://localhost:8080/major/",{
+        signal: abort.signal
+      }).then((res) => {
         console.log("major", res.data.majors)
 
         setFaculties(res.data.faculties)

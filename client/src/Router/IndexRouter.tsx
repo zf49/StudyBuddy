@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import {Navigate, useNavigate, useRoutes } from 'react-router'
+import { Navigate, useNavigate, useRoutes } from 'react-router'
 import NotFound from '../view/404/NoteFound'
 import Friends from '../view/Friends/Friends'
 import Login from '../view/Login/Login_Auth0'
@@ -20,141 +20,145 @@ import { RootState } from '../redux/store'
 
 
 export default function IndexRouter() {
-    const dispatch = useDispatch();
-    const [userExists, setUserExists] = useState(false);
-    const {user,isAuthenticated,isLoading} = useAuth0()
-    const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const [userExists, setUserExists] = useState(false);
+  const { user, isAuthenticated, isLoading } = useAuth0()
+  const navigate = useNavigate()
 
-    const userStore = useSelector((state: RootState) => state.storeUser);
+  const userStore = useSelector((state: RootState) => state.storeUser);
 
 
+
+  useEffect(() => {
+    const abort = new AbortController()
+
+      if (isAuthenticated && user) {
+         axios.get(`http://localhost:8080/users/authID/${user.sub}`,{
+          signal: abort.signal
+        })
+          .then(response => {
+            if (response.data.length == 0) {
+              setUserExists(false);
+              navigate('/signup')
+            } else {
+              setUserExists(true);
+            }
+          })
+      }
+      return () => {
+        abort.abort();
+      }
     
-    useEffect( () => {
-     const checkUser = async ()=>{
-      if(isAuthenticated && user){
-           
-        await axios.get(`http://localhost:8080/users/authID/${user.sub}`)
-     .then(response => {
-       if(response.data.length==0){
-         setUserExists(false);
-         navigate('/signup')
-     }else{
-        setUserExists(true);
-     }
-     })
-    }
-     }
-     checkUser();
-    }, [user,isAuthenticated])
+  }, [user, isAuthenticated])
 
 
-    const changeUserState = (state:boolean)=>{
-        setUserExists(state)
-    }
+  const changeUserState = (state: boolean) => {
+    setUserExists(state)
+  }
 
-    const element = useRoutes([
+  const element = useRoutes([
+    {
+      path: '/',
+      element:
+        isLoading ? <div>Loading...</div> : (
+          isAuthenticated ? (
+            <SandBox />
+          ) : (
+            <Navigate to="/login" />
+          )
+        ),
+      children: [
+        { index: true, element: <Home /> }
+        ,
         {
-            path:'/',
-            element:
-            isLoading ? <div>Loading...</div> : (
-            isAuthenticated ? (
-              <SandBox />
-            ) : (
-              <Navigate to="/login" />
-            )
-          ),
-            children:[
-                {index:true, element: <Home/>}
-                ,
-                {
-                    path:"home",
-                    element:userExists ? <Home /> : <Navigate to="/signup" />
-                },
-                {
-                    path:"profile",
-                    element:userExists ? <Profile /> : <Navigate to="/signup" />
-                },
-                {
-                    path:"friends",
-                    element:userExists ? <Friends /> : <Navigate to="/signup" />
-                },
-                {
-                    path:"search",
-                    element:userExists ? <Search /> : <Navigate to="/signup" />
-                },
-                {
-                    path:"signup",
-                    element:userExists ? (
-                      <Navigate to="/home" />
-                    ) : (
-                      <SignUp changeUserState={changeUserState}/>
-                    )
-                },
-                {
-                    path:'*',
-                    element:<NotFound/>
-                }
-            ]
+          path: "home",
+          element: userExists ? <Home /> : <Navigate to="/signup" />
         },
         {
-            path:'/login',
-            element:<Login/>
+          path: "profile",
+          element: userExists ? <Profile /> : <Navigate to="/signup" />
+        },
+        {
+          path: "friends",
+          element: userExists ? <Friends /> : <Navigate to="/signup" />
+        },
+        {
+          path: "search",
+          element: userExists ? <Search /> : <Navigate to="/signup" />
+        },
+        {
+          path: "signup",
+          element: userExists ? (
+            <Navigate to="/home" />
+          ) : (
+            <SignUp changeUserState={changeUserState} />
+          )
+        },
+        {
+          path: '*',
+          element: <NotFound />
         }
-    ])
+      ]
+    },
+    {
+      path: '/login',
+      element: <Login />
+    }
+  ])
 
 
-    // const element = useRoutes([
-    //     {
-    //       path: '/',
-    //       element: isLoading ? <div>Loading...</div> : (
-    //         isAuthenticated ? (
-    //           <SandBox />
-    //         ) : (
-    //           <Navigate to="/login" />
-    //         )
-    //       ),
-    //       children: [
-    //         { index: true, element: <Home /> },
-    //         {
-    //           path: 'home',
-    //           element: userExists ? <Home /> : <Navigate to="/signup" />,
-    //         },
-    //         {
-    //           path: 'profile',
-    //           element: userExists ? <Profile /> : <Navigate to="/signup" />,
-    //         },
-    //         {
-    //           path: 'friends',
-    //           element: userExists ? <Friends /> : <Navigate to="/signup" />,
-    //         },
-    //         {
-    //           path: 'search',
-    //           element: userExists ? <Search /> : <Navigate to="/signup" />,
-    //         },
-    //         {
-    //           path: 'signup',
-    //           element: <SignUp changeUserState={changeUserState}/>,
-    //         },
-    //         {
-    //           path: '*',
-    //           element: <NotFound />,
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       path: '/login',
-    //       element: <Login />,
-    //     },
-    //   ]);
+  // const element = useRoutes([
+  //     {
+  //       path: '/',
+  //       element: isLoading ? <div>Loading...</div> : (
+  //         isAuthenticated ? (
+  //           <SandBox />
+  //         ) : (
+  //           <Navigate to="/login" />
+  //         )
+  //       ),
+  //       children: [
+  //         { index: true, element: <Home /> },
+  //         {
+  //           path: 'home',
+  //           element: userExists ? <Home /> : <Navigate to="/signup" />,
+  //         },
+  //         {
+  //           path: 'profile',
+  //           element: userExists ? <Profile /> : <Navigate to="/signup" />,
+  //         },
+  //         {
+  //           path: 'friends',
+  //           element: userExists ? <Friends /> : <Navigate to="/signup" />,
+  //         },
+  //         {
+  //           path: 'search',
+  //           element: userExists ? <Search /> : <Navigate to="/signup" />,
+  //         },
+  //         {
+  //           path: 'signup',
+  //           element: <SignUp changeUserState={changeUserState}/>,
+  //         },
+  //         {
+  //           path: '*',
+  //           element: <NotFound />,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       path: '/login',
+  //       element: <Login />,
+  //     },
+  //   ]);
 
 
 
 
 
-    return (
-        <div>
-            {element}
-            <>{console.log(userStore)}</>
-        </div>
-    )
+  return (
+    <div>
+      {element}
+      <>{console.log(userStore)}</>
+    </div>
+  )
 }
