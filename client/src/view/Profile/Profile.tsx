@@ -235,6 +235,7 @@ export default function Profile() {
 
   return (
     <>
+      {console.log(userProfile.userAvatar)}
 
       {/* {console.log(facmjor.faculties)} */}
       <Stack sx={{ width: '100%' }} spacing={2}>

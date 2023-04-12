@@ -10,7 +10,7 @@ const userSchema = new Schema({
     faculty: String,
     major: String,
     authID:String,
-    userAvatar:String||undefined
+    userAvatar:String || Buffer
 })
 
 const User = mongoose.model("User", userSchema)

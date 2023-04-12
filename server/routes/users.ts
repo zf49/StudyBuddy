@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-import {checkAuthID, createUser,getUserProfile, updateUserProfile} from '../dao/user-dao'
+import {checkAuthID, createUser,getUserProfile, searchUser, updateUserProfile} from '../dao/user-dao'
 
 
 const HTTP_CREATED = 201;
@@ -10,15 +10,28 @@ const HTTP_BAD_REQUEST = 400;
 
 
 
+router.post('/:keyword', async (req,res)=>{
+
+    const userResult = await searchUser(req.params.keyword)
+
+
+    // console.log(userResult)
+    res.json(userResult)
+
+})
+
+
+
 // update userProfile
 router.patch('/profile/:authID', async (req, res, next) => {
   const updatedUser = await updateUserProfile(req.params.authID,req.body)
   res.json(updatedUser);
 });
 
-router.patch('/:authID/pic',async (req, res, next) => {
-  res.json('aaaaaaaaaa');
-});
+// set pic
+// router.patch('/:authID/pic',async (req, res, next) => {
+//   res.json('aaaaaaaaaa');
+// });
 
 
 /* GET users listing. */

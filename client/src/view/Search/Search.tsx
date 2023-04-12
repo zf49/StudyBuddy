@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import { TextField, Button, Grid, Typography } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from 'axios';
 
 const theme = createTheme();
 
@@ -15,9 +16,16 @@ const handleSearchTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   setSearchTerm(event.target.value);
 };
 
-const handleSearchClick = () => {
+const handleSearchClick = async() => {
   // TODO: logic of search friend
   console.log(`Searching for friends with term: ${searchTerm}`);
+
+  await axios.post('http://localhost:8080/users/:keyword').then((res)=>{
+    console.log(res.data)
+  })
+
+
+
 };
 
 return (
@@ -43,6 +51,14 @@ return (
             )
           }}
         />
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h4" align="center">
+          Search Friends
+        </Typography>
+
+        
+        
       </Grid>
     </Grid>
   </ThemeProvider>

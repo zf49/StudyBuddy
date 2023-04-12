@@ -7,6 +7,17 @@ export async function createUser(user: object) {
     return dbUser;
 }
 
+
+export async function searchUser(keyword:string) {
+    return await User.find({
+        $or: [
+          { name: { $regex: keyword, $options: "i" } },
+          { uniID: { $regex: keyword, $options: "i" } }
+        ]
+      })
+}
+
+
 export async function checkAuthID(authID:String) {
     return await User.find({'authID':authID})
 }
