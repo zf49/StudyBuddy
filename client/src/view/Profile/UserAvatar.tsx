@@ -133,7 +133,7 @@ export default function UserAvatar(props: IUserAvatar) {
 
             reader.readAsDataURL(file);
         }
-        setAvatar(images[images.length - 1].src)
+        setAvatar(images[0].src)
     };
 
 
