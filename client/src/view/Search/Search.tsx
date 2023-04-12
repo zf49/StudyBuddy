@@ -40,7 +40,7 @@ export default function Search() {
 
     return (
         <ThemeProvider theme={theme}>
-            <Grid container justifyContent="center" alignItems="center" spacing={2}>
+            {/* <Grid container justifyContent="center" alignItems="center" spacing={2}>
                 <Grid item xs={12}>
                     <Typography variant="h4" align="center">
                         Search Friends
@@ -63,18 +63,21 @@ export default function Search() {
                     />
                 </Grid>
                 <Grid item xs={12}>
+
                     <Typography variant="h4" align="center">
                         Results
                     </Typography>
                     <Typography variant="h4" align="center">
 
                         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                        <Grid item xs={12}>
+
                             <ListItem alignItems="flex-start">
                                 <ListItemAvatar>
                                     <Avatar alt="Remy Sharp" src="https://i.pravatar.cc/150?img=1" />
                                 </ListItemAvatar>
                                 <ListItemText
-                                    primary="Brunch this weekend?"
+                                    primary="Name:"
                                     secondary={
                                         <React.Fragment>
                                             <Typography
@@ -83,21 +86,83 @@ export default function Search() {
                                                 variant="body2"
                                                 color="text.primary"
                                             >
-                                                Ali Connors
-                    </Typography>
-                                            {" — I'll be in your neighborhood doing errands this…"}
+                                                Email:
+                                            </Typography>
+                                            {"I'll be in your neighborhood doing errands this…"}
                                         </React.Fragment>
                                     }
                                 />
                             </ListItem>
                             <Divider variant="inset" component="li" />
+                            </Grid>
                         </List>
                     </Typography>
 
 
 
                 </Grid>
-            </Grid>
+            </Grid> */}
+
+
+<Grid container justifyContent="center" alignItems="center" spacing={2}>
+  <Grid item xs={12}>
+    <Typography variant="h4" align="center">
+      Search Friends
+    </Typography>
+  </Grid>
+  <Grid item xs={12} md={6}>
+    <TextField
+      fullWidth
+      variant="outlined"
+      label="Enter search term"
+      value={searchTerm}
+      onChange={handleSearchTermChange}
+      InputProps={{
+        endAdornment: (
+          <Button variant="contained" onClick={handleSearchClick}>
+            Search
+          </Button>
+        )
+      }}
+    />
+  </Grid>
+  <Grid container justifyContent="center" alignItems="center" spacing={2}>
+    <Grid item xs={12}>
+        <Typography variant="h4" align="center">
+            Results
+        </Typography>
+    </Grid>
+    <Grid item xs={12} md={6}>
+        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+            <ListItem alignItems="flex-start">
+                <ListItemAvatar>
+                    <Avatar alt="Remy Sharp" src="https://i.pravatar.cc/150?img=1" />
+                </ListItemAvatar>
+                <ListItemText
+                    primary="Name:"
+                    secondary={
+                        <React.Fragment>
+                            <Typography
+                                sx={{ display: 'inline' }}
+                                component="span"
+                                variant="body2"
+                                color="text.primary"
+                            >
+                                Email:
+                            </Typography>
+                            {"I'll be in your neighborhood doing errands this…"}
+                        </React.Fragment>
+                    }
+                />
+            </ListItem>
+            <Divider variant="inset" component="li" />
+        </List>
+    </Grid>
+</Grid>
+
+  
+</Grid>
+
         </ThemeProvider>
     );
 }
