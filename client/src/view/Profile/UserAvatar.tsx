@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useSyncExternalStore } from 'react';
 import axios from 'axios';
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
@@ -37,6 +37,9 @@ import ImageListItem from '@mui/material/ImageListItem'; import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
+
+
+
 const StyledContainer = styled("div")({
     display: "flex",
     flexDirection: "column",
@@ -49,7 +52,9 @@ const StyledContainer = styled("div")({
 
 interface IUserAvatar {
     isOpen: boolean,
-    handleClose: (close: boolean) => void
+    handleClose: (close: boolean) => void,
+    setUserPic:(picSrc:string)=>void,
+    userPic:string
 }
 
 interface Image {
@@ -86,9 +91,12 @@ export default function UserAvatar(props: IUserAvatar) {
 
     
     const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
-    const { user } = useAuth0();
+    const { user,isAuthenticated } = useAuth0();
     const [defaultAvatar, setDefaultAvatar] = useState<string[]|null>(avatars)
-    const [avatar, setAvatar] = useState("")
+    const [avatar, setAvatar] = useState(props.userPic);
+
+  
+
 
 
     const handleCloseDialog = () => {
@@ -98,18 +106,14 @@ export default function UserAvatar(props: IUserAvatar) {
     const handleAvatarClick = (index: number) => {
         setSelectedAvatar(index);
 
-
+        setAvatar(avatars[index - 1])
     };
 
-
-    // TODO: save user Avatar: option 1. upload to auth0, 2: upload to db
     const saveAvatar = () => {
-        console.log('save')
-        console.log(images[0].src)
+        props.setUserPic(avatar)
+        props.handleClose(false)
+
     }
-
-
-
 
     // upload
     const [images, setImages] = useState<Image[]>([]);
@@ -129,13 +133,13 @@ export default function UserAvatar(props: IUserAvatar) {
 
             reader.readAsDataURL(file);
         }
+        setAvatar(images[images.length - 1].src)
     };
-
-
 
 
     return (
         <>
+        {/* {console.log(user?.picture)} */}
             <Dialog
                 fullScreen
                 open={props.isOpen}
@@ -158,14 +162,14 @@ export default function UserAvatar(props: IUserAvatar) {
                             onClick={saveAvatar}
                         >
                             save
-            </Button>
+                        </Button>
                     </Toolbar>
                 </AppBar>
                 <DialogContent  >
                     <StyledContainer>
                         <Avatar
                             sx={{ width: 200, height: 200 }}
-                            src={(selectedAvatar ? avatars[selectedAvatar - 1] : user?.picture) || (images.length > 0 ? images[images.length - 1].src : user?.picture)}
+                            src={avatar}
                             // TODO click default pic to change user avatar
                             // src={images.length > 0 ? images[images.length - 1].src : user?.picture}
                         />
@@ -192,7 +196,6 @@ export default function UserAvatar(props: IUserAvatar) {
                                         />
                                     </ImageListItem>
                                 </StyledContainer>
-
                             ))}
                         </ImageList>
 

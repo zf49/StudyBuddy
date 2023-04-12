@@ -136,6 +136,7 @@ export default function SignUp(props:ISignUpProps) {
             faculty: String,
             major: String,
             authID:String,
+            userAvatar:string|undefined,
         } = {
             name: name,
             uniID: uniID,
@@ -143,7 +144,8 @@ export default function SignUp(props:ISignUpProps) {
             email: email,
             faculty: faculty,
             major: major,
-            authID:authID
+            authID:authID,
+            userAvatar:user?.picture
         }
 
         if (sessionData.name && sessionData.uniID) {

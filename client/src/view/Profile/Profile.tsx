@@ -65,6 +65,7 @@ export interface IUserDetail {
   faculty: string,
   major: string,
   authID: string,
+  userAvatar:string
 }
 
 
@@ -93,6 +94,7 @@ export default function Profile() {
     faculty: "",
     major: "",
     authID: "",
+    userAvatar:""
   });
 
   const { user, isAuthenticated } = useAuth0();
@@ -174,10 +176,11 @@ export default function Profile() {
     });
   };
 
+
   const handleSaveChanges = async () => {
     console.log(JSON.stringify(userProfile));
     // TODO send update request to backend
-    await axios.patch(`http://localhost:8080/users/${userProfile.authID}`, userProfile).then((res) => {
+    await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile).then((res) => {
       if (res.data.acknowledged) {
         handleSuccess()
       } else {
@@ -219,11 +222,19 @@ export default function Profile() {
     setOpen(close)
   };
 
+  const setUserPic = (picSrc:string)=>{
+    console.log(picSrc)
+
+    setUserProfile({
+      ...userProfile,
+      userAvatar: picSrc,
+    });
+  }
+
 
 
   return (
     <>
-      {console.log(user?.picture)}
 
       {/* {console.log(facmjor.faculties)} */}
       <Stack sx={{ width: '100%' }} spacing={2}>
@@ -248,25 +259,16 @@ export default function Profile() {
       </Stack>
       <StyledContainer>
         <h1>Edit Profile</h1>
-        {/* <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56 }} 
-        src={user?.picture}
-        onClick={changeAva}
-        >{user?.picture}</Avatar> */}
+       
         //TODO: user Avatar can be changed
-
         <div>
-          {/* <Button variant="outlined" onClick={handleClickOpen}>
-        Open full-screen dialog
-      </Button> */}
-
           <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56, marginBottom: "1rem" }}
-            src={user?.picture}
+            src={userProfile.userAvatar}
             onClick={handleClickOpen}
-          >{user?.picture}</Avatar>
-
+          ></Avatar>
 
           {/* user Avatar */}
-          <UserAvatar isOpen={open} handleClose={handleClose}/>
+          <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
           
         </div>
 
