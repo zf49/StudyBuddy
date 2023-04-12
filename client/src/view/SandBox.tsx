@@ -4,6 +4,7 @@ import { Outlet } from 'react-router';
 import Content from '../component/SandBox/Content';
 import Menu from '../component/SandBox/SideBar';
 import SideBar from '../component/SandBox/SideBar';
+import { StyledContainer } from './Profile/Profile';
 
 
 export default function SandBox() {
@@ -13,7 +14,9 @@ export default function SandBox() {
 
         <Fragment>
             <TopBar/>
+            <StyledContainer>
             <Content/>
+            </StyledContainer>
             {/* <BottomBar/>   */}
         </Fragment>
         

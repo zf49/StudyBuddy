@@ -1,11 +1,14 @@
+import { StyledContainer } from "../Profile/Profile";
 
 export default function Home() {
 
   
     return (
         <>
-            Home
-            ID:
+        <StyledContainer>
+            {"Home:"}
+        </StyledContainer>
+            
         </>
     )
 }

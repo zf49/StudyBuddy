@@ -13,6 +13,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useDispatch } from "react-redux";
 import { storeUser } from "../../redux/reducer/userReducer";
 import { useNavigate } from 'react-router';
+import { StyledContainer } from '../Profile/Profile';
 // move to own file
 
 export interface IMajor {
@@ -169,6 +170,8 @@ export default function SignUp(props:ISignUpProps) {
     }
 
     return (
+        <StyledContainer style={{paddingTop:"100px"}}>
+
         <div style={{ width: "60%", textAlign: "center", margin: "0 auto" }}>
             <div style={{ marginTop: "20px", marginBottom: "20px" }}>
                 <Typography variant="h6" gutterBottom>
@@ -271,6 +274,7 @@ export default function SignUp(props:ISignUpProps) {
 
 
         </div>
+        </StyledContainer>
 
     )
 }

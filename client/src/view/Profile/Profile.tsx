@@ -41,12 +41,13 @@ import UserAvatar from './UserAvatar';
 
 
 
-const StyledContainer = styled("div")({
+export const StyledContainer = styled("div")({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   width: "60%",
   margin: "0 auto",
+  paddingTop:"2em"
 });
 
 const StyledTextField = styled(TextField)({

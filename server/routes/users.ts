@@ -9,12 +9,10 @@ const HTTP_NO_CONTENT = 204;
 const HTTP_BAD_REQUEST = 400;
 
 
-
+// get search user result
 router.post('/:keyword', async (req,res)=>{
 
     const userResult = await searchUser(req.params.keyword)
-
-
     // console.log(userResult)
     res.json(userResult)
 
