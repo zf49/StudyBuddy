@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Navigate, useNavigate, useRoutes } from 'react-router'
 import NotFound from '../view/404/NoteFound'
 import Friends from '../view/Friends/Friends'
 import Login from '../view/Login/Login_Auth0'
-
 import Profile from '../view/Profile/Profile'
 import Search from '../view/Search/Search'
 import SandBox from '../view/SandBox'
@@ -12,10 +11,9 @@ import SignUp from '../view/SignUp/SignUp'
 import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios'
 import { useDispatch } from "react-redux";
-import { storeUser } from '../redux/reducer/userReducer'
-// import { storeUser } from "../redux/reducer/facultySlice";
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'
+import FriendDetail from '../view/Friends/FriendDetail'
 
 
 
@@ -32,23 +30,23 @@ export default function IndexRouter() {
   useEffect(() => {
     const abort = new AbortController()
 
-      if (isAuthenticated && user) {
-         axios.get(`http://localhost:8080/users/authID/${user.sub}`,{
-          signal: abort.signal
+    if (isAuthenticated && user) {
+      axios.get(`http://localhost:8080/users/authID/${user.sub}`, {
+        signal: abort.signal
+      })
+        .then(response => {
+          if (response.data.length == 0) {
+            setUserExists(false);
+            navigate('/signup')
+          } else {
+            setUserExists(true);
+          }
         })
-          .then(response => {
-            if (response.data.length == 0) {
-              setUserExists(false);
-              navigate('/signup')
-            } else {
-              setUserExists(true);
-            }
-          })
-      }
-      return () => {
-        abort.abort();
-      }
-    
+    }
+    return () => {
+      abort.abort();
+    }
+
   }, [user, isAuthenticated])
 
 
@@ -85,6 +83,10 @@ export default function IndexRouter() {
         {
           path: "search",
           element: userExists ? <Search /> : <Navigate to="/signup" />
+        },
+        {
+          path: "frienddetail",
+          element: userExists ? <FriendDetail /> : <Navigate to="/signup" />
         },
         {
           path: "signup",
