@@ -1,0 +1,83 @@
+[
+    {
+      "faculty": "Science",
+      "major": "Physics"
+    },
+    {
+      "faculty": "Arts",
+      "major": "Music"
+    },
+    {
+      "faculty": "Engineering",
+      "major": "Electrical Engineering"
+    },
+    {
+      "faculty": "Business",
+      "major": "Finance"
+    },
+    {
+      "faculty": "Social Sciences",
+      "major": "Political Science"
+    },
+    {
+      "faculty": "Health Sciences",
+      "major": "Nursing"
+    },
+    {
+      "faculty": "Law",
+      "major": "Criminal Justice"
+    },
+    {
+      "faculty": "Education",
+      "major": "Early Childhood Education"
+    },
+    {
+      "faculty": "Fine Arts",
+      "major": "Graphic Design"
+    },
+    {
+      "faculty": "Humanities",
+      "major": "Philosophy"
+    },
+    {
+      "faculty": "Science",
+      "major": "Biology"
+    },
+    {
+      "faculty": "Arts",
+      "major": "Drama"
+    },
+    {
+      "faculty": "Engineering",
+      "major": "Aerospace Engineering"
+    },
+    {
+      "faculty": "Business",
+      "major": "Management"
+    },
+    {
+      "faculty": "Social Sciences",
+      "major": "Economics"
+    },
+    {
+      "faculty": "Health Sciences",
+      "major": "Physical Therapy"
+    },
+    {
+      "faculty": "Law",
+      "major": "International Law"
+    },
+    {
+      "faculty": "Education",
+      "major": "Special Education"
+    },
+    {
+      "faculty": "Fine Arts",
+      "major": "Painting"
+    },
+    {
+      "faculty": "Humanities",
+      "major": "Linguistics"
+    }
+  ]
+  

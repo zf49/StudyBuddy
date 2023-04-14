@@ -10,6 +10,7 @@ const userSchema = new Schema({
     faculty: String,
     major: String,
     authID:String,
+    userAvatar:String
 })
 
 const User = mongoose.model("User", userSchema)
