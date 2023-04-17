@@ -66,7 +66,8 @@ export interface IUserDetail {
   faculty: string,
   major: string,
   authID: string,
-  userAvatar:string
+  userAvatar:string,
+  _id:string
 }
 
 
@@ -95,7 +96,8 @@ export default function Profile() {
     faculty: "",
     major: "",
     authID: "",
-    userAvatar:""
+    userAvatar:"",
+    _id:""
   });
 
   const { user, isAuthenticated } = useAuth0();

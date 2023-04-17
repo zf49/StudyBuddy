@@ -22,10 +22,6 @@ interface IPayload {
     friendID: string
 }
 
-
-
-
-
 export default function FriendDetail() {
 
     const location = useLocation()
@@ -48,9 +44,13 @@ export default function FriendDetail() {
         }
     }
 
+
+    // TODO: redirect to search or friend page, according to privious page
     function handleReturn() {
-        navigate("/friends")
+        // TODO : test (-1)
+        navigate(-1)
     }
+
 
     async function handleUnFollow() {
         await axios.post("http://localhost:8080/friends/delete", payload)
@@ -61,9 +61,6 @@ export default function FriendDetail() {
         await axios.post("http://localhost:8080/friends/add", payload)
         setFollow(true)
     }
-
-
-
 
     useEffect(() => {
         getFriendDetail()
