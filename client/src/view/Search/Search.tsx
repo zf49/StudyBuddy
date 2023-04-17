@@ -10,10 +10,6 @@ import Divider from '@mui/material/Divider';
 
 import axios from 'axios';
 import { IUserDetail, StyledContainer } from '../Profile/Profile';
-import { Padding } from '@mui/icons-material';
-
-const theme = createTheme();
-
 export default function Search() {
 
     // define key word
@@ -47,11 +43,12 @@ export default function Search() {
             <Grid container justifyContent="center" alignItems="center" spacing={2}>
                 <Grid item xs={12}>
                     <Typography variant="h4" align="center">
-                        Search Friends
+                        Search Buddies
                     </Typography>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item xs={12}>
                     <TextField
+                        sx={{ width: '100%' }}
                         fullWidth
                         variant="outlined"
                         label="Enter search term"
@@ -70,7 +67,7 @@ export default function Search() {
                 {/* <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}> */}
                         
                         {searchRes!==undefined?searchRes.map((item,index)=>{
-                            return <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                            return  <Grid item xs={12}><List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                             <ListItem alignItems="flex-start">
                             <ListItemAvatar>
                                 <Avatar alt="Remy Sharp" src={item.userAvatar} />
@@ -111,9 +108,9 @@ export default function Search() {
                                     </React.Fragment>
                                 }
                             />
-                        </ListItem>
+                        </ListItem> 
                         <Divider variant="inset" component="li" />
-                        </List>
+                        </List></Grid>
                         }):"No users"}  
                         </StyledContainer>
             </Grid>
