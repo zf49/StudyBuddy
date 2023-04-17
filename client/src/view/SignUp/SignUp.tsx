@@ -66,7 +66,7 @@ interface ISignUpProps {
     changeUserState: (state: boolean) => void;
 }
 
-export default function SignUp(props:ISignUpProps) {
+export default function SignUp(props: ISignUpProps) {
 
 
     // TODO save all things to redux
@@ -82,7 +82,7 @@ export default function SignUp(props:ISignUpProps) {
     const [authID, setAuthID] = useState<any>('')
     const navigate = useNavigate()
 
-    const {user,isAuthenticated} = useAuth0()
+    const { user, isAuthenticated } = useAuth0()
     const dispatch = useDispatch();
 
 
@@ -95,7 +95,7 @@ export default function SignUp(props:ISignUpProps) {
             if (data != null) {
                 setFaculties(data.faculties)
                 setMajors(data.majors)
-                if(isAuthenticated && user){
+                if (isAuthenticated && user) {
                     setAuthID(user.sub)
                 }
             }
@@ -105,7 +105,7 @@ export default function SignUp(props:ISignUpProps) {
         return () => {
             controller.abort()
         }
-    }, [isAuthenticated,user])
+    }, [isAuthenticated, user])
 
 
     const handleName = (event: ChangeEvent<HTMLInputElement>) => {
@@ -150,7 +150,7 @@ export default function SignUp(props:ISignUpProps) {
         }
 
         if (sessionData.name && sessionData.uniID) {
-            await createUser(sessionData).then(()=>{
+            await createUser(sessionData).then(() => {
                 props.changeUserState(true)
                 navigate('/home')
             })
@@ -162,8 +162,8 @@ export default function SignUp(props:ISignUpProps) {
     async function createUser(user: object) {
         // TODO : persisting stoer data
 
-         dispatch(storeUser(user))
-         await axios.post(
+        dispatch(storeUser(user))
+        await axios.post(
             "http://localhost:8080/users/register/",
             user
         )
@@ -263,6 +263,7 @@ export default function SignUp(props:ISignUpProps) {
             <div style={{ marginBottom: "10px" }}>
                 <Button variant="contained"
                     onClick={handleSubmit}
+                    sx={{ width: "100%" }}
                 >
                     Continue
                 </Button>
