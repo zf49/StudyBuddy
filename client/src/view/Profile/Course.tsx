@@ -24,22 +24,23 @@ const MenuProps = {
     },
   },
 };
-
+export interface ICourse {
+    course_code: string,
+    course_name: string
+}
 
 
 export default function Course() {
 
     useEffect(() => {
        axios.get('http://localhost:8080/courses').then((res)=>{
-           console.log(res.data)
            setCourseName(res.data)
+           console.log(courseName)
        })
-        
     }, [])
 
 
-    const [courseName, setCourseName] = useState<ICourse>([])
-
+    const [courseName, setCourseName] = useState<ICourse[]>()
 
 
   const [personName, setPersonName] = React.useState<string[]>([]);
@@ -74,10 +75,10 @@ export default function Course() {
           )}          
           MenuProps={MenuProps}
         >
-          {courseName.map((item) => (
-            <MenuItem key={item} value={item}>
-              <Checkbox checked={personName.indexOf(item) > -1} />
-              <ListItemText primary={item} />
+          {courseName?.map((item,index) => (
+            <MenuItem value={item.course_code +": "+item.course_name}>
+              <Checkbox checked={personName.indexOf(item.course_name) > -1} />
+              <ListItemText primary={item.course_name} />
             </MenuItem>
           ))}
         </Select>
