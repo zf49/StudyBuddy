@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 import { retriveFaculties, retriveMajors } from '../dao/major-dao';
-import { createUser } from '../dao/user-dao'
 import { IMajor } from '../schema/major-schema';
 
 const HTTP_CREATED = 201;

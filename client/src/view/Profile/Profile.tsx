@@ -37,6 +37,7 @@ import ImageListItem from '@mui/material/ImageListItem'; import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from './UserAvatar';
+import Course from './Course';
 
 
 export const StyledContainer = styled("div")({
@@ -46,6 +47,8 @@ export const StyledContainer = styled("div")({
   margin: "0 auto",
   paddingTop:"2.5em"
 });
+
+
 
 const StyledTextField = styled(TextField)({
   width: "100%",
@@ -69,10 +72,7 @@ export interface IUserDetail {
 
 
 export default function Profile() {
-  const [facmjor, setfacmjor] = useState<IMajorApiReturn>({
-    faculties: [],
-    majors: []
-  })
+  
   const [userProfile, setUserProfile] = useState<IUserDetail>({
     name: "",
     uniID: "",
@@ -86,9 +86,6 @@ export default function Profile() {
   });
 
   const { user, isAuthenticated } = useAuth0();
-
-  // No use
-  // const fac = useSelector((state: RootState) => state.faculties.facu)
 
   // select option
   const [selectedFaculty, setSelectedFaculty] = useState<string>("");
@@ -220,6 +217,8 @@ export default function Profile() {
 
 
   return (
+    <StyledContainer>
+
     <>
       {console.log(userProfile.userAvatar)}
 
@@ -244,11 +243,20 @@ export default function Profile() {
 
         )}
       </Stack>
-      <StyledContainer>
-        <h1>Edit Profile</h1>
+      <StyledContainer style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "60%",
+          margin: "0 auto",
+          paddingTop:"2.5em",
+        }}>
+        <h1 style={{'textAlign':'center'}}>Edit Profile</h1>
        
         //TODO: user Avatar can be changed
-        <div>
+        <div style={{
+            'display': 'flex',
+            'justifyContent': 'center'
+          }}>   
           <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56, marginBottom: "1rem" }}
             src={userProfile.userAvatar}
             onClick={handleClickOpen}
@@ -256,7 +264,6 @@ export default function Profile() {
 
           {/* user Avatar */}
           <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
-          
         </div>
 
 
@@ -320,7 +327,7 @@ export default function Profile() {
               </Select>
             </FormControl>
           </div>
-          <div>
+          <div >
             <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
               <InputLabel id="major-label">Major</InputLabel>
               <Select
@@ -338,6 +345,7 @@ export default function Profile() {
                   </MenuItem>
                 ))}
               </Select>
+              <Course/>
             </FormControl>
           </div>
           <StyledButton variant="contained" onClick={handleSaveChanges}>
@@ -346,5 +354,7 @@ export default function Profile() {
         </form>
       </StyledContainer>
     </>
+    </StyledContainer>
+
   );
 }

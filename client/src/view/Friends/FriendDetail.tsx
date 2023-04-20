@@ -36,9 +36,6 @@ export default function FriendDetail() {
 
 
     async function getFriendDetail() {
-
-        console.log(location.state)
-        
         const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`)
         setFriendDetail(dbData.data)
         if (user) {
@@ -47,13 +44,9 @@ export default function FriendDetail() {
         }
     }
 
-
-    // TODO: redirect to search or friend page, according to privious page
     function handleReturn() {
-        // TODO : test (-1)
         navigate(-1)
     }
-
 
     async function handleUnFollow() {
         await axios.post("http://localhost:8080/friends/delete", payload)
