@@ -162,7 +162,7 @@ export default function SignUp(props: ISignUpProps) {
     async function createUser(user: object) {
         // TODO : persisting stoer data
 
-        dispatch(storeUser(user))
+        // dispatch(storeUser(user))
         await axios.post(
             "http://localhost:8080/users/register/",
             user

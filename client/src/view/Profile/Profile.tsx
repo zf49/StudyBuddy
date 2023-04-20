@@ -39,15 +39,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from './UserAvatar';
 
 
-
-
 export const StyledContainer = styled("div")({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  width: "60%",
+  // display: "flex",
+  // flexDirection: "column",
+  // width: "60%",
   margin: "0 auto",
-  paddingTop:"2em"
+  paddingTop:"2.5em"
 });
 
 const StyledTextField = styled(TextField)({
@@ -69,18 +66,6 @@ export interface IUserDetail {
   userAvatar:string,
   _id:string
 }
-
-
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-
 
 
 export default function Profile() {
@@ -209,8 +194,6 @@ export default function Profile() {
 
   const changeAva = () => {
     console.log('asd')
-
-
 
   }
 

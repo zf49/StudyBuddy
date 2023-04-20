@@ -36,6 +36,9 @@ export default function FriendDetail() {
 
 
     async function getFriendDetail() {
+
+        console.log(location.state)
+        
         const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`)
         setFriendDetail(dbData.data)
         if (user) {

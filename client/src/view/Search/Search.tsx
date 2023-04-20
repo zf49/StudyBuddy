@@ -1,5 +1,5 @@
-import React from 'react'
-import { useState } from 'react';
+import React, { useMemo } from 'react'
+import { useState,useEffect } from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { TextField, Button, Grid, Typography, List } from '@mui/material';
 import ListItem from '@mui/material/ListItem';
@@ -10,11 +10,19 @@ import Divider from '@mui/material/Divider';
 import axios from 'axios';
 import { IUserDetail, StyledContainer } from '../Profile/Profile';
 import { useNavigate } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { storeUser } from '../../redux/reducer/userReducer';
+import { RootState } from '../../redux/store';
 export default function Search() {
 
+    const users = useSelector((state: RootState) => state.storeUser.userList);
     // define key word
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [searchRes, setSearchRes] = useState<IUserDetail[]>();
+    
+    const [searchRes, setSearchRes] = useState<IUserDetail[]>(users);
+
+    const dispatch = useDispatch()
+    
     const navigate = useNavigate()
     // handel key word change 
     const handleSearchTermChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,16 +35,16 @@ export default function Search() {
         await axios.post(`http://localhost:8080/users/${searchTerm}`).then((res) => {
             // console.log(res.data)
             setSearchRes(res.data)
+            dispatch(storeUser(res.data))
         })
     };
 
     const handleFriendDetail = (id:string)=>{
-        navigate("/frienddetail/", { state: { "id": id } })
+        navigate("/frienddetail/", { state: {id:id}})
     }
 
     return (
         <>
-        // TODO : back to search page with data
         {console.log(searchRes)}
         <StyledContainer>
             <Grid container justifyContent="center" alignItems="center" spacing={2}>
