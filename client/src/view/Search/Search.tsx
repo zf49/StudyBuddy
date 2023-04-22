@@ -39,6 +39,13 @@ export default function Search() {
         })
     };
 
+    // when user press Enter, show search result 
+    const handleKeyDown =  (e:React.KeyboardEvent<HTMLInputElement>) => {
+        if(e.key==='Enter'){
+            handleSearchClick()
+        }
+    };
+
     const handleFriendDetail = (id:string)=>{
         navigate("/frienddetail/", { state: {id:id}})
     }
@@ -46,7 +53,7 @@ export default function Search() {
     return (
         <>
         {console.log(searchRes)}
-        <StyledContainer>
+        <StyledContainer onKeyDown={handleKeyDown}>
             <Grid container justifyContent="center" alignItems="center" spacing={2}>
                 <Grid item xs={12}>
                     <Typography variant="h4" align="center">
@@ -63,7 +70,9 @@ export default function Search() {
                         onChange={handleSearchTermChange}
                         InputProps={{
                             endAdornment: (
-                                <Button variant="contained" onClick={handleSearchClick}>
+                                <Button variant="contained" 
+                                onClick={handleSearchClick} 
+                                >
                                     Search
                                 </Button>
                             )
