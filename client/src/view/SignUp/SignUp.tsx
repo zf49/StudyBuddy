@@ -83,9 +83,6 @@ export default function SignUp(props: ISignUpProps) {
     const navigate = useNavigate()
 
     const { user, isAuthenticated } = useAuth0()
-    const dispatch = useDispatch();
-
-
 
     useEffect(() => {
         const controller = new AbortController();

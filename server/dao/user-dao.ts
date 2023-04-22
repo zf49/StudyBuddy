@@ -7,21 +7,24 @@ export async function createUser(user: object) {
     return dbUser;
 }
 
-
+// search user
+//TODO: when finish adding courses func, add new field, whitch can search user courses
 export async function searchUser(keyword:string) {
     return await User.find({
         $or: [
           { name: { $regex: keyword, $options: "i" } },
-          { uniID: { $regex: keyword, $options: "i" } }
+          { uniID: { $regex: keyword, $options: "i" } },
+          { email: { $regex: keyword, $options: "i" } },
+          { faculty: { $regex: keyword, $options: "i" } },
+          { major: { $regex: keyword, $options: "i" } },
+        //   { email: { $regex: keyword, $options: "i" } },
         ]
       })
 }
 
-
 export async function checkAuthID(authID:String) {
     return await User.find({'authID':authID})
 }
-
 
 export const getUserProfile = async (authId:string)=>{
    const userProfile =  await User.find({'authID':authId})

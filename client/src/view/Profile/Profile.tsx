@@ -41,11 +41,8 @@ import Course from './Course';
 
 
 export const StyledContainer = styled("div")({
-  // display: "flex",
-  // flexDirection: "column",
-  // width: "60%",
   margin: "0 auto",
-  paddingTop:"2.5em"
+  paddingTop:"2.0em"
 });
 
 
@@ -89,7 +86,6 @@ export default function Profile() {
 
   // select option
   const [selectedFaculty, setSelectedFaculty] = useState<string>("");
-  const [selectedMajor, setSelectedMajor] = useState<string>("");
 
   const [majors, setMajors] = useState<IMajor[]>([])
 
@@ -102,7 +98,7 @@ export default function Profile() {
       [name]: value,
     });
     setSelectedFaculty(value);
-    setSelectedMajor("");
+    // setSelectedMajor("");
   };
 
   const handleMajorChange = (e: SelectChangeEvent<string>) => {
@@ -111,7 +107,7 @@ export default function Profile() {
       ...userProfile,
       [name]: value,
     });
-    setSelectedMajor(value);
+    // setSelectedMajor(value);
   };
 
   const handleGenderChange = (e: SelectChangeEvent<string>) => {
@@ -165,6 +161,12 @@ export default function Profile() {
   const handleSaveChanges = async () => {
     console.log(JSON.stringify(userProfile));
     // TODO send update request to backend
+
+    if(userProfile.name === '' || userProfile.uniID === ''){
+      handleError()
+
+    }else{
+
     await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile).then((res) => {
       if (res.data.acknowledged) {
         handleSuccess()
@@ -172,6 +174,7 @@ export default function Profile() {
         handleError()
       }
     })
+  }
   };
 
 
@@ -180,11 +183,13 @@ export default function Profile() {
 
   const handleSuccess = () => {
     setShowSuccessAlert(true);
+    setShowErrorAlert(false);
     setTimeout(() => setShowSuccessAlert(false), 2000);
   };
 
   const handleError = () => {
     setShowErrorAlert(true);
+    setShowSuccessAlert(false);
     setTimeout(() => setShowErrorAlert(false), 2000);
   };
 
@@ -222,7 +227,6 @@ export default function Profile() {
     <>
       {console.log(userProfile.userAvatar)}
 
-      {/* {console.log(facmjor.faculties)} */}
       <Stack sx={{ width: '100%' }} spacing={2}>
         {showSuccessAlert && (
           <Fade in={showSuccessAlert} timeout={1000}>
@@ -235,7 +239,7 @@ export default function Profile() {
 
         )}
         {showErrorAlert && (
-          <Fade in={showSuccessAlert} timeout={1000}>
+          <Fade in={showErrorAlert} timeout={1000}>
             <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)}>
               This is an error alert — check it out!
             </Alert>
@@ -248,7 +252,6 @@ export default function Profile() {
           flexDirection: "column",
           width: "60%",
           margin: "0 auto",
-          paddingTop:"2.5em",
         }}>
         <h1 style={{'textAlign':'center'}}>Edit Profile</h1>
        
