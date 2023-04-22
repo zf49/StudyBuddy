@@ -12,8 +12,6 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 
-
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -26,36 +24,32 @@ const MenuProps = {
 };
 export interface ICourse {
     course_code: string,
-    course_name: string
+    course_name: string,
+    CodeNName: string
 }
 
 
 export default function Course() {
+    
+    const [courseName, setCourseName] = useState<ICourse[]>()
 
     useEffect(() => {
        axios.get('http://localhost:8080/courses').then((res)=>{
            setCourseName(res.data)
-           console.log(courseName)
        })
     }, [])
 
+    const [courseShow, setCourseShow] = useState<string[]>([])
 
-    const [courseName, setCourseName] = useState<ICourse[]>()
+    const handleChange = (e: SelectChangeEvent<string[]>) => {
+      const selectedValues = e.target.value as string[];
+      setCourseShow(selectedValues);
+    };
 
-
-  const [personName, setPersonName] = React.useState<string[]>([]);
-
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };
-
+    
   return (
+    <>
+      {console.log(courseShow)}
     <div>
       <FormControl style={{'width':'100%',marginTop:'10px'}}>
         <InputLabel id="demo-multiple-checkbox-label">Course</InputLabel>
@@ -63,7 +57,7 @@ export default function Course() {
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
-          value={personName}
+          value={courseShow}
           onChange={handleChange}
           input={<OutlinedInput label="Course" />}
           renderValue={(selected) => (
@@ -76,13 +70,14 @@ export default function Course() {
           MenuProps={MenuProps}
         >
           {courseName?.map((item,index) => (
-            <MenuItem value={item.course_code +": "+item.course_name}>
-              <Checkbox checked={personName.indexOf(item.course_name) > -1} />
-              <ListItemText primary={item.course_name} />
+            <MenuItem key={index} value={item.CodeNName} >
+              <Checkbox checked={courseShow.indexOf(item.CodeNName) > -1} />
+              <ListItemText primary={item.CodeNName} />
             </MenuItem>
           ))}
         </Select>
       </FormControl>
     </div>
+    </>
   );
 }

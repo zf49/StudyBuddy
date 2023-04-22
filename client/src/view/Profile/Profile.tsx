@@ -244,7 +244,6 @@ export default function Profile() {
               This is an error alert — check it out!
             </Alert>
           </Fade>
-
         )}
       </Stack>
       <StyledContainer style={{
@@ -348,7 +347,7 @@ export default function Profile() {
                   </MenuItem>
                 ))}
               </Select>
-              <Course/>
+              <Course />
             </FormControl>
           </div>
           <StyledButton variant="contained" onClick={handleSaveChanges}>
