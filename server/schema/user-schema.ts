@@ -12,7 +12,7 @@ const userSchema = new Schema({
     major: String,
     authID:String,
     userAvatar:String,
-    courses:[Course]
+    // courses:[Course]
 })
 
 const User = mongoose.model("User", userSchema)
