@@ -37,7 +37,7 @@ import ImageListItem from '@mui/material/ImageListItem'; import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from './UserAvatar';
-import Course from './Course';
+import Course, { ICourse } from './Course';
 
 
 export const StyledContainer = styled("div")({
@@ -64,7 +64,8 @@ export interface IUserDetail {
   major: string,
   authID: string,
   userAvatar:string,
-  _id:string
+  _id:string,
+  courses:ICourse[]
 }
 
 
@@ -79,7 +80,8 @@ export default function Profile() {
     major: "",
     authID: "",
     userAvatar:"",
-    _id:""
+    _id:"",
+    courses:[]
   });
 
   const { user, isAuthenticated } = useAuth0();
@@ -347,7 +349,7 @@ export default function Profile() {
                   </MenuItem>
                 ))}
               </Select>
-              <Course />
+              <Course selectedCourse={userProfile.courses}/>
             </FormControl>
           </div>
           <StyledButton variant="contained" onClick={handleSaveChanges}>

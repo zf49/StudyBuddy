@@ -29,17 +29,24 @@ export interface ICourse {
 }
 
 
-export default function Course() {
+interface ICourseProps{
+  selectedCourse:ICourse[]
+}
+
+export default function Course(props:ICourseProps) {
     
     const [courseName, setCourseName] = useState<ICourse[]>()
+    const [courseShow, setCourseShow] = useState<string[]>([])
 
     useEffect(() => {
        axios.get('http://localhost:8080/courses').then((res)=>{
            setCourseName(res.data)
        })
+
+       // TODO: click update user courses
+
     }, [])
 
-    const [courseShow, setCourseShow] = useState<string[]>([])
 
     const handleChange = (e: SelectChangeEvent<string[]>) => {
       const selectedValues = e.target.value as string[];
