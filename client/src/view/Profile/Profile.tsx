@@ -121,6 +121,7 @@ export default function Profile() {
   };
 
 
+
   const filteredMajors = majors.filter((major) => major.faculty === selectedFaculty);
 
   // get userprofile
@@ -138,13 +139,10 @@ export default function Profile() {
       axios.get("http://localhost:8080/major/", {
         signal: abort.signal
       }).then((res) => {
-        console.log("major", res.data.majors)
-
         setFaculties(res.data.faculties)
         setMajors(res.data.majors)
 
       })
-
     }
     return () => {
       abort.abort();
@@ -159,27 +157,25 @@ export default function Profile() {
     });
   };
 
-
   const handleSaveChanges = async () => {
     console.log(JSON.stringify(userProfile));
     // TODO send update request to backend
 
     if(userProfile.name === '' || userProfile.uniID === ''){
       handleError()
-
     }else{
-
-    await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile).then((res) => {
-      if (res.data.acknowledged) {
-        handleSuccess()
-      } else {
-        handleError()
-      }
+      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile).then((res) => {
+        if (res.data.acknowledged) {
+          handleSuccess()
+        } else {
+          handleError()
+        }
     })
   }
   };
 
 
+  // click save button, if success the green alert will appear, if failed alert will be red 
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
@@ -194,12 +190,6 @@ export default function Profile() {
     setShowSuccessAlert(false);
     setTimeout(() => setShowErrorAlert(false), 2000);
   };
-
-
-  const changeAva = () => {
-    console.log('asd')
-
-  }
 
 
   // dialog open or not
@@ -220,8 +210,6 @@ export default function Profile() {
       userAvatar: picSrc,
     });
   }
-
-
 
   return (
     <StyledContainer>
@@ -269,7 +257,7 @@ export default function Profile() {
           {/* user Avatar */}
            <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
         </div>
-        
+
         <form>
           <StyledTextField
             label="Name"

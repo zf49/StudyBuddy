@@ -14,9 +14,9 @@ export default function SandBox() {
 
         <Fragment>
             <TopBar/>
-            {/* <StyledContainer> */}
+            <StyledContainer>
             <Content/>
-            {/* </StyledContainer> */}
+            </StyledContainer>
             {/* <BottomBar/>   */}
         </Fragment>
         
