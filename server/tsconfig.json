@@ -4,6 +4,8 @@
      "module": "commonjs",
      "lib": ["es2016","dom"],
      "outDir": "./dist",
+     "resolveJsonModule": true,
+     "esModuleInterop": true,
     },
     "exclude": ["node_modules"]
    }
