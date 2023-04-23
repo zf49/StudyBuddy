@@ -23,9 +23,11 @@ const userSchema = new Schema<IUser>({
     major: String,
     authID:String,
     userAvatar:String,
-    // courses:[Course]
+    courses:[String]
 })
 
 const User = mongoose.model("User", userSchema)
 
 export {User}
+
+

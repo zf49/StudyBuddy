@@ -17,7 +17,7 @@ export async function searchUser(keyword:string) {
           { email: { $regex: keyword, $options: "i" } },
           { faculty: { $regex: keyword, $options: "i" } },
           { major: { $regex: keyword, $options: "i" } },
-        //   { email: { $regex: keyword, $options: "i" } },
+        //   { courses: { $regex: keyword, $options: "i" } },
         ]
       })
 }

@@ -269,9 +269,7 @@ export default function Profile() {
           {/* user Avatar */}
            <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
         </div>
-
-
-
+        
         <form>
           <StyledTextField
             label="Name"
