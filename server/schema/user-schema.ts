@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Course } from "./course_schema";
+import { Course, ICourse } from "./course_schema";
 
 const Schema = mongoose.Schema;
 
@@ -11,7 +11,8 @@ export interface IUser {
     faculty: string,
     major: string,
     authID: string,
-    userAvatar: string
+    userAvatar: string,
+    courses:ICourse[]
 }
 
 const userSchema = new Schema<IUser>({
@@ -23,7 +24,7 @@ const userSchema = new Schema<IUser>({
     major: String,
     authID:String,
     userAvatar:String,
-    // courses:[String]
+    courses:[Object]
 })
 
 const User = mongoose.model("User", userSchema)

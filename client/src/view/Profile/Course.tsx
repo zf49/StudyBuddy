@@ -42,9 +42,8 @@ export default function Course(props:ICourseProps) {
        axios.get('http://localhost:8080/courses').then((res)=>{
            setCourseName(res.data)
        })
-
        // TODO: click update user courses
-
+       
     }, [])
 
 
