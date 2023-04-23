@@ -20,10 +20,7 @@ export default function SandBox() {
             {/* <BottomBar/>   */}
         </Fragment>
         
-                 
-        
-       
-         
+
           
     )
 }

@@ -177,9 +177,6 @@ export default function UserAvatar(props: IUserAvatar) {
                             <input hidden accept="image/*" type="file" onChange={handleFileChange}/>
                         </Button> */}
 
-
-
-
                     </StyledContainer>
                     <StyledContainer>
                         <ImageList sx={{ width: 500, height: 450 }} cols={3} >

@@ -4,22 +4,22 @@ import { persistReducer } from "redux-persist";
 import storageSession from "redux-persist/lib/storage/session";
 
 
-export interface IIsRegister {
-  isRegister:boolean
+
+interface IUserState {
+  userList: IUserDetail[];
 }
 
-const initialState: IIsRegister = {
-  isRegister:false
-
+const initialState:IUserState = {
+  userList: [],
 };
 
 
 const userSlice = createSlice({
-  name: "user",
+  name: "userList",
   initialState,
   reducers: {
     storeUser(state,action){
-        state.isRegister = action.payload
+        state.userList = action.payload
     }
   },
 });
@@ -31,7 +31,6 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, userSlice.reducer);
 
-
-
 export const { storeUser } = userSlice.actions;
 export default persistedReducer;
+// export default userSlice.reducer;

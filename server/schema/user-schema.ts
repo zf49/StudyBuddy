@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Course } from "./course_schema";
 
 const Schema = mongoose.Schema;
 
@@ -21,9 +22,12 @@ const userSchema = new Schema<IUser>({
     faculty: String,
     major: String,
     authID:String,
-    userAvatar:String
+    userAvatar:String,
+    // courses:[String]
 })
 
 const User = mongoose.model("User", userSchema)
 
 export {User}
+
+

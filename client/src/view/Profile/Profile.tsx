@@ -37,18 +37,15 @@ import ImageListItem from '@mui/material/ImageListItem'; import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from './UserAvatar';
-
-
+import Course, { ICourse } from './Course';
 
 
 export const StyledContainer = styled("div")({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  width: "60%",
   margin: "0 auto",
-  paddingTop:"2em"
+  paddingTop:"2.0em"
 });
+
+
 
 const StyledTextField = styled(TextField)({
   width: "100%",
@@ -66,27 +63,14 @@ export interface IUserDetail {
   faculty: string,
   major: string,
   authID: string,
-  userAvatar:string
+  userAvatar:string,
+  _id:string,
+  courses:ICourse[]
 }
 
 
-const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement;
-  },
-  ref: React.Ref<unknown>,
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
-
-
-
 export default function Profile() {
-  const [facmjor, setfacmjor] = useState<IMajorApiReturn>({
-    faculties: [],
-    majors: []
-  })
+  
   const [userProfile, setUserProfile] = useState<IUserDetail>({
     name: "",
     uniID: "",
@@ -95,17 +79,15 @@ export default function Profile() {
     faculty: "",
     major: "",
     authID: "",
-    userAvatar:""
+    userAvatar:"",
+    _id:"",
+    courses:[]
   });
 
   const { user, isAuthenticated } = useAuth0();
 
-  // No use
-  // const fac = useSelector((state: RootState) => state.faculties.facu)
-
   // select option
   const [selectedFaculty, setSelectedFaculty] = useState<string>("");
-  const [selectedMajor, setSelectedMajor] = useState<string>("");
 
   const [majors, setMajors] = useState<IMajor[]>([])
 
@@ -118,7 +100,7 @@ export default function Profile() {
       [name]: value,
     });
     setSelectedFaculty(value);
-    setSelectedMajor("");
+    // setSelectedMajor("");
   };
 
   const handleMajorChange = (e: SelectChangeEvent<string>) => {
@@ -127,7 +109,7 @@ export default function Profile() {
       ...userProfile,
       [name]: value,
     });
-    setSelectedMajor(value);
+    // setSelectedMajor(value);
   };
 
   const handleGenderChange = (e: SelectChangeEvent<string>) => {
@@ -181,6 +163,12 @@ export default function Profile() {
   const handleSaveChanges = async () => {
     console.log(JSON.stringify(userProfile));
     // TODO send update request to backend
+
+    if(userProfile.name === '' || userProfile.uniID === ''){
+      handleError()
+
+    }else{
+
     await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile).then((res) => {
       if (res.data.acknowledged) {
         handleSuccess()
@@ -188,6 +176,7 @@ export default function Profile() {
         handleError()
       }
     })
+  }
   };
 
 
@@ -196,19 +185,19 @@ export default function Profile() {
 
   const handleSuccess = () => {
     setShowSuccessAlert(true);
+    setShowErrorAlert(false);
     setTimeout(() => setShowSuccessAlert(false), 2000);
   };
 
   const handleError = () => {
     setShowErrorAlert(true);
+    setShowSuccessAlert(false);
     setTimeout(() => setShowErrorAlert(false), 2000);
   };
 
 
   const changeAva = () => {
     console.log('asd')
-
-
 
   }
 
@@ -235,10 +224,11 @@ export default function Profile() {
 
 
   return (
-    <>
-      {console.log(userProfile.userAvatar)}
+    <StyledContainer>
 
-      {/* {console.log(facmjor.faculties)} */}
+    <>
+      {/* {console.log(userProfile.userAvatar)} */}
+
       <Stack sx={{ width: '100%' }} spacing={2}>
         {showSuccessAlert && (
           <Fade in={showSuccessAlert} timeout={1000}>
@@ -251,31 +241,35 @@ export default function Profile() {
 
         )}
         {showErrorAlert && (
-          <Fade in={showSuccessAlert} timeout={1000}>
+          <Fade in={showErrorAlert} timeout={1000}>
             <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)}>
               This is an error alert — check it out!
             </Alert>
           </Fade>
-
         )}
       </Stack>
-      <StyledContainer>
-        <h1>Edit Profile</h1>
+      <StyledContainer style={{
+          display: "flex",
+          flexDirection: "column",
+          width: "60%",
+          margin: "0 auto",
+        }}>
+        <h1 style={{'textAlign':'center'}}>Edit Profile</h1>
        
         //TODO: user Avatar can be changed
-        <div>
+        <div style={{
+            'display': 'flex',
+            'justifyContent': 'center'
+          }}>   
           <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56, marginBottom: "1rem" }}
             src={userProfile.userAvatar}
             onClick={handleClickOpen}
-          ></Avatar>
+          ></Avatar> 
 
           {/* user Avatar */}
-          <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
-          
+           <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
         </div>
-
-
-
+        
         <form>
           <StyledTextField
             label="Name"
@@ -335,7 +329,7 @@ export default function Profile() {
               </Select>
             </FormControl>
           </div>
-          <div>
+          <div >
             <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
               <InputLabel id="major-label">Major</InputLabel>
               <Select
@@ -353,6 +347,7 @@ export default function Profile() {
                   </MenuItem>
                 ))}
               </Select>
+              <Course selectedCourse={userProfile.courses}/>
             </FormControl>
           </div>
           <StyledButton variant="contained" onClick={handleSaveChanges}>
@@ -361,5 +356,7 @@ export default function Profile() {
         </form>
       </StyledContainer>
     </>
+    </StyledContainer>
+
   );
 }

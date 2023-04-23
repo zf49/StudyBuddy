@@ -83,9 +83,6 @@ export default function SignUp(props: ISignUpProps) {
     const navigate = useNavigate()
 
     const { user, isAuthenticated } = useAuth0()
-    const dispatch = useDispatch();
-
-
 
     useEffect(() => {
         const controller = new AbortController();
@@ -161,10 +158,10 @@ export default function SignUp(props: ISignUpProps) {
 
     async function createUser(user: object) {
         // TODO : persisting stoer data
-
-        dispatch(storeUser(user))
+        console.log(user)
+        // dispatch(storeUser(user))
         await axios.post(
-            "http://localhost:8080/users/register/",
+            "http://localhost:8080/users/api/register",
             user
         )
     }

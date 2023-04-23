@@ -13,12 +13,10 @@ const HTTP_BAD_REQUEST = 400;
 router.post('/:keyword', async (req,res)=>{
 
     const userResult = await searchUser(req.params.keyword)
-    // console.log(userResult)
+    console.log(userResult)
     res.json(userResult)
 
 })
-
-
 
 // update userProfile
 router.patch('/profile/:authID', async (req, res, next) => {
@@ -30,7 +28,6 @@ router.patch('/profile/:authID', async (req, res, next) => {
 // router.patch('/:authID/pic',async (req, res, next) => {
 //   res.json('aaaaaaaaaa');
 // });
-
 
 /* GET users listing. */
 router.get('/:uniID', async (req, res, next) => {
@@ -46,7 +43,7 @@ router.get('/authID/:authID', async (req, res, next) => {
 });
 
 
-router.post("/register", async (req, res) => {
+router.post("/api/register",  async (req, res) => {
   try {
     const user: {
       name: string,
@@ -68,9 +65,11 @@ router.post("/register", async (req, res) => {
       userAvatar:req.body.userAvatar
 
     }
+    // console.log(req.body)
     if(user.name && user.uniID){
       const newUser = await createUser(user)
       res.sendStatus(HTTP_CREATED)
+      console.log(newUser)
     }else{
       res.json("User name or UniID cannot be empty!")
     }
