@@ -227,7 +227,7 @@ export default function Profile() {
     <StyledContainer>
 
     <>
-      {console.log(userProfile.userAvatar)}
+      {/* {console.log(userProfile.userAvatar)} */}
 
       <Stack sx={{ width: '100%' }} spacing={2}>
         {showSuccessAlert && (
@@ -264,10 +264,10 @@ export default function Profile() {
           <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56, marginBottom: "1rem" }}
             src={userProfile.userAvatar}
             onClick={handleClickOpen}
-          ></Avatar>
+          ></Avatar> 
 
           {/* user Avatar */}
-          <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
+           <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
         </div>
 
 

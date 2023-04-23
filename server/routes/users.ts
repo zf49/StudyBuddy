@@ -43,7 +43,7 @@ router.get('/authID/:authID', async (req, res, next) => {
 });
 
 
-router.post("/register", async (req, res) => {
+router.post("/api/register",  async (req, res) => {
   try {
     const user: {
       name: string,
@@ -65,9 +65,11 @@ router.post("/register", async (req, res) => {
       userAvatar:req.body.userAvatar
 
     }
+    // console.log(req.body)
     if(user.name && user.uniID){
       const newUser = await createUser(user)
       res.sendStatus(HTTP_CREATED)
+      console.log(newUser)
     }else{
       res.json("User name or UniID cannot be empty!")
     }

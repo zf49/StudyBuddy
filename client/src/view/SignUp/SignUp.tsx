@@ -158,10 +158,10 @@ export default function SignUp(props: ISignUpProps) {
 
     async function createUser(user: object) {
         // TODO : persisting stoer data
-
+        console.log(user)
         // dispatch(storeUser(user))
         await axios.post(
-            "http://localhost:8080/users/register/",
+            "http://localhost:8080/users/api/register",
             user
         )
     }
