@@ -3,7 +3,18 @@ import { Course } from "./course_schema";
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+export interface IUser {
+    name: string,
+    uniID: string,
+    gender: string,
+    email: string,
+    faculty: string,
+    major: string,
+    authID: string,
+    userAvatar: string
+}
+
+const userSchema = new Schema<IUser>({
     name: {type: String, required: true},
     uniID: {type: String, required: true},
     gender: String,

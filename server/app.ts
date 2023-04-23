@@ -12,6 +12,7 @@ var courseRouter = require('./routes/course')
 
 import connectToDatabase from "./config/db-connect";
 import mongoose from "mongoose";
+import { initMajorData, initUserData } from "./config/db-init";
 const cors = require('cors');
 
 var app = express();
@@ -57,5 +58,7 @@ mongoose.connection.on('open', function (error) {
     console.log("DB connection is successful")
   }
 })
+initUserData()
+initMajorData()
 
 module.exports = app;
