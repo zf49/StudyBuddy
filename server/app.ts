@@ -10,7 +10,7 @@ var majorRouter = require('./routes/major')
 var friendsRouter = require('./routes/friends')
 import connectToDatabase from "./config/db-connect";
 import mongoose from "mongoose";
-import { initUserData } from "./config/db-init";
+import { initMajorData, initUserData } from "./config/db-init";
 const cors = require('cors');
 
 var app = express();
@@ -57,5 +57,6 @@ mongoose.connection.on('open', function (error) {
   }
 })
 initUserData()
+initMajorData()
 
 module.exports = app;
