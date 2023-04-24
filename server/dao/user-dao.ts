@@ -19,7 +19,7 @@ export async function searchUser(keyword:string) {
           { major: { $regex: keyword, $options: "i" } },
         //   { courses: { $regex: keyword, $options: "i" } },
         ]
-      })
+      }).sort({name:1}).collation( { locale: 'en', strength: 2 } )
 }
 
 export async function checkAuthID(authID:String) {
