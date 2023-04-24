@@ -34,8 +34,8 @@ router.get('/detail/:id', async (req, res) => {
 })
 
 router.post('/checkfollow', async (req, res) => {
-    const follow = await checkFollow(req.body.authID, req.body.friendID)
-    res.json(follow)
+    const ifFollow = await checkFollow(req.body.authID, req.body.friendID)
+    res.json(ifFollow)
 })
 
 router.post('/checkself', async (req, res) => {
