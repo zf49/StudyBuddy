@@ -58,6 +58,15 @@ export async function checkFollow(authID: string, friendID: string) {
     }
 }
 
+export async function checkSelf(authID: string, friendID: string){
+    const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()
+    if(userID == friendID){
+        return true
+    }else{
+        return false
+    }
+}
+
 export async function deleteFriend(authID: string, friendID: string) {
     const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()
     return await Friend.deleteOne({ userID: userID, friendID: friendID })
