@@ -141,7 +141,6 @@ export default function Profile() {
       }).then((res) => {
         setFaculties(res.data.faculties)
         setMajors(res.data.majors)
-
       })
     }
     return () => {
