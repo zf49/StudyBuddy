@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 import { useState,useEffect } from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { TextField, Button, Grid, Typography, List } from '@mui/material';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -13,10 +12,8 @@ import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { storeUser } from '../../redux/reducer/userReducer';
 import { RootState } from '../../redux/store';
-import { truncate } from 'fs';
 export default function Search() {
 
-    const users = useSelector((state: RootState) => state.storeUser.userList);
     // define key word
     const [searchTerm, setSearchTerm] = useState<string>('');
     
@@ -39,18 +36,20 @@ export default function Search() {
         // console.log(`item:${searchTerm}`);
         if(searchTerm !== ''){
              axios.post(`http://localhost:8080/users/${searchTerm}`).then((res) => {
+                 if(res.data.length===0){
+                    setFlag(false)
+                 }else{
                 setFlag(true)
                 setSearchRes(res.data)
                 dispatch(storeUser(res.data))
+                 }
                 // console.log("sR",searchRes)
             })
         }else{
-            console.log("sR",searchRes)
+            // console.log("sR",searchRes)
             setFlag(false)
             // setSearchRes([])
         }
-
-        
     };
 
     // when user press Enter, show search result 
@@ -86,8 +85,7 @@ export default function Search() {
                         InputProps={{
                             endAdornment: (
                                 <Button variant="contained" 
-                                onClick={handleSearchClick} 
-                                >
+                                onClick={handleSearchClick}>
                                     Search
                                 </Button>
                             )
