@@ -11,7 +11,14 @@ import { IUserDetail, StyledContainer } from '../Profile/Profile';
 import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { storeUser } from '../../redux/reducer/userReducer';
-import { RootState } from '../../redux/store';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import ResultFilter from './ResultFilter';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
 export default function Search() {
 
     // define key word
@@ -19,7 +26,7 @@ export default function Search() {
     
     const [searchRes, setSearchRes] = useState<IUserDetail[]>([]);
 
-    const [flag, setFlag] = useState(true)
+    const [flag, setFlag] = useState(false)
 
     const dispatch = useDispatch()
     
@@ -64,6 +71,21 @@ export default function Search() {
         navigate("/frienddetail/", { state: {id:id}})
     }
 
+
+    const handleFilter = ()=>{
+        console.log('button')
+    }
+
+    const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
     return (
         <>
         {console.log(searchRes)}
@@ -93,7 +115,37 @@ export default function Search() {
                     />
                 </Grid>
                 <StyledContainer>
-                        {flag===true?searchRes.map((item,index)=>{
+                        {flag===true? 
+                    <>
+                        <div>
+                        <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={handleClickOpen}>
+                            Refine
+                        </Button>
+                            // res Filter
+    <div>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        fullScreen
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Results Filter"}
+        </DialogTitle>
+        
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleClose} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+
+
+                        </div>
+                        {searchRes.map((item,index)=>{
                             return  <Grid item xs={12}><List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                             <ListItem alignItems="flex-start" onClick={()=>handleFriendDetail(item._id)}>
                             <ListItemAvatar>
@@ -145,10 +197,10 @@ export default function Search() {
                                     </React.Fragment>
                                 }
                             />
-                        </ListItem> 
-                        <Divider variant="inset" component="li" />
-                        </List></Grid>
-                        }):"No users"}  
+                            </ListItem> 
+                            <Divider variant="inset" component="li" />
+                            </List></Grid>
+                        })}</>:"No users"}  
                         </StyledContainer>
             </Grid>
          </StyledContainer>
