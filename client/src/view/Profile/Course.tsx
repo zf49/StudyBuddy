@@ -30,32 +30,47 @@ export interface ICourse {
 
 
 interface ICourseProps{
-  selectedCourse:ICourse[]
+  selectedCourse:ICourse[],
+  setCourse:(value: ICourse[])=>void
 }
 
 export default function Course(props:ICourseProps) {
     
     const [courseName, setCourseName] = useState<ICourse[]>()
-    const [courseShow, setCourseShow] = useState<string[]>([])
+    const [courseToArrary, setcourseToArrary] = useState<string[]>([])
+
 
     useEffect(() => {
        axios.get('http://localhost:8080/courses').then((res)=>{
            setCourseName(res.data)
        })
+
        // TODO: click update user courses
-       
-    }, [])
+        const arr:string[] = []
+        props.selectedCourse.map((item)=>{
+          arr.push(item.CodeNName)
+        })
+        setcourseToArrary(arr)
+
+    }, [props.selectedCourse])
 
 
     const handleChange = (e: SelectChangeEvent<string[]>) => {
       const selectedValues = e.target.value as string[];
-      setCourseShow(selectedValues);
-    };
+      setcourseToArrary(selectedValues);
 
+      // convert string[] to iCourse[]
+      const updatedSelectedCourses: ICourse[] = [];
+      for (const course of courseName || []) {
+        if (selectedValues.includes(course.CodeNName)) {
+          updatedSelectedCourses.push(course);
+        }
+      }
+      props.setCourse(updatedSelectedCourses);
+    };
     
   return (
     <>
-      {console.log(courseShow)}
     <div>
       <FormControl style={{'width':'100%',marginTop:'10px'}}>
         <InputLabel id="demo-multiple-checkbox-label">Course</InputLabel>
@@ -63,7 +78,7 @@ export default function Course(props:ICourseProps) {
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
-          value={courseShow}
+          value={courseToArrary}
           onChange={handleChange}
           input={<OutlinedInput label="Course" />}
           renderValue={(selected) => (
@@ -77,8 +92,9 @@ export default function Course(props:ICourseProps) {
         >
           {courseName?.map((item,index) => (
             <MenuItem key={index} value={item.CodeNName} >
-              <Checkbox checked={courseShow.indexOf(item.CodeNName) > -1} />
+              <Checkbox checked={courseToArrary.includes(item.CodeNName)}/>
               <ListItemText primary={item.CodeNName} />
+
             </MenuItem>
           ))}
         </Select>
