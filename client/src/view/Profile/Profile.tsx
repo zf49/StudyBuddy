@@ -210,11 +210,18 @@ export default function Profile() {
     });
   }
 
+  const setCourse = (value:ICourse[])=>{
+    setUserProfile({
+      ...userProfile,
+      courses: value,
+    });
+  }
+
   return (
     <StyledContainer>
 
     <>
-      {/* {console.log(userProfile.userAvatar)} */}
+      {console.log(userProfile)}
 
       <Stack sx={{ width: '100%' }} spacing={2}>
         {showSuccessAlert && (
@@ -334,7 +341,7 @@ export default function Profile() {
                   </MenuItem>
                 ))}
               </Select>
-              <Course selectedCourse={userProfile.courses}/>
+              <Course selectedCourse={userProfile.courses} setCourse={setCourse}/>
             </FormControl>
           </div>
           <StyledButton variant="contained" onClick={handleSaveChanges}>
