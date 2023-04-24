@@ -38,10 +38,8 @@ export default function FriendDetail() {
     async function getFriendDetail() {
         const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`)
         setFriendDetail(dbData.data)
-        if (user) {
-            const dbFollow: boolean = await axios.post('http://localhost:8080/friends/checkfollow', payload)
+            const dbFollow: boolean = (await axios.post('http://localhost:8080/friends/checkfollow', payload)).data
             setFollow(dbFollow)
-        }
     }
 
     function handleReturn() {
