@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useState,useEffect } from 'react';
-import { TextField, Button, Grid, Typography, List } from '@mui/material';
+import { TextField, Button, Grid, Typography, List, Menu, MenuItem, Chip } from '@mui/material';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
@@ -18,19 +18,22 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { RootState } from '../../redux/store';
 
 export default function Search() {
 
+    const users = useSelector((state: RootState) => state.storeUser.userList);
     // define key word
     const [searchTerm, setSearchTerm] = useState<string>('');
     
-    const [searchRes, setSearchRes] = useState<IUserDetail[]>([]);
+    const [searchRes, setSearchRes] = useState<IUserDetail[]>(users);
 
     const [flag, setFlag] = useState(false)
-
     const dispatch = useDispatch()
-    
     const navigate = useNavigate()
+
+    const [filterList, setFilterList] = useState<Object[]>([]);
+
 
     // handel key word change 
     const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +44,7 @@ export default function Search() {
     const handleSearchClick =  () => {
         // TODO: logic of search friend
         // console.log(`item:${searchTerm}`);
-        if(searchTerm !== ''){
+        // if(searchTerm !== ''){
              axios.post(`http://localhost:8080/users/${searchTerm}`).then((res) => {
                  if(res.data.length===0){
                     setFlag(false)
@@ -52,11 +55,11 @@ export default function Search() {
                  }
                 // console.log("sR",searchRes)
             })
-        }else{
-            // console.log("sR",searchRes)
-            setFlag(false)
-            // setSearchRes([])
-        }
+        // }else{
+        //     // console.log("sR",searchRes)
+        //     setFlag(false)
+        //     // setSearchRes([])
+        // }
     };
 
     // when user press Enter, show search result 
@@ -69,11 +72,6 @@ export default function Search() {
     //redirect to /frienddetail/
     const handleFriendDetail = (id:string)=>{
         navigate("/frienddetail/", { state: {id:id}})
-    }
-
-
-    const handleFilter = ()=>{
-        console.log('button')
     }
 
     const [open, setOpen] = React.useState(false);
@@ -115,37 +113,19 @@ export default function Search() {
                     />
                 </Grid>
                 <StyledContainer>
-                        {flag===true? 
+                         
                     <>
                         <div>
                         <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={handleClickOpen}>
                             Refine
                         </Button>
                             // res Filter
-    <div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        fullScreen
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Results Filter"}
-        </DialogTitle>
-        
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-
-
+                            <ResultFilter open={open} handleClickOpen={handleClickOpen}
+                            handleClose={handleClose}
+                            />
+                   
                         </div>
-                        {searchRes.map((item,index)=>{
+                        {searchRes.map((item)=>{
                             return  <Grid item xs={12}><List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                             <ListItem alignItems="flex-start" onClick={()=>handleFriendDetail(item._id)}>
                             <ListItemAvatar>
@@ -194,13 +174,28 @@ export default function Search() {
                                             {'Major: '}
                                         </Typography>
                                         {item.major}
+                                        <br/>
+                                        <Typography
+                                            sx={{ display: 'inline' }}
+                                            component="span"
+                                            variant="body2"
+                                            color="text.primary"
+                                        >
+                                            {'Courses: '}
+                                        </Typography>
+                                        {item.courses.map((item)=>{
+                                            return <Chip style={{
+                                                marginBottom:'0.2em'
+                                            }} key={item.course_code} label={item.CodeNName}></Chip>
+                                        })}
+                                        <br/>
                                     </React.Fragment>
                                 }
                             />
                             </ListItem> 
                             <Divider variant="inset" component="li" />
                             </List></Grid>
-                        })}</>:"No users"}  
+                        })}</>  
                         </StyledContainer>
             </Grid>
          </StyledContainer>

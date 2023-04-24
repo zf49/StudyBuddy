@@ -5,42 +5,38 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+interface IFilterList{
+    open:boolean,
+    handleClickOpen:()=>void,
+    handleClose:()=>void,
+}
 
-export default function ResultFilter() {
-  const [open, setOpen] = React.useState(false);
+export default function ResultFilter(props:IFilterList) {
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
+  
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Open alert dialog
-      </Button>
+      {/* <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={props.handleClickOpen}>
+            Refine
+       </Button> */}
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={props.open}
+        onClose={props.handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        fullScreen
       >
         <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
+          {"Filter List"}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous
-            location data to Google, even when no apps are running.
-          </DialogContentText>
+
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
+          <Button onClick={props.handleClose} autoFocus>
+            Apply
           </Button>
         </DialogActions>
       </Dialog>
