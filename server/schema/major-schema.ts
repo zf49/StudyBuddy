@@ -8,6 +8,7 @@ export interface IMajorOption {
   semester: string;
 }
 
+// just incase some other comments or bugfix commit
 const majorSchema = new Schema<IMajorOption>({
   faculty: { type: String, required: true },
   major: { type: String, required: true },
