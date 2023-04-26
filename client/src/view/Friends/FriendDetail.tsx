@@ -28,6 +28,7 @@ export default function FriendDetail() {
     const [friendDetail, setFriendDetail] = React.useState<IFriendDetail>()
     const [follow, setFollow] = React.useState<Boolean>()
     const navigate = useNavigate()
+    const [self, setSelf] = React.useState<Boolean>()
     const { user, isAuthenticated } = useAuth0();
     const payload: IPayload = {
         authID: user?.sub,
@@ -38,10 +39,11 @@ export default function FriendDetail() {
     async function getFriendDetail() {
         const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`)
         setFriendDetail(dbData.data)
-        if (user) {
-            const dbFollow: boolean = await axios.post('http://localhost:8080/friends/checkfollow', payload)
+            const dbFollow: boolean = (await axios.post('http://localhost:8080/friends/checkfollow', payload)).data
             setFollow(dbFollow)
-        }
+            const dbSelf: boolean = (await axios.post(`http://localhost:8080/friends/checkself`, payload)).data
+            setSelf(dbSelf)
+
     }
 
     function handleReturn() {
@@ -105,7 +107,8 @@ export default function FriendDetail() {
                 >
                     back
                 </Button>
-                {follow ?
+                {!self &&
+                (follow ?
                     <Button variant="contained"
                         sx={{ width: "40%", marginLeft: "10%" }}
                         onClick={handleUnFollow}
@@ -119,7 +122,10 @@ export default function FriendDetail() {
                     >
                         Follow
                     </Button>
-                }
+                )
+
+                
+            }
             </div>
 
 
