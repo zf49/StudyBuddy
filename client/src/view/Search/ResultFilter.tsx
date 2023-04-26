@@ -6,16 +6,24 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { IUserDetail } from '../Profile/Profile';
 interface IFilterList{
     open:boolean,
     handleClickOpen:()=>void,
     handleClose:()=>void,
+    users:IUserDetail[]
 }
 
 export default function ResultFilter(props:IFilterList) {
 
 
-  
+  const handleList = ()=>{
+    
+  }
+
+
   return (
     <div>
       {/* <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={props.handleClickOpen}>
@@ -32,7 +40,7 @@ export default function ResultFilter(props:IFilterList) {
           {"Filter List"}
         </DialogTitle>
         <DialogContent>
-
+          
         </DialogContent>
         <DialogActions>
           <Button onClick={props.handleClose} autoFocus>

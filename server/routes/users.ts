@@ -42,7 +42,6 @@ router.get('/authID/:authID', async (req, res, next) => {
   res.send(isHave)
 });
 
-
 router.post("/api/register",  async (req, res) => {
   try {
     const user: {
@@ -63,7 +62,6 @@ router.post("/api/register",  async (req, res) => {
       major: req.body.major,
       authID: req.body.authID,
       userAvatar:req.body.userAvatar
-
     }
     // console.log(req.body)
     if(user.name && user.uniID){

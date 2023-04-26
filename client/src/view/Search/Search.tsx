@@ -13,11 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { storeUser } from '../../redux/reducer/userReducer';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ResultFilter from './ResultFilter';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+
 import { RootState } from '../../redux/store';
 
 export default function Search() {
@@ -32,7 +28,6 @@ export default function Search() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const [filterList, setFilterList] = useState<Object[]>([]);
 
 
     // handel key word change 
@@ -120,10 +115,11 @@ export default function Search() {
                             Refine
                         </Button>
                             // res Filter
-                            <ResultFilter open={open} handleClickOpen={handleClickOpen}
+                            <ResultFilter open={open} 
+                            handleClickOpen={handleClickOpen}
                             handleClose={handleClose}
-                            />
-                   
+                            users={users}
+                        />
                         </div>
                         {searchRes.map((item)=>{
                             return  <Grid item xs={12}><List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -186,7 +182,7 @@ export default function Search() {
                                         {item.courses.map((item)=>{
                                             return <Chip style={{
                                                 marginBottom:'0.2em'
-                                            }} key={item.course_code} label={item.CodeNName}></Chip>
+                                            }} key={item.course_code} label={item.CourseNName}></Chip>
                                         })}
                                         <br/>
                                     </React.Fragment>
