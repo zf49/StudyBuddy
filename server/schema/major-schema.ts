@@ -2,13 +2,14 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
-export interface IMajor {
+export interface IMajorOption {
   faculty: string;
   major: string;
   semester: string;
 }
 
-const majorSchema = new Schema<IMajor>({
+// just incase some other comments or bugfix commit
+const majorSchema = new Schema<IMajorOption>({
   faculty: { type: String, required: true },
   major: { type: String, required: true },
   semester: { type: String, required: true },
