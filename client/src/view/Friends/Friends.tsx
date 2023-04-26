@@ -23,9 +23,9 @@ export default function Friends() {
     const [friends, setFriends] = React.useState<IFriend[]>()
     const navigate = useNavigate()
 
-    async function getFriends() {
+    async function getFriends(signal: AbortSignal) {
         if (user) {
-            const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`)
+            const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`,{signal: signal})
             setFriends(dbData.data)
         }
     }
@@ -35,7 +35,12 @@ export default function Friends() {
     }
 
     useEffect(() => {
-        getFriends()
+        const controller = new AbortController()
+        getFriends(controller.signal)
+
+        return () =>{
+            controller.abort()
+        }
     }, [])
 
 
