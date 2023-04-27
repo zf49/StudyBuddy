@@ -42,11 +42,11 @@ export default function FriendDetail() {
         const dbDataValidate = Joi.object<IFriendDetail>({
             name: Joi.string().required(),
             uniID: Joi.string().required(),
-            gender: Joi.string().allow(null, ''),
-            email: Joi.string().allow(null, ''),
-            faculty: Joi.string().allow(null, ''),
-            major: Joi.string().allow(null, ''),
-            userAvatar: Joi.string().allow(null, '')
+            gender: Joi.string().required().allow(null, ''),
+            email: Joi.string().required().allow(null, ''),
+            faculty: Joi.string().required().allow(null, ''),
+            major: Joi.string().required().allow(null, ''),
+            userAvatar: Joi.string().required().allow(null, '')
         }).unknown(true).validate(dbData.data)
         if(dbDataValidate.error){
             console.error(dbDataValidate.error)
