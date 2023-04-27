@@ -93,6 +93,8 @@ export default function Profile() {
 
   const [faculties, setFaculties] = useState<string[]>([])
 
+  const controller = new AbortController()
+
   const handleFacultyChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
     setUserProfile({
@@ -126,25 +128,24 @@ export default function Profile() {
 
   // get userprofile
   useEffect(() => {
-    const abort = new AbortController()
     if (user && isAuthenticated) {
       // setUserProfile;
       axios.get(`http://localhost:8080/users/${user.sub}`, {
-        signal: abort.signal
+        signal: controller.signal
       }).then((res) => {
         setUserProfile(res.data[0])
         setSelectedFaculty(res.data[0].faculty)
         console.log(res.data[0])
       });
       axios.get("http://localhost:8080/major/", {
-        signal: abort.signal
+        signal: controller.signal
       }).then((res) => {
         setFaculties(res.data.faculties)
         setMajors(res.data.majors)
       })
     }
     return () => {
-      abort.abort();
+      controller.abort();
     }
   }, [user, isAuthenticated]);
 
@@ -163,7 +164,7 @@ export default function Profile() {
     if(userProfile.name === '' || userProfile.uniID === ''){
       handleError()
     }else{
-      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile).then((res) => {
+      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile, {signal: controller.signal}).then((res) => {
         if (res.data.acknowledged) {
           handleSuccess()
         } else {
