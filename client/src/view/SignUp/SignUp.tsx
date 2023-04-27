@@ -81,11 +81,10 @@ export default function SignUp(props: ISignUpProps) {
     const [majors, setMajors] = React.useState<IMajor[]>([]);
     const [authID, setAuthID] = useState<any>('')
     const navigate = useNavigate()
-
     const { user, isAuthenticated } = useAuth0()
+    const controller = new AbortController()
 
     useEffect(() => {
-        const controller = new AbortController();
         // what happens if user navigates away from this page while this request is running?
         // error: tried to update state of unloaded component
         apiGetMajor({ signal: controller.signal }).then(data => {
