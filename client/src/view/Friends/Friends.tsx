@@ -8,6 +8,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
+import Joi from 'joi';
 
 export interface IFriend {
     name: string
@@ -26,7 +27,19 @@ export default function Friends() {
     async function getFriends() {
         if (user) {
             const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`)
-            setFriends(dbData.data)
+            const dbDataValidate = Joi.array().items(
+                Joi.object<IFriend>({
+                name: Joi.string().required(),
+                uniID: Joi.string().required(),
+                ID: Joi.string().required(),
+                avatar: Joi.string().required()
+                })
+            ).validate(dbData.data)
+            if(dbDataValidate.error){
+                console.error(dbDataValidate.error)
+            }else{
+                setFriends(dbDataValidate.value)
+            }
         }
     }
 
