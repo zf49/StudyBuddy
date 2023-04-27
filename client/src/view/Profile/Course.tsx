@@ -50,7 +50,7 @@ export default function Course(props:ICourseProps) {
           course_code: Joi.string().required(),
           course_name: Joi.string().required(),
           CourseNName: Joi.string().required(),
-        })
+        }).unknown(true)
       ).validate(res.data)
       if(dbCourseValidate.error){
         console.error(dbCourseValidate.error)
