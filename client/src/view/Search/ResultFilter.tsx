@@ -49,7 +49,7 @@ export default function ResultFilter(props:IFilterList) {
       const uniqueCourses = Array.from(coursesSet); 
       console.log(uniqueCourses);
       setFilterList(uniqueCourses)
-  }, [])
+  }, [props.users])
 
   const handleCourseSelect = (course: string) => {
     if (selectedCourses.includes(course)) {

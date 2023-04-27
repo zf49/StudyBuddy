@@ -37,9 +37,9 @@ export default function Search() {
     };
 
     // main logic of search user
-    const handleSearchClick = async () => {
+    const handleSearchClick =  () => {
         // TODO: logic of search friend
-            await axios.post(`http://localhost:8080/users/${searchTerm}`).then((res) => {
+             axios.post(`http://localhost:8080/users/${searchTerm}`).then((res) => {
                  if(res.data.length===0){
                     setFlag(false)
                  }else{
@@ -47,7 +47,6 @@ export default function Search() {
                 setSearchRes(res.data)
                 dispatch(storeUser(res.data))
                 }
-                // console.log("sR",searchRes)
             })
     };
 
@@ -63,7 +62,7 @@ export default function Search() {
         navigate("/frienddetail/", { state: {id:id}})
     }
 
-    const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -82,8 +81,21 @@ export default function Search() {
   const handleSelectedCourses = (selectedCourses:string[]) => {
     console.log(selectedCourses);
 
-    
+    const arr:IUserDetail[] = []
 
+    searchRes.map((item)=>{
+        selectedCourses.forEach(element => {
+            item.courses.map((course)=>{
+                if(element === course.CourseNName){
+                    arr.push(item)
+                }
+            })
+        });
+    })
+
+    const newArr = Array.from(new Set(arr));
+    console.log(newArr)
+    setSearchRes(newArr)
     // ... do something with selectedCourses
   };
  
@@ -124,7 +136,7 @@ export default function Search() {
                             <ResultFilter open={open} 
                             handleClickOpen={handleClickOpen}
                             handleClose={handleClose}
-                            users={users}
+                            users={searchRes}
                             onSelectedCoursesChange={handleSelectedCourses}
                             onSubmit={handleDataChange}
                         />
