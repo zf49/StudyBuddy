@@ -56,9 +56,8 @@ export default function Friends() {
     return (
     <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
           <div>
-            <h1>Search Buddies</h1>   
+            <h1>My Friends</h1>   
             <div> 
-            
             <Box sx={{ p: 2 }}>
                 <TableContainer component={Paper}>
                     <Table>

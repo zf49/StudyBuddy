@@ -154,9 +154,6 @@ export default function Search() {
                             onSubmit={handleDataChange}
                         /> 
                 </Grid>
-
-                
-
                 <Box sx={{ p: 2 }}>
                 <TableContainer component={Paper}>
                     <Table>

@@ -167,12 +167,11 @@ export default function SignUp(props: ISignUpProps) {
 
     return (
         <StyledContainer>
-        <div style={{ width: "60%", textAlign: "center", margin: "0 auto" }}>
-            <div style={{ marginBottom: "20px" }}>
-                <Typography variant="h6" gutterBottom>
-                    Register
-                </Typography>
+        <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
+            <div>
+                <h1>Sign Up</h1>
             </div>
+            <div style={{backgroundColor:'white',opacity:'0.8'}}>
             <div style={{ marginBottom: "10px" }}>
                 <TextField
                     required
@@ -237,7 +236,7 @@ export default function SignUp(props: ISignUpProps) {
                     </Select>
                 </FormControl>
             </div>
-            <div style={{ marginBottom: "10px" }}>
+            <div>
                 <FormControl sx={{ width: "100%" }}>
                     <InputLabel>Major</InputLabel>
                     <Select
@@ -258,7 +257,8 @@ export default function SignUp(props: ISignUpProps) {
                     </Select>
                 </FormControl>
             </div>
-            <div style={{ marginBottom: "10px" }}>
+            </div>
+            <div style={{ marginTop: "10px" }}>
                 <Button variant="contained"
                     onClick={handleSubmit}
                     sx={{ width: "100%" }}
@@ -269,9 +269,6 @@ export default function SignUp(props: ISignUpProps) {
             <div>
                 {message && <Alert severity="error">{message}</Alert>}
             </div>
-
-
-
         </div>
         </StyledContainer>
 

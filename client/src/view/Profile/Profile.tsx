@@ -244,7 +244,7 @@ export default function Profile() {
            <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
         </div>
 
-        <form>
+        <form style={{backgroundColor:'white',opacity:'0.8'}}>
           <StyledTextField
             label="Name"
             name="name"
@@ -255,7 +255,8 @@ export default function Profile() {
             label="University ID"
             name="uniID"
             value={userProfile.uniID}
-            onChange={handleChange}
+            onChange={handleChange}  sx={{ opacity: 1 }}
+
           />
           <>
             <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
@@ -267,6 +268,8 @@ export default function Profile() {
                 name="gender"
                 value={userProfile.gender}
                 onChange={handleGenderChange}
+                sx={{ opacity: 1 }}
+
               >
                 <MenuItem value="">
                   <em>Prefer Not To Tell</em>
@@ -303,7 +306,7 @@ export default function Profile() {
             </FormControl>
           </div>
           <div >
-            <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
+            <FormControl sx={{ width: "100%" }} >
               <InputLabel id="major-label">Major</InputLabel>
               <Select
                 labelId="major-label"
@@ -324,10 +327,10 @@ export default function Profile() {
               <Course selectedCourse={userProfile.courses} setCourse={setCourse}/>
             </FormControl>
           </div>
-          <StyledButton variant="contained" onClick={handleSaveChanges}>
+        </form>
+        <StyledButton variant="contained" onClick={handleSaveChanges} style={{ marginTop: "10px" }}>
             Save Changes
           </StyledButton>
-        </form>
       </div>
 </div>
   );

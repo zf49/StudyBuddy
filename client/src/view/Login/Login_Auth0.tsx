@@ -5,7 +5,7 @@ import dogPic from './../../ICON/dog.png'
 import { useAuth0 } from "@auth0/auth0-react";
 import  { useNavigate } from 'react-router-dom'
 
-const RootBox = styled(Box)({
+export const RootBox = styled(Box)({
   background: '#BFEFFF',
   backgroundImage: `url(${dogPic})`,
   backgroundColor: '#ADD8E6',
@@ -51,12 +51,6 @@ export default function Login() {
 
    
     const { loginWithRedirect } = useAuth0();
-
-    // const handleLoginClick = async () => {
-    //   await loginWithRedirect().then(()=>{
-    //       localStorage.setItem('token','123')
-    //   })
-    // }
 
   const handleLoginClick = async () => {
     try {
