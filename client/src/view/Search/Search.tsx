@@ -28,8 +28,13 @@ export default function Search() {
     const [flag, setFlag] = useState(false)
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const controller = new AbortController()
 
-
+    useEffect(() => {
+        return () => {
+            controller.abort()
+        }
+    },[])
 
     // handel key word change 
     const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +44,7 @@ export default function Search() {
     // main logic of search user
     const handleSearchClick =  () => {
         // TODO: logic of search friend
-             axios.post(`http://localhost:8080/users/${searchTerm}`).then((res) => {
+             axios.post(`http://localhost:8080/users/${searchTerm}`,{signal: controller.signal}).then((res) => {
                  if(res.data.length===0){
                     setFlag(false)
                  }else{
