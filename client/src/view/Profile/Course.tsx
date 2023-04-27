@@ -11,10 +11,19 @@ import Chip from '@mui/material/Chip';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
+import { makeStyles } from '@mui/styles';
 import Joi from 'joi';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
+
+const useStyles = makeStyles((theme) => ({
+  select: {
+    whiteSpace: 'normal',
+    wordWrap: 'break-word',
+  },
+}));
+
 const MenuProps = {
   PaperProps: {
     style: {
@@ -37,7 +46,7 @@ interface ICourseProps {
 
 
 export default function Course(props:ICourseProps) {
-    
+
     const [courseName, setCourseName] = useState<ICourse[]>()
     const [courseToArrary, setcourseToArrary] = useState<string[]>([])
     const controller = new AbortController()
@@ -58,12 +67,14 @@ export default function Course(props:ICourseProps) {
       setCourseName(dbCourseValidate.value)
     }
     })
-
-
+    const arr:string[] = []
+    props.selectedCourse.map((item)=>{
+      arr.push(item.CourseNName)
+    })
+    setcourseToArrary(arr)
         return () => {
           controller.abort()
         }
-
     }, [props.selectedCourse])
 
 

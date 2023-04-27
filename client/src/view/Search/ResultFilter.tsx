@@ -68,7 +68,6 @@ export default function ResultFilter(props:IFilterList) {
 
   return (
     <div>
-     
       <Dialog
         open={props.open}
         onClose={props.handleClose}
