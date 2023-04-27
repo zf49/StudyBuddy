@@ -314,7 +314,6 @@ export default function Profile() {
                 name="major"
                 onChange={handleMajorChange}
                 disabled={!selectedFaculty}
-                
               >
                 {filteredMajors.map((major, index) => (
                   <MenuItem key={index} value={major.major}>
