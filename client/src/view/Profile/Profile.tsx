@@ -4,7 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useState } from "react";
-import { TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import styled from "@mui/styled-engine";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
@@ -243,7 +243,10 @@ export default function Profile() {
            <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
         </div>
 
-        <form style={{backgroundColor:'white',opacity:'0.8'}}>
+        
+          <Paper elevation={24} >
+
+        <form style={{padding:'1em'}}>
           <StyledTextField
             label="Name"
             name="name"
@@ -325,9 +328,12 @@ export default function Profile() {
             </FormControl>
           </div>
         </form>
+        </Paper>
         <StyledButton variant="contained" onClick={handleSaveChanges} style={{ marginTop: "10px" , marginBottom: "3em"}}>
             Save Changes
           </StyledButton>
+          {/* </form>
+          </Paper> */}
       </div>
 </div>
   );
