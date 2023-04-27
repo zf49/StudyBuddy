@@ -197,6 +197,7 @@ export default function SignUp(props: ISignUpProps) {
                     <InputLabel>Gender</InputLabel>
                     <Select
                         id="gender"
+                        label="Gender"
                         value={gender}
                         onChange={handleGender}
                     >
@@ -222,6 +223,7 @@ export default function SignUp(props: ISignUpProps) {
                     <InputLabel>Faculty</InputLabel>
                     <Select
                         id="faculty"
+                        label="Faculty"
                         value={faculty}
                         onChange={handleFaculty}
                     >
@@ -241,6 +243,7 @@ export default function SignUp(props: ISignUpProps) {
                     <InputLabel>Major</InputLabel>
                     <Select
                         id="major"
+                        label="Major"
                         value={major}
                         onChange={handleMajor}
                     >

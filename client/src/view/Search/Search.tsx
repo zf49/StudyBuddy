@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useState,useEffect } from 'react';
-import { TextField, Button, Grid, Typography, List } from '@mui/material';
+import { TextField, Button, Grid, Typography, List, Menu, MenuItem, Chip } from '@mui/material';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
@@ -11,18 +11,21 @@ import { IUserDetail, StyledContainer } from '../Profile/Profile';
 import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { storeUser } from '../../redux/reducer/userReducer';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import ResultFilter from './ResultFilter';
+
 import { RootState } from '../../redux/store';
+
 export default function Search() {
 
+    const users = useSelector((state: RootState) => state.storeUser.userList);
     // define key word
     const [searchTerm, setSearchTerm] = useState<string>('');
     
-    const [searchRes, setSearchRes] = useState<IUserDetail[]>([]);
+    const [searchRes, setSearchRes] = useState<IUserDetail[]>(users);
 
-    const [flag, setFlag] = useState(true)
-
+    const [flag, setFlag] = useState(false)
     const dispatch = useDispatch()
-    
     const navigate = useNavigate()
 
     const controller = new AbortController()
@@ -44,6 +47,7 @@ export default function Search() {
         // console.log(`item:${searchTerm}`);
         if(searchTerm !== ''){
              axios.post(`http://localhost:8080/users/${searchTerm}`, {signal: controller.signal}).then((res) => {
+
                  if(res.data.length===0){
                     setFlag(false)
                  }else{
@@ -53,11 +57,11 @@ export default function Search() {
                  }
                 // console.log("sR",searchRes)
             })
-        }else{
-            // console.log("sR",searchRes)
-            setFlag(false)
-            // setSearchRes([])
-        }
+        // }else{
+        //     // console.log("sR",searchRes)
+        //     setFlag(false)
+        //     // setSearchRes([])
+        // }
     };
 
     // when user press Enter, show search result 
@@ -71,6 +75,16 @@ export default function Search() {
     const handleFriendDetail = (id:string)=>{
         navigate("/frienddetail/", { state: {id:id}})
     }
+
+    const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
     return (
         <>
@@ -101,7 +115,20 @@ export default function Search() {
                     />
                 </Grid>
                 <StyledContainer>
-                        {flag===true?searchRes.map((item,index)=>{
+                         
+                    <>
+                        <div>
+                        <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={handleClickOpen}>
+                            Refine
+                        </Button>
+                            // res Filter
+                            <ResultFilter open={open} 
+                            handleClickOpen={handleClickOpen}
+                            handleClose={handleClose}
+                            users={users}
+                        />
+                        </div>
+                        {searchRes.map((item)=>{
                             return  <Grid item xs={12}><List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                             <ListItem alignItems="flex-start" onClick={()=>handleFriendDetail(item._id)}>
                             <ListItemAvatar>
@@ -150,13 +177,28 @@ export default function Search() {
                                             {'Major: '}
                                         </Typography>
                                         {item.major}
+                                        <br/>
+                                        <Typography
+                                            sx={{ display: 'inline' }}
+                                            component="span"
+                                            variant="body2"
+                                            color="text.primary"
+                                        >
+                                            {'Courses: '}
+                                        </Typography>
+                                        {item.courses.map((item)=>{
+                                            return <Chip style={{
+                                                marginBottom:'0.2em'
+                                            }} key={item.course_code} label={item.CourseNName}></Chip>
+                                        })}
+                                        <br/>
                                     </React.Fragment>
                                 }
                             />
-                        </ListItem> 
-                        <Divider variant="inset" component="li" />
-                        </List></Grid>
-                        }):"No users"}  
+                            </ListItem> 
+                            <Divider variant="inset" component="li" />
+                            </List></Grid>
+                        })}</>  
                         </StyledContainer>
             </Grid>
          </StyledContainer>
