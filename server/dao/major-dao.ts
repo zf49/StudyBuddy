@@ -1,5 +1,4 @@
 import { Major } from "../schema/major-schema";
-import { User } from "../schema/user-schema";
 
 
 export async function retriveMajors() {
