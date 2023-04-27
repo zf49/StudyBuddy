@@ -37,16 +37,16 @@ export default function Search() {
     };
 
     // main logic of search user
-    const handleSearchClick =  () => {
+    const handleSearchClick = async () => {
         // TODO: logic of search friend
-             axios.post(`http://localhost:8080/users/${searchTerm}`).then((res) => {
+            await axios.post(`http://localhost:8080/users/${searchTerm}`).then((res) => {
                  if(res.data.length===0){
                     setFlag(false)
                  }else{
                 setFlag(true)
                 setSearchRes(res.data)
                 dispatch(storeUser(res.data))
-                 }
+                }
                 // console.log("sR",searchRes)
             })
     };
@@ -69,32 +69,27 @@ export default function Search() {
     setOpen(true);
   };
 
+  const [filterCourse, setFilterCourse] = useState<string[]>([])
   const handleClose = () => {
-
-
-    const userArr = users.filter((userDetail: IUserDetail) => {
-        return userDetail.courses.some((course: ICourse) => {
-          return filterCourse.includes(course.CourseNName);
-        });
-      });
-      console.log(userArr)
-      dispatch(storeUser(userArr))
-      setSearchRes(userArr)
-    setOpen(false);
+          setOpen(false);
 
   };
+  const handleDataChange = (newData: string[]) => {
+    // setFilterCourse(newData);
+    // console.log(newData)
+  };
 
+  const handleSelectedCourses = (selectedCourses:string[]) => {
+    console.log(selectedCourses);
 
+    
 
-  const [filterCourse, setFilterCourse] = useState<string[]>([])
+    // ... do something with selectedCourses
+  };
  
-
-
-
-
     return (
         <>
-        {console.log(filterCourse)}
+        {console.log(searchRes)}
         <StyledContainer onKeyDown={handleKeyDown}>
             <Grid container justifyContent="center" alignItems="center" spacing={2}>
                 <Grid item xs={12}>
@@ -121,7 +116,6 @@ export default function Search() {
                     />
                 </Grid>
                 <StyledContainer>
-                         
                     <>
                         <div>
                         <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={handleClickOpen}>
@@ -131,7 +125,8 @@ export default function Search() {
                             handleClickOpen={handleClickOpen}
                             handleClose={handleClose}
                             users={users}
-                            onSubmit={setFilterCourse}
+                            onSelectedCoursesChange={handleSelectedCourses}
+                            onSubmit={handleDataChange}
                         />
                         </div>
                         {searchRes.map((item)=>{

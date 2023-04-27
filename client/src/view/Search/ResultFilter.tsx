@@ -24,13 +24,13 @@ interface IFilterList{
     handleClose:()=>void,
     users:IUserDetail[],
     onSubmit: (selectedCourses: string[]) => void
-
+    onSelectedCoursesChange:(selectedCourses: string[])=>void
 }
 
 export default function ResultFilter(props:IFilterList) {
 
 
-  const [filterList, setFilterList] = useState<string[]>()
+  const [filterList, setFilterList] = useState<string[]>([])
   const [open, setOpen] = React.useState(true);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
 
@@ -39,6 +39,7 @@ export default function ResultFilter(props:IFilterList) {
   };
 
   useEffect(() => {
+      console.log(props.users)
       const coursesSet = new Set<string>(); 
       props.users.forEach((userDetail: IUserDetail) => {
         userDetail.courses.forEach((course: ICourse) => {
@@ -60,8 +61,8 @@ export default function ResultFilter(props:IFilterList) {
 
   const handleApply = () => {
     props.onSubmit(selectedCourses);
-    
     props.handleClose();
+    props.onSelectedCoursesChange(selectedCourses);
     console.log(selectedCourses)
   }
 
