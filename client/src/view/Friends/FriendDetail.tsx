@@ -34,14 +34,15 @@ export default function FriendDetail() {
         authID: user?.sub,
         friendID: location.state.id
     }
+    const controller = new AbortController()
 
 
-    async function getFriendDetail(signal: AbortSignal) {
-        const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`, {signal: signal})
+    async function getFriendDetail() {
+        const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`, {signal: controller.signal})
         setFriendDetail(dbData.data)
-            const dbFollow: boolean = (await axios.post('http://localhost:8080/friends/checkfollow', payload,{signal: signal})).data
+            const dbFollow: boolean = (await axios.post('http://localhost:8080/friends/checkfollow', payload,{signal: controller.signal})).data
             setFollow(dbFollow)
-            const dbSelf: boolean = (await axios.post(`http://localhost:8080/friends/checkself`, payload,{signal: signal})).data
+            const dbSelf: boolean = (await axios.post(`http://localhost:8080/friends/checkself`, payload,{signal: controller.signal})).data
             setSelf(dbSelf)
 
     }
@@ -51,18 +52,18 @@ export default function FriendDetail() {
     }
 
     async function handleUnFollow() {
-        await axios.post("http://localhost:8080/friends/delete", payload)
+        await axios.post("http://localhost:8080/friends/delete", payload, {signal: controller.signal})
         setFollow(false)
     }
 
     async function handleFollow() {
-        await axios.post("http://localhost:8080/friends/add", payload)
+        await axios.post("http://localhost:8080/friends/add", payload, {signal: controller.signal})
         setFollow(true)
     }
 
     useEffect(() => {
-        const controller = new AbortController()
-        getFriendDetail(controller.signal)
+        
+        getFriendDetail()
 
         return () => {
             controller.abort()
