@@ -25,7 +25,7 @@ const MenuProps = {
 export interface ICourse {
     course_code: string,
     course_name: string,
-    CodeNName: string
+    CourseNName: string
 }
 
 
@@ -48,7 +48,7 @@ export default function Course(props:ICourseProps) {
        // TODO: click update user courses
         const arr:string[] = []
         props.selectedCourse.map((item)=>{
-          arr.push(item.CodeNName)
+          arr.push(item.CourseNName)
         })
         setcourseToArrary(arr)
 
@@ -62,7 +62,7 @@ export default function Course(props:ICourseProps) {
       // convert string[] to iCourse[]
       const updatedSelectedCourses: ICourse[] = [];
       for (const course of courseName || []) {
-        if (selectedValues.includes(course.CodeNName)) {
+        if (selectedValues.includes(course.CourseNName)) {
           updatedSelectedCourses.push(course);
         }
       }
@@ -91,9 +91,9 @@ export default function Course(props:ICourseProps) {
           MenuProps={MenuProps}
         >
           {courseName?.map((item,index) => (
-            <MenuItem key={index} value={item.CodeNName} >
-              <Checkbox checked={courseToArrary.includes(item.CodeNName)}/>
-              <ListItemText primary={item.CodeNName} />
+            <MenuItem key={index} value={item.CourseNName} >
+              <Checkbox checked={courseToArrary.includes(item.CourseNName)}/>
+              <ListItemText primary={item.CourseNName} />
 
             </MenuItem>
           ))}

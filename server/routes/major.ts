@@ -19,9 +19,7 @@ router.get('/', async (req, res) => {
     } = { faculties: faculties, majors: majors }
     res.json(data)
   } catch {
-
   }
-
 });
 
 
