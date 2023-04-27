@@ -268,8 +268,7 @@ export default function Profile() {
                 name="gender"
                 value={userProfile.gender}
                 onChange={handleGenderChange}
-                sx={{ opacity: 1 }}
-
+                sx={{ textAlign: 'left' }}
               >
                 <MenuItem value="">
                   <em>Prefer Not To Tell</em>
@@ -287,7 +286,7 @@ export default function Profile() {
             onChange={handleChange}
           />
           <div>
-            <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
+            <FormControl sx={{ width: "100%" }} style={{textAlign: 'left' , marginBottom: "10px" }}>
               <InputLabel id="faculty-label">Faculty</InputLabel>
               <Select
                 labelId="faculty-label"
@@ -306,7 +305,7 @@ export default function Profile() {
             </FormControl>
           </div>
           <div >
-            <FormControl sx={{ width: "100%" }} >
+            <FormControl sx={{ width: "100%" ,textAlign: 'left' }} >
               <InputLabel id="major-label">Major</InputLabel>
               <Select
                 labelId="major-label"
