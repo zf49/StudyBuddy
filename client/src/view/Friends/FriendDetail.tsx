@@ -5,6 +5,7 @@ import { useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import Button from '@mui/material/Button';
 import { useAuth0 } from "@auth0/auth0-react"
+import Joi from "joi"
 
 
 export interface IFriendDetail {
@@ -39,11 +40,34 @@ export default function FriendDetail() {
 
     async function getFriendDetail() {
         const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`, {signal: controller.signal})
-        setFriendDetail(dbData.data)
+        const dbDataValidate = Joi.object<IFriendDetail>({
+            name: Joi.string().required(),
+            uniID: Joi.string().required(),
+            gender: Joi.string().required().allow(null, ''),
+            email: Joi.string().required().allow(null, ''),
+            faculty: Joi.string().required().allow(null, ''),
+            major: Joi.string().required().allow(null, ''),
+            userAvatar: Joi.string().required().allow(null, '')
+        }).unknown(true).validate(dbData.data)
+        if(dbDataValidate.error){
+            console.error(dbDataValidate.error)
+        }else{
+            setFriendDetail(dbDataValidate.value)
+        }
             const dbFollow: boolean = (await axios.post('http://localhost:8080/friends/checkfollow', payload,{signal: controller.signal})).data
-            setFollow(dbFollow)
+            const dbFollowValidate = Joi.boolean().required().validate(dbFollow)
+            if(dbFollowValidate.error){
+                console.error(dbFollowValidate.error)
+            }else{
+                setFollow(dbFollowValidate.value)
+            }
             const dbSelf: boolean = (await axios.post(`http://localhost:8080/friends/checkself`, payload,{signal: controller.signal})).data
-            setSelf(dbSelf)
+            const dbSelfValidate = Joi.boolean().required().validate(dbSelf)
+            if(dbSelfValidate.error){
+                console.error(dbSelfValidate.error)
+            }else{
+                setSelf(dbSelfValidate.value)
+            }
 
     }
 
@@ -87,24 +111,49 @@ export default function FriendDetail() {
                 </Typography>
             </div>
             <div style={{ textAlign: "left", marginBottom: "10px" }}>
-                <Typography variant="h6" gutterBottom>
-                    Gender:{friendDetail?.gender}
-                </Typography>
+            {friendDetail?.gender ?
+                    <Typography variant="h6" gutterBottom>
+                        Gender:{friendDetail?.gender}
+                    </Typography>
+                    :
+                    <Typography variant="h6" gutterBottom>
+                        Gender:Prefer Not To Tell
+                    </Typography>
+                }
             </div>
             <div style={{ textAlign: "left", width: "100%", marginBottom: "10px" }}>
-                <Typography variant="h6" gutterBottom sx={{ maxWidth: "10px" }}>
-                    Email:{friendDetail?.email}
-                </Typography>
+            {friendDetail?.email ?
+                    <Typography variant="h6" gutterBottom>
+                        Email:{friendDetail?.email}
+                    </Typography>
+                    :
+                    <Typography variant="h6" gutterBottom>
+                        Email:Prefer Not To Tell
+                    </Typography>
+                }
             </div>
             <div style={{ textAlign: "left", marginBottom: "10px" }}>
-                <Typography variant="h6" gutterBottom>
-                    Faculty:{friendDetail?.faculty}
-                </Typography>
+            {friendDetail?.faculty ?
+                    <Typography variant="h6" gutterBottom>
+                        Faculty:{friendDetail?.faculty}
+                    </Typography>
+                    :
+                    <Typography variant="h6" gutterBottom>
+                        Faculty:Prefer Not To Tell
+                    </Typography>
+                }
             </div>
             <div style={{ textAlign: "left", marginBottom: "10px" }}>
-                <Typography variant="h6" gutterBottom>
-                    Major:{friendDetail?.major}
-                </Typography>
+                {friendDetail?.major ?
+                    <Typography variant="h6" gutterBottom>
+                        Major:{friendDetail?.major}
+                    </Typography>
+                    :
+                    <Typography variant="h6" gutterBottom>
+                        Major:Prefer Not To Tell
+                    </Typography>
+                }
+
             </div>
             <div>
                 <Button variant="contained"
@@ -114,24 +163,24 @@ export default function FriendDetail() {
                     back
                 </Button>
                 {!self &&
-                (follow ?
-                    <Button variant="contained"
-                        sx={{ width: "40%", marginLeft: "10%" }}
-                        onClick={handleUnFollow}
-                    >
-                        Unfollow
-                    </Button>
-                    :
-                    <Button variant="contained"
-                        sx={{ width: "40%", marginLeft: "10%" }}
-                        onClick={handleFollow}
-                    >
-                        Follow
-                    </Button>
-                )
+                    (follow ?
+                        <Button variant="contained"
+                            sx={{ width: "40%", marginLeft: "10%" }}
+                            onClick={handleUnFollow}
+                        >
+                            Unfollow
+                        </Button>
+                        :
+                        <Button variant="contained"
+                            sx={{ width: "40%", marginLeft: "10%" }}
+                            onClick={handleFollow}
+                        >
+                            Follow
+                        </Button>
+                    )
 
-                
-            }
+
+                }
             </div>
 
 
