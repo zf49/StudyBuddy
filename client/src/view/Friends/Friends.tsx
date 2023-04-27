@@ -2,13 +2,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router';
-import { Typography, List, Grid } from '@mui/material';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
+
 import Avatar from '@mui/material/Avatar';
-import Divider from '@mui/material/Divider';
-import { StyledContainer } from '../Profile/Profile';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
