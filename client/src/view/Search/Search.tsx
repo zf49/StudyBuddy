@@ -17,6 +17,17 @@ import ResultFilter from './ResultFilter';
 import { RootState } from '../../redux/store';
 import { ICourse } from '../Profile/Course';
 
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    fontWeight: 'bold',
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  }));
+
+
+
+
 export default function Search() {
 
     const users = useSelector((state: RootState) => state.storeUser.userList);
@@ -105,121 +116,83 @@ export default function Search() {
   };
  
     return (
-        <>
-        {console.log(searchRes)}
-        <StyledContainer onKeyDown={handleKeyDown}>
-            <Grid container justifyContent="center" alignItems="center" spacing={2}>
-                <Grid item xs={12}>
-                    <Typography variant="h4" align="center">
-                        Search Buddies
-                    </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        sx={{ width: '100%' }}
+        <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
+          <div>
+            <h1>Search Buddies</h1>   
+            <div > 
+           
+                <Grid container justifyContent="center" alignItems="center" spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField
+                        onKeyDown={handleKeyDown}
                         fullWidth
                         variant="outlined"
-                        label="Enter search term"
+                        label="Search Buddies"
                         value={searchTerm}
                         onChange={handleSearchTermChange}
                         InputProps={{
                             endAdornment: (
+                                <>
+                                <Button onClick={handleClickOpen}>
+                                <FilterAltIcon />
+                                </Button>
                                 <Button variant="contained" 
                                 onClick={handleSearchClick}>
-                                    Search
+                                    Search 
                                 </Button>
+                                </>
                             )
                         }}
-                    />
+                        />
                 </Grid>
-                <StyledContainer>
-                    <>
-                        <div>
-                        <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={handleClickOpen}>
-                            Refine
-                        </Button>
-                            <ResultFilter open={open} 
+                            
+                <ResultFilter open={open} 
                             handleClickOpen={handleClickOpen}
                             handleClose={handleClose}
                             users={searchRes}
                             onSelectedCoursesChange={handleSelectedCourses}
                             onSubmit={handleDataChange}
-                        />
-                        </div>
-                        {searchRes.map((item)=>{
-                            return  <Grid item xs={12}><List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                            <ListItem alignItems="flex-start" onClick={()=>handleFriendDetail(item._id)}>
-                            <ListItemAvatar>
-                                <Avatar alt="Remy Sharp" src={item.userAvatar} />
-                            </ListItemAvatar>
-                            <ListItemText 
-                                primary={item.name}
-                                secondary={
-                                    <React.Fragment>
-                                        <Typography
-                                            sx={{ display: 'inline' }}
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            {'Email: '}
-                                        </Typography>
-                                        {item.email}
-                                        <br/>
-                                        <Typography
-                                            sx={{ display: 'inline' }}
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            {'UniID: '}
-                                        </Typography>
-                                        {item.uniID}
-                                        <br/>
-                                        <Typography
-                                            sx={{ display: 'inline' }}
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            {'Faculty: '}
-                                        </Typography>
-                                        {item.faculty}
-                                        <br/>
-                                        <Typography
-                                            sx={{ display: 'inline' }}
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            {'Major: '}
-                                        </Typography>
-                                        {item.major}
-                                        <br/>
-                                        <Typography
-                                            sx={{ display: 'inline' }}
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            {'Courses: '}
-                                        </Typography>
-                                        {item.courses.map((item)=>{
+                        /> 
+                </Grid>
+
+                
+
+                <Box sx={{ p: 2 }}>
+                <TableContainer component={Paper}>
+                    <Table>
+                    <TableHead>
+                        <TableRow>
+                        <StyledTableCell></StyledTableCell>
+                        <StyledTableCell>Name</StyledTableCell>
+                        <StyledTableCell>UniID</StyledTableCell>
+                        <StyledTableCell>Email</StyledTableCell>
+                        <StyledTableCell>Faculty</StyledTableCell>
+                        <StyledTableCell>Major</StyledTableCell>
+                        <StyledTableCell>Courses</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {searchRes.map((item) => (
+                        <TableRow key={item._id} onClick={() => handleFriendDetail(item._id)}>
+                            <TableCell><Avatar alt="Remy Sharp" src={item.userAvatar} /></TableCell>
+                            <TableCell>{item.name}</TableCell>
+                            <TableCell>{item.uniID}</TableCell>
+                            <TableCell>{item.email}</TableCell>
+                            <TableCell>{item.faculty}</TableCell>
+                            <TableCell>{item.major}</TableCell>
+                            <TableCell>{item.courses.map((item)=>{
                                             return <Chip style={{
                                                 marginBottom:'0.2em'
                                             }} key={item.course_code} label={item.CourseNName}></Chip>
-                                        })}
-                                        <br/>
-                                    </React.Fragment>
-                                }
-                            />
-                            </ListItem> 
-                            <Divider variant="inset" component="li" />
-                            </List></Grid>
-                        })}</>  
-                        </StyledContainer>
-            </Grid>
-         </StyledContainer>
-        </>
+                                        })}</TableCell>
+                        </TableRow>
+                        ))}
+                    </TableBody>
+                    </Table>
+                </TableContainer>
+             </Box>                   
+            </div>
+         </div>
+        </div>
     );
 }

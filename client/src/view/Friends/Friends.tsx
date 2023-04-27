@@ -2,12 +2,21 @@ import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router';
-import { Typography, List } from '@mui/material';
+import { Typography, List, Grid } from '@mui/material';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
+import { StyledContainer } from '../Profile/Profile';
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    fontWeight: 'bold',
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  }));
+
 
 export interface IFriend {
     name: string
@@ -45,41 +54,37 @@ export default function Friends() {
 
 
     return (
-        <div style={{ textAlign: "center", margin: "0 auto" }}>
-            <div style={{ marginTop: "20px", marginBottom: "20px" }}>
-                <Typography variant="h6" gutterBottom>
-                    Friends
-                </Typography>
-            </div>
-            <div>
-                {friends?.map((friend: IFriend) => (
-                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                        <ListItem alignItems="flex-start" onClick={() => handleFriendDetail(friend.ID)}>
-                            <ListItemAvatar>
-                                <Avatar alt="Remy Sharp" src={friend.avatar} />
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={friend.name}
-                                secondary={
-                                    <React.Fragment>
-                                        <Typography
-                                            sx={{ display: 'inline' }}
-                                            component="span"
-                                            variant="body2"
-                                            color="text.primary"
-                                        >
-                                            {'UniID: '}
-                                        </Typography>
-                                        {friend.uniID}
-                                    </React.Fragment>
-                                }
-                            />
-                        </ListItem>
-                        <Divider variant="inset" component="li" />
-                    </List>
-                ))}
-            </div>
-        </div>
+    <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
+          <div>
+            <h1>Search Buddies</h1>   
+            <div> 
+            
+            <Box sx={{ p: 2 }}>
+                <TableContainer component={Paper}>
+                    <Table>
+                    <TableHead>
+                        <TableRow>
+                        <StyledTableCell></StyledTableCell>
+                        <StyledTableCell>Name</StyledTableCell>
+                        <StyledTableCell>UniID</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {friends?.map((friend) => (
+                        <TableRow key={friend.ID} onClick={() => handleFriendDetail(friend.ID)}>
+                            <TableCell><Avatar alt="Remy Sharp" src={friend.avatar} /></TableCell>
+                            <TableCell>{friend.name}</TableCell>
+                            <TableCell>{friend.uniID}</TableCell>
+                        </TableRow>
+                        ))}
+                    </TableBody>
+                    </Table>
+                </TableContainer>
+             </Box>
+         </div>
+         </div>
+         </div>
+       
     )
 }
 

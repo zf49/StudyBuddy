@@ -5,9 +5,9 @@ export default function Home() {
   
     return (
         <>
-        <StyledContainer>
+        {/* <StyledContainer> */}
             {"Home:"}
-        </StyledContainer>  
+        {/* </StyledContainer>   */}
         </>
     )
 }

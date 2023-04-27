@@ -3,7 +3,7 @@ import { Outlet } from 'react-router'
 
 export default function Content() {
     return (
-        <div style={{marginTop:'4em'}}>
+        <div >
             <Outlet/>
         </div>
     )

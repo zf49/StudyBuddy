@@ -1,14 +1,9 @@
-
-import React,{useEffect, useState} from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Button } from '@mui/material';
 import image from './../../ICON/hdog.png';
 import dogPic from './../../ICON/dog.png' 
 import { useAuth0 } from "@auth0/auth0-react";
-import  { Navigate, useNavigate } from 'react-router-dom'
-import axios from 'axios'
-
-
+import  { useNavigate } from 'react-router-dom'
 
 const RootBox = styled(Box)({
   background: '#BFEFFF',
@@ -20,19 +15,14 @@ const RootBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  position: 'relative',
-
 });
 
 const ImageBox = styled(Box)({
   width: '60vh',
   height: '60vh',
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: 'relative',
   '&:hover img': {
-    filter: 'blur(5px)',
+    filter: 'blur(10px)',
   },
   '&:hover button': {
     opacity: 1,
@@ -53,13 +43,20 @@ const StyledButton = styled(Button)({
   transform: 'translate(-50%, -50%)',
   opacity: 0,
   transition: 'all 0.2s ease',
+  //  suitable for mobile version
+  
 });
 
 export default function Login() {
 
-    const navigate = useNavigate()
    
-    const { user, isAuthenticated, isLoading,loginWithRedirect,getAccessTokenSilently } = useAuth0();
+    const { loginWithRedirect } = useAuth0();
+
+    // const handleLoginClick = async () => {
+    //   await loginWithRedirect().then(()=>{
+    //       localStorage.setItem('token','123')
+    //   })
+    // }
 
   const handleLoginClick = async () => {
     try {
@@ -79,6 +76,7 @@ export default function Login() {
             handleLoginClick()
         }}>Login</StyledButton>
       </ImageBox>
+     
     </RootBox>
 
 </>

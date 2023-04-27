@@ -10,11 +10,11 @@ export default function SandBox() {
 
         
         <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid item xs={12} sx={{height:"10vh"}}>
           <TopBar/>
         </Grid>
-        <Grid item xs={12}>
-        <Container maxWidth="lg">
+        <Grid item xs={12} >
+        <Container maxWidth="lg" sx={{height:"100vh"}}>
           <Content />
         </Container>
         </Grid>

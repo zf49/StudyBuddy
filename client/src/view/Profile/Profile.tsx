@@ -209,7 +209,7 @@ export default function Profile() {
   }
 
   return (
-    <>
+    <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
       <Stack sx={{ width: '100%',position:'fixed', zIndex:'1'} } spacing={2}>
         {showSuccessAlert && (
           <Fade in={showSuccessAlert} timeout={1000} >
@@ -229,9 +229,8 @@ export default function Profile() {
           </Fade>
         )}
       </Stack>
-      <div style={{ width: "60%", textAlign: "center", margin: "0 auto" }}>
-        <h1 style={{'textAlign':'center'}}>Edit Profile</h1>   
-        //TODO: user Avatar can be changed
+      <div >
+        <h1>Edit Profile</h1>   
         <div style={{
             'display': 'flex',
             'justifyContent': 'center'
@@ -330,6 +329,6 @@ export default function Profile() {
           </StyledButton>
         </form>
       </div>
-</>
+</div>
   );
 }
