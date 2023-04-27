@@ -15,6 +15,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ResultFilter from './ResultFilter';
 
 import { RootState } from '../../redux/store';
+import { ICourse } from '../Profile/Course';
 
 export default function Search() {
 
@@ -27,7 +28,6 @@ export default function Search() {
     const [flag, setFlag] = useState(false)
     const dispatch = useDispatch()
     const navigate = useNavigate()
-
     const controller = new AbortController()
 
     useEffect(() => {
@@ -44,24 +44,15 @@ export default function Search() {
     // main logic of search user
     const handleSearchClick =  () => {
         // TODO: logic of search friend
-        // console.log(`item:${searchTerm}`);
-        if(searchTerm !== ''){
-             axios.post(`http://localhost:8080/users/${searchTerm}`, {signal: controller.signal}).then((res) => {
-
+             axios.post(`http://localhost:8080/users/${searchTerm}`,{signal: controller.signal}).then((res) => {
                  if(res.data.length===0){
                     setFlag(false)
                  }else{
                 setFlag(true)
                 setSearchRes(res.data)
                 dispatch(storeUser(res.data))
-                 }
-                // console.log("sR",searchRes)
+                }
             })
-        // }else{
-        //     // console.log("sR",searchRes)
-        //     setFlag(false)
-        //     // setSearchRes([])
-        // }
     };
 
     // when user press Enter, show search result 
@@ -76,16 +67,43 @@ export default function Search() {
         navigate("/frienddetail/", { state: {id:id}})
     }
 
-    const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
+  const [filterCourse, setFilterCourse] = useState<string[]>([])
   const handleClose = () => {
-    setOpen(false);
+          setOpen(false);
+
+  };
+  const handleDataChange = (newData: string[]) => {
+    // setFilterCourse(newData);
+    // console.log(newData)
   };
 
+  const handleSelectedCourses = (selectedCourses:string[]) => {
+    console.log(selectedCourses);
+
+    const arr:IUserDetail[] = []
+
+    searchRes.map((item)=>{
+        selectedCourses.forEach(element => {
+            item.courses.map((course)=>{
+                if(element === course.CourseNName){
+                    arr.push(item)
+                }
+            })
+        });
+    })
+
+    const newArr = Array.from(new Set(arr));
+    console.log(newArr)
+    setSearchRes(newArr)
+    // ... do something with selectedCourses
+  };
+ 
     return (
         <>
         {console.log(searchRes)}
@@ -115,17 +133,17 @@ export default function Search() {
                     />
                 </Grid>
                 <StyledContainer>
-                         
                     <>
                         <div>
                         <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={handleClickOpen}>
                             Refine
                         </Button>
-                            // res Filter
                             <ResultFilter open={open} 
                             handleClickOpen={handleClickOpen}
                             handleClose={handleClose}
-                            users={users}
+                            users={searchRes}
+                            onSelectedCoursesChange={handleSelectedCourses}
+                            onSubmit={handleDataChange}
                         />
                         </div>
                         {searchRes.map((item)=>{
