@@ -108,19 +108,16 @@ export default function Search() {
             })
         });
     })
-
     const newArr = Array.from(new Set(arr));
     console.log(newArr)
     setSearchRes(newArr)
-    // ... do something with selectedCourses
   };
  
     return (
         <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
           <div>
             <h1>Search Buddies</h1>   
-            <div > 
-           
+            <div >  
                 <Grid container justifyContent="center" alignItems="center" spacing={2}>
                     <Grid item xs={12}>
                         <TextField
