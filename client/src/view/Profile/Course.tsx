@@ -38,10 +38,11 @@ export default function Course(props:ICourseProps) {
     
     const [courseName, setCourseName] = useState<ICourse[]>()
     const [courseToArrary, setcourseToArrary] = useState<string[]>([])
+    const controller = new AbortController()
 
 
     useEffect(() => {
-       axios.get('http://localhost:8080/courses').then((res)=>{
+       axios.get('http://localhost:8080/courses', {signal: controller.signal}).then((res)=>{
            setCourseName(res.data)
        })
 
@@ -51,6 +52,10 @@ export default function Course(props:ICourseProps) {
           arr.push(item.CodeNName)
         })
         setcourseToArrary(arr)
+
+        return () => {
+          controller.abort()
+        }
 
     }, [props.selectedCourse])
 
