@@ -46,7 +46,6 @@ interface ICourseProps {
 
 
 export default function Course(props:ICourseProps) {
-    const classes = useStyles();
 
     const [courseName, setCourseName] = useState<ICourse[]>()
     const [courseToArrary, setcourseToArrary] = useState<string[]>([])
@@ -68,12 +67,14 @@ export default function Course(props:ICourseProps) {
       setCourseName(dbCourseValidate.value)
     }
     })
-
-
+    const arr:string[] = []
+    props.selectedCourse.map((item)=>{
+      arr.push(item.CourseNName)
+    })
+    setcourseToArrary(arr)
         return () => {
           controller.abort()
         }
-
     }, [props.selectedCourse])
 
 
