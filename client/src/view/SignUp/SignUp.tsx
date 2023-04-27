@@ -166,10 +166,9 @@ export default function SignUp(props: ISignUpProps) {
     }
 
     return (
-        <StyledContainer style={{paddingTop:"100px"}}>
-
+        <StyledContainer>
         <div style={{ width: "60%", textAlign: "center", margin: "0 auto" }}>
-            <div style={{ marginTop: "20px", marginBottom: "20px" }}>
+            <div style={{ marginBottom: "20px" }}>
                 <Typography variant="h6" gutterBottom>
                     Register
                 </Typography>

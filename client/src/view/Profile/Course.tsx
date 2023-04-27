@@ -11,9 +11,18 @@ import Chip from '@mui/material/Chip';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
-
+import { makeStyles } from '@mui/styles';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
+
+const useStyles = makeStyles((theme) => ({
+  select: {
+    whiteSpace: 'normal',
+    wordWrap: 'break-word',
+  },
+}));
+
+
 const MenuProps = {
   PaperProps: {
     style: {
@@ -35,7 +44,8 @@ interface ICourseProps{
 }
 
 export default function Course(props:ICourseProps) {
-    
+    const classes = useStyles();
+
     const [courseName, setCourseName] = useState<ICourse[]>()
     const [courseToArrary, setcourseToArrary] = useState<string[]>([])
     const controller = new AbortController()
@@ -76,10 +86,11 @@ export default function Course(props:ICourseProps) {
     
   return (
     <>
-    <div>
-      <FormControl style={{'width':'100%',marginTop:'10px'}}>
+    <div style={{ width: '100%'}}>
+      <FormControl style={{width:'100%',marginTop:'10px'}}>
         <InputLabel id="demo-multiple-checkbox-label">Course</InputLabel>
         <Select
+          className={classes.select}
           labelId="demo-multiple-checkbox-label"
           id="demo-multiple-checkbox"
           multiple
@@ -87,21 +98,22 @@ export default function Course(props:ICourseProps) {
           onChange={handleChange}
           input={<OutlinedInput label="Course" />}
           renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
               {selected.map((value) => (
-                <Chip key={value} label={value} />
+                <Chip key={value}  label={value} />
               ))}
             </Box>
           )}          
           MenuProps={MenuProps}
         >
+          <div style={{'overflow':'auto'}}>
           {courseName?.map((item,index) => (
-            <MenuItem key={index} value={item.CourseNName} >
-              <Checkbox checked={courseToArrary.includes(item.CourseNName)}/>
-              <ListItemText primary={item.CourseNName} />
-
-            </MenuItem>
+                  <MenuItem key={index} value={item.CourseNName} style={{width:'100%'}}>
+                    <Checkbox checked={courseToArrary.includes(item.CourseNName)}/>
+                    <ListItemText primary={item.CourseNName} />
+                  </MenuItem>
           ))}
+          </div>
         </Select>
       </FormControl>
     </div>

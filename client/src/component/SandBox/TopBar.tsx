@@ -18,10 +18,14 @@ import { Theme } from '@mui/material';
 
 
 
-const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1
+      flexGrow: 1,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -71,8 +75,7 @@ export default function TopBar() {
 
   return (
     <div className={classes.root}>
-      
-      <AppBar position="fixed">
+      <AppBar position="absolute">
         <Toolbar>
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={()=>{
               // console.log('123')

@@ -7,8 +7,7 @@ export default function Home() {
         <>
         <StyledContainer>
             {"Home:"}
-        </StyledContainer>
-            
+        </StyledContainer>  
         </>
     )
 }

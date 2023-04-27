@@ -20,12 +20,17 @@ const RootBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  position: 'relative',
+
 });
 
 const ImageBox = styled(Box)({
   width: '60vh',
   height: '60vh',
-  position: 'relative',
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
   '&:hover img': {
     filter: 'blur(5px)',
   },
@@ -55,12 +60,6 @@ export default function Login() {
     const navigate = useNavigate()
    
     const { user, isAuthenticated, isLoading,loginWithRedirect,getAccessTokenSilently } = useAuth0();
-
-    // const handleLoginClick = async () => {
-    //   await loginWithRedirect().then(()=>{
-    //       localStorage.setItem('token','123')
-    //   })
-    // }
 
   const handleLoginClick = async () => {
     try {

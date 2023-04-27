@@ -23,17 +23,11 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Paper from '@mui/material/Paper';
 import ImageList from '@mui/material/ImageList';
+import Container from '@mui/material/Container';
 import ImageListItem from '@mui/material/ImageListItem'; import {
+  
   Avatar,
-  Button,
-  Container,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Grid,
-  IconButton,
-  Typography,
+  Button
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from './UserAvatar';
@@ -42,7 +36,6 @@ import Course, { ICourse } from './Course';
 
 export const StyledContainer = styled("div")({
   margin: "0 auto",
-  paddingTop:"2.0em"
 });
 
 
@@ -122,8 +115,6 @@ export default function Profile() {
     });
   };
 
-
-
   const filteredMajors = majors.filter((major) => major.faculty === selectedFaculty);
 
   // get userprofile
@@ -174,7 +165,6 @@ export default function Profile() {
   }
   };
 
-
   // click save button, if success the green alert will appear, if failed alert will be red 
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -219,14 +209,10 @@ export default function Profile() {
   }
 
   return (
-    <StyledContainer>
-
     <>
-      {console.log(userProfile)}
-
-      <Stack sx={{ width: '100%' }} spacing={2}>
+      <Stack sx={{ width: '100%',position:'fixed', zIndex:'1'} } spacing={2}>
         {showSuccessAlert && (
-          <Fade in={showSuccessAlert} timeout={1000}>
+          <Fade in={showSuccessAlert} timeout={1000} >
             {/* <Collapse in={showSuccessAlert}> */}
             <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)}>
               This is a success alert — check it out!
@@ -236,21 +222,15 @@ export default function Profile() {
 
         )}
         {showErrorAlert && (
-          <Fade in={showErrorAlert} timeout={1000}>
+          <Fade in={showErrorAlert} timeout={1000} style={{position:'fixed'}}>
             <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)}>
               This is an error alert — check it out!
             </Alert>
           </Fade>
         )}
       </Stack>
-      <StyledContainer style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "60%",
-          margin: "0 auto",
-        }}>
-        <h1 style={{'textAlign':'center'}}>Edit Profile</h1>
-       
+      <div style={{ width: "60%", textAlign: "center", margin: "0 auto" }}>
+        <h1 style={{'textAlign':'center'}}>Edit Profile</h1>   
         //TODO: user Avatar can be changed
         <div style={{
             'display': 'flex',
@@ -304,7 +284,6 @@ export default function Profile() {
             value={userProfile.email}
             onChange={handleChange}
           />
-
           <div>
             <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
               <InputLabel id="faculty-label">Faculty</InputLabel>
@@ -335,6 +314,7 @@ export default function Profile() {
                 name="major"
                 onChange={handleMajorChange}
                 disabled={!selectedFaculty}
+                
               >
                 {filteredMajors.map((major, index) => (
                   <MenuItem key={index} value={major.major}>
@@ -349,9 +329,7 @@ export default function Profile() {
             Save Changes
           </StyledButton>
         </form>
-      </StyledContainer>
-    </>
-    </StyledContainer>
-
+      </div>
+</>
   );
 }

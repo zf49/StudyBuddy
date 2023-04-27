@@ -1,25 +1,26 @@
-import React,{Fragment} from 'react'
 import TopBar from '../component/SandBox/TopBar'
-import { Outlet } from 'react-router';
 import Content from '../component/SandBox/Content';
-import Menu from '../component/SandBox/SideBar';
-import SideBar from '../component/SandBox/SideBar';
-import { StyledContainer } from './Profile/Profile';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 
 
 export default function SandBox() {
-
-
+  
     return (
 
-        <Fragment>
-            <TopBar/>
-            <StyledContainer>
-            <Content/>
-            </StyledContainer>
-            {/* <BottomBar/>   */}
-        </Fragment>
         
+        <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <TopBar/>
+        </Grid>
+        <Grid item xs={12}>
+        <Container maxWidth="lg">
+          <Content />
+        </Container>
+        </Grid>
+      </Grid>
+    
+    
 
           
     )
