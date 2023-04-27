@@ -1,4 +1,4 @@
-import { Avatar, Typography } from "@mui/material"
+import { Avatar, Box, Paper, Typography } from "@mui/material"
 import axios from "axios"
 import React from "react"
 import { useEffect } from "react"
@@ -95,8 +95,10 @@ export default function FriendDetail() {
     }, [])
 
     return (
-        <div style={{ width: "60%", textAlign: "center", margin: "0 auto" }}>
-            <div style={{ marginTop: "30px", marginBottom: "30px" }}>
+        <Paper elevation={24}>
+        <Box>
+        <div style={{ width: "80%", textAlign: "center", margin: "0 auto",paddingTop:"2em", paddingBottom:"2em"}}>
+            <div>
                 <Avatar sx={{ width: 56, height: 56, margin: "0 auto" }}
                     src={friendDetail?.userAvatar} />
             </div>
@@ -186,5 +188,8 @@ export default function FriendDetail() {
 
 
 
-        </div>)
+             </div>
+        </Box>
+        </Paper>
+        )
 }
