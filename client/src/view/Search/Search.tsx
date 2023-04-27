@@ -15,6 +15,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import ResultFilter from './ResultFilter';
 
 import { RootState } from '../../redux/store';
+import { ICourse } from '../Profile/Course';
 
 export default function Search() {
 
@@ -38,8 +39,6 @@ export default function Search() {
     // main logic of search user
     const handleSearchClick =  () => {
         // TODO: logic of search friend
-        // console.log(`item:${searchTerm}`);
-        // if(searchTerm !== ''){
              axios.post(`http://localhost:8080/users/${searchTerm}`).then((res) => {
                  if(res.data.length===0){
                     setFlag(false)
@@ -50,11 +49,6 @@ export default function Search() {
                  }
                 // console.log("sR",searchRes)
             })
-        // }else{
-        //     // console.log("sR",searchRes)
-        //     setFlag(false)
-        //     // setSearchRes([])
-        // }
     };
 
     // when user press Enter, show search result 
@@ -76,12 +70,31 @@ export default function Search() {
   };
 
   const handleClose = () => {
+
+
+    const userArr = users.filter((userDetail: IUserDetail) => {
+        return userDetail.courses.some((course: ICourse) => {
+          return filterCourse.includes(course.CourseNName);
+        });
+      });
+      console.log(userArr)
+      dispatch(storeUser(userArr))
+      setSearchRes(userArr)
     setOpen(false);
+
   };
+
+
+
+  const [filterCourse, setFilterCourse] = useState<string[]>([])
+ 
+
+
+
 
     return (
         <>
-        {console.log(searchRes)}
+        {console.log(filterCourse)}
         <StyledContainer onKeyDown={handleKeyDown}>
             <Grid container justifyContent="center" alignItems="center" spacing={2}>
                 <Grid item xs={12}>
@@ -114,11 +127,11 @@ export default function Search() {
                         <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={handleClickOpen}>
                             Refine
                         </Button>
-                            // res Filter
                             <ResultFilter open={open} 
                             handleClickOpen={handleClickOpen}
                             handleClose={handleClose}
                             users={users}
+                            onSubmit={setFilterCourse}
                         />
                         </div>
                         {searchRes.map((item)=>{
