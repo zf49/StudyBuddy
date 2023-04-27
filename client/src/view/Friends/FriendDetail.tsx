@@ -5,6 +5,7 @@ import { useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import Button from '@mui/material/Button';
 import { useAuth0 } from "@auth0/auth0-react"
+import Joi from "joi"
 
 
 export interface IFriendDetail {
@@ -39,11 +40,34 @@ export default function FriendDetail() {
 
     async function getFriendDetail() {
         const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`, {signal: controller.signal})
-        setFriendDetail(dbData.data)
-        const dbFollow: boolean = (await axios.post('http://localhost:8080/friends/checkfollow', payload)).data
-        setFollow(dbFollow)
-        const dbSelf: boolean = (await axios.post(`http://localhost:8080/friends/checkself`, payload)).data
-        setSelf(dbSelf)
+        const dbDataValidate = Joi.object<IFriendDetail>({
+            name: Joi.string().required(),
+            uniID: Joi.string().required(),
+            gender: Joi.string().required().allow(null, ''),
+            email: Joi.string().required().allow(null, ''),
+            faculty: Joi.string().required().allow(null, ''),
+            major: Joi.string().required().allow(null, ''),
+            userAvatar: Joi.string().required().allow(null, '')
+        }).unknown(true).validate(dbData.data)
+        if(dbDataValidate.error){
+            console.error(dbDataValidate.error)
+        }else{
+            setFriendDetail(dbDataValidate.value)
+        }
+            const dbFollow: boolean = (await axios.post('http://localhost:8080/friends/checkfollow', payload,{signal: controller.signal})).data
+            const dbFollowValidate = Joi.boolean().required().validate(dbFollow)
+            if(dbFollowValidate.error){
+                console.error(dbFollowValidate.error)
+            }else{
+                setFollow(dbFollowValidate.value)
+            }
+            const dbSelf: boolean = (await axios.post(`http://localhost:8080/friends/checkself`, payload,{signal: controller.signal})).data
+            const dbSelfValidate = Joi.boolean().required().validate(dbSelf)
+            if(dbSelfValidate.error){
+                console.error(dbSelfValidate.error)
+            }else{
+                setSelf(dbSelfValidate.value)
+            }
 
     }
 
