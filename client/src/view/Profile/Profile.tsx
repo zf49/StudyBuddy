@@ -210,19 +210,18 @@ export default function Profile() {
 
   return (
     <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
-      <Stack sx={{ width: '100%',position:'fixed', zIndex:'1'} } spacing={2}>
+      <Stack spacing={2}>
         {showSuccessAlert && (
           <Fade in={showSuccessAlert} timeout={1000} >
             {/* <Collapse in={showSuccessAlert}> */}
-            <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)}>
-              This is a success alert — check it out!
+            <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)} sx={{position:'static'}}>
+              This is a success alert 
           </Alert>
             {/* </Collapse> */}
           </Fade>
-
         )}
         {showErrorAlert && (
-          <Fade in={showErrorAlert} timeout={1000} style={{position:'fixed'}}>
+          <Fade in={showErrorAlert} timeout={1000}>
             <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)}>
               This is an error alert — check it out!
             </Alert>
@@ -327,7 +326,7 @@ export default function Profile() {
             </FormControl>
           </div>
         </form>
-        <StyledButton variant="contained" onClick={handleSaveChanges} style={{ marginTop: "10px" }}>
+        <StyledButton variant="contained" onClick={handleSaveChanges} style={{ marginTop: "10px" , marginBottom: "3em"}}>
             Save Changes
           </StyledButton>
       </div>
