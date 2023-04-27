@@ -35,14 +35,16 @@ interface ICourseProps {
   setCourse: (value: ICourse[]) => void
 }
 
-export default function Course(props: ICourseProps) {
 
-  const [courseName, setCourseName] = useState<ICourse[]>()
-  const [courseToArrary, setcourseToArrary] = useState<string[]>([])
+export default function Course(props:ICourseProps) {
+    
+    const [courseName, setCourseName] = useState<ICourse[]>()
+    const [courseToArrary, setcourseToArrary] = useState<string[]>([])
+    const controller = new AbortController()
 
 
   useEffect(() => {
-    axios.get('http://localhost:8080/courses').then((res) => {
+    axios.get('http://localhost:8080/courses', {signal: controller.signal}).then((res) => {
       const dbCourseValidate = Joi.array().items(
         Joi.object<ICourse>({
           course_code: Joi.string().required(),
@@ -57,14 +59,12 @@ export default function Course(props: ICourseProps) {
     }
     })
 
-    // TODO: click update user courses
-    const arr: string[] = []
-    props.selectedCourse.map((item) => {
-      arr.push(item.CourseNName)
-    })
-    setcourseToArrary(arr)
 
-  }, [props.selectedCourse])
+        return () => {
+          controller.abort()
+        }
+
+    }, [props.selectedCourse])
 
 
   const handleChange = (e: SelectChangeEvent<string[]>) => {

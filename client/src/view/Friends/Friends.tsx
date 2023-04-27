@@ -23,10 +23,11 @@ export default function Friends() {
     const { user, isAuthenticated } = useAuth0();
     const [friends, setFriends] = React.useState<IFriend[]>()
     const navigate = useNavigate()
+    const controller = new AbortController()
 
     async function getFriends() {
         if (user) {
-            const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`)
+            const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`,{signal: controller.signal})
             const dbDataValidate = Joi.array().items(
                 Joi.object<IFriend>({
                 name: Joi.string().required(),
@@ -44,11 +45,15 @@ export default function Friends() {
     }
 
     function handleFriendDetail(id: string) {
-        navigate("/frienddetail/", { state: { "id": id } })
+        navigate("/frienddetail/", { state: { "id": id }})
     }
 
     useEffect(() => {
         getFriends()
+
+        return () =>{
+            controller.abort()
+        }
     }, [])
 
 
