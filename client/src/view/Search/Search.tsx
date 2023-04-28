@@ -151,7 +151,7 @@ export default function Search() {
                 </Grid>
                 
                 <Box sx={{ p: 2}}>
-                    <Paper elevation={24}>
+                <Paper elevation={24}>
                 <TableContainer component={Paper} >
                     <Table>
                     <TableHead>

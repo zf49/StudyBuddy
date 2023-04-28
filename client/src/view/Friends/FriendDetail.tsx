@@ -97,7 +97,7 @@ export default function FriendDetail() {
     return (
         <Paper elevation={24}>
         <Box>
-        <div style={{ width: "80%", textAlign: "center", margin: "0 auto",paddingTop:"2em", paddingBottom:"2em"}}>
+        <div style={{ width: "80%", textAlign: "center", margin: "0 auto",paddingTop:"2em", paddingBottom:"2em", wordWrap:'break-word' }}>
             <div>
                 <Avatar sx={{ width: 56, height: 56, margin: "0 auto" }}
                     src={friendDetail?.userAvatar} />
@@ -109,50 +109,50 @@ export default function FriendDetail() {
             </div>
             <div style={{ textAlign: "left", marginBottom: "10px" }}>
                 <Typography variant="h6" gutterBottom>
-                    UniID:{friendDetail?.uniID}
+                    UniID: {friendDetail?.uniID}
                 </Typography>
             </div>
             <div style={{ textAlign: "left", marginBottom: "10px" }}>
             {friendDetail?.gender ?
                     <Typography variant="h6" gutterBottom>
-                        Gender:{friendDetail?.gender}
+                        Gender: {friendDetail?.gender}
                     </Typography>
                     :
                     <Typography variant="h6" gutterBottom>
-                        Gender:Prefer Not To Tell
+                        Gender: Prefer Not To Tell
                     </Typography>
                 }
             </div>
             <div style={{ textAlign: "left", width: "100%", marginBottom: "10px" }}>
             {friendDetail?.email ?
                     <Typography variant="h6" gutterBottom>
-                        Email:{friendDetail?.email}
+                        Email: {friendDetail?.email}
                     </Typography>
                     :
                     <Typography variant="h6" gutterBottom>
-                        Email:Prefer Not To Tell
+                        Email: Prefer Not To Tell
                     </Typography>
                 }
             </div>
             <div style={{ textAlign: "left", marginBottom: "10px" }}>
             {friendDetail?.faculty ?
                     <Typography variant="h6" gutterBottom>
-                        Faculty:{friendDetail?.faculty}
+                        Faculty: {friendDetail?.faculty}
                     </Typography>
                     :
                     <Typography variant="h6" gutterBottom>
-                        Faculty:Prefer Not To Tell
+                        Faculty: Prefer Not To Tell
                     </Typography>
                 }
             </div>
             <div style={{ textAlign: "left", marginBottom: "10px" }}>
                 {friendDetail?.major ?
                     <Typography variant="h6" gutterBottom>
-                        Major:{friendDetail?.major}
+                        Major: { friendDetail?.major}
                     </Typography>
                     :
                     <Typography variant="h6" gutterBottom>
-                        Major:Prefer Not To Tell
+                        Major: Prefer Not To Tell
                     </Typography>
                 }
 
@@ -184,10 +184,6 @@ export default function FriendDetail() {
 
                 }
             </div>
-
-
-
-
              </div>
         </Box>
         </Paper>
