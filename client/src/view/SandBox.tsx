@@ -1,25 +1,35 @@
-import React,{Fragment} from 'react'
 import TopBar from '../component/SandBox/TopBar'
-import { Outlet } from 'react-router';
 import Content from '../component/SandBox/Content';
-import Menu from '../component/SandBox/SideBar';
-import SideBar from '../component/SandBox/SideBar';
-import { StyledContainer } from './Profile/Profile';
-
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import dogPic from './../ICON/dog.png' 
+import Divider from '@mui/material/Divider';
 
 export default function SandBox() {
-
-
+  
     return (
 
-        <Fragment>
-            <TopBar/>
-            <StyledContainer>
-            <Content/>
-            </StyledContainer>
-            {/* <BottomBar/>   */}
-        </Fragment>
-        
+        <Grid container spacing={2} style={{
+          backgroundImage: `url(${dogPic})`,
+          backgroundColor: '#ADD8E6',
+          backgroundSize: '5em',
+          display: 'flex', 
+          flexDirection: 'column', 
+          flexGrow: 1,
+        }}>
+        <Grid item xs={12}>
+          <TopBar/>
+        </Grid>
+        <Divider />
+
+        <Grid item xs={12} className="asdasdasd" >
+        <Container maxWidth="lg" sx={{height:"100vh"}} style={{ flexGrow: 1, overflowY: 'auto',paddingTop:'10vh' }}>
+            <Content />
+        </Container>
+        </Grid>
+        </Grid>
+    
+    
 
           
     )
