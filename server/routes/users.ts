@@ -15,9 +15,9 @@ const HTTP_BAD_REQUEST = 400;
 // get search user result
 router.post('/:keyword', async (req, res) => {
   const keywordValidate = Joi.string().required().validate(req.params.keyword)
-  if(keywordValidate.error){
+  if (keywordValidate.error) {
     console.error(keywordValidate.error)
-  }else{
+  } else {
     const userResult = await searchUser(keywordValidate.value)
     res.json(userResult)
   }
@@ -27,29 +27,29 @@ router.post('/:keyword', async (req, res) => {
 // update userProfile
 router.patch('/profile/:authID', async (req, res, next) => {
   const authIDValidate = Joi.string().required().validate(req.params.authID)
-  if(authIDValidate.error){
+  if (authIDValidate.error) {
     console.error(authIDValidate.error)
-  }else{
+  } else {
     const userDataValidate = Joi.object<IUser>({
       name: Joi.string().required(),
       uniID: Joi.string().required(),
       gender: Joi.string().required().allow(null, ''),
       email: Joi.string().required().allow(null, ''),
       faculty: Joi.string().required().allow(null, ''),
-    major: Joi.string().required().allow(null, ''),
-    authID: Joi.string().required(),
-    userAvatar: Joi.string().required(),
-    courses: Joi.array().items(
-      Joi.object({
-        course_code: Joi.string().required(),
-        course_name: Joi.string().required(),
-        CourseNName: Joi.string().required()
-      })
-    ).required().allow(null, '')
+      major: Joi.string().required().allow(null, ''),
+      authID: Joi.string().required(),
+      userAvatar: Joi.string().required(),
+      courses: Joi.array().items(
+        Joi.object({
+          course_code: Joi.string().required(),
+          course_name: Joi.string().required(),
+          CourseNName: Joi.string().required()
+        })
+      ).required().allow(null, '')
     }).unknown(true).validate(req.body)
-    if(userDataValidate.error){
+    if (userDataValidate.error) {
       console.error(userDataValidate.error)
-    }else{
+    } else {
       const updatedUser = await updateUserProfile(authIDValidate.value, userDataValidate.value)
       res.json(updatedUser);
     }
@@ -64,9 +64,9 @@ router.patch('/profile/:authID', async (req, res, next) => {
 /* GET users listing. */
 router.get('/:uniID', async (req, res, next) => {
   const uniIDValidate = Joi.string().required().validate(req.params.uniID)
-  if(uniIDValidate.error){
+  if (uniIDValidate.error) {
     console.error(uniIDValidate.error)
-  }else{
+  } else {
     const user = await getUserProfile(uniIDValidate.value)
     res.json(user);
   }
@@ -75,9 +75,9 @@ router.get('/:uniID', async (req, res, next) => {
 // Get users login Email
 router.get('/authID/:authID', async (req, res, next) => {
   const authIDValidate = Joi.string().required().validate(req.params.authID)
-  if(authIDValidate.error){
+  if (authIDValidate.error) {
     console.error(authIDValidate.error)
-  }else{
+  } else {
     const isHave: object = await checkAuthID(authIDValidate.value);
     res.send(isHave)
   }
@@ -95,41 +95,13 @@ router.post("/api/register", async (req, res) => {
       authID: Joi.string().required(),
       userAvatar: Joi.string().required(),
     }).validate(req.body)
-    if(userDataValidate.error)
-    {
+    if (userDataValidate.error) {
       console.error(userDataValidate.error)
-    }else{
+    } else {
       const newUser = await createUser(userDataValidate.value)
       res.sendStatus(HTTP_CREATED)
       console.log(newUser)
     }
-    // const user: {
-    //   name: string,
-    //   uniID: string,
-    //   gender: string,
-    //   email: string,
-    //   faculty: string,
-    //   major: string,
-    //   authID: string,
-    //   userAvatar: string
-    // } = {
-    //   name: req.body.name,
-    //   uniID: req.body.uniID,
-    //   gender: req.body.gender,
-    //   email: req.body.email,
-    //   faculty: req.body.faculty,
-    //   major: req.body.major,
-    //   authID: req.body.authID,
-    //   userAvatar: req.body.userAvatar
-    // }
-    // console.log(req.body)
-    // if (user.name && user.uniID) {
-    //   const newUser = await createUser(user)
-    //   res.sendStatus(HTTP_CREATED)
-    //   console.log(newUser)
-    // } else {
-    //   res.json("User name or UniID cannot be empty!")
-    // }
   } catch (err) {
     console.log(err)
     res.sendStatus(HTTP_BAD_REQUEST)
