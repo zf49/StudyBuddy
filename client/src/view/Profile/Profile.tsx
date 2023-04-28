@@ -209,20 +209,18 @@ export default function Profile() {
   }
 
   return (
-    <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
+    <div style={{width: "100%", textAlign: "center", margin: "0 auto" }}>
       <Stack spacing={2}>
         {showSuccessAlert && (
           <Fade in={showSuccessAlert} timeout={1000} >
-            {/* <Collapse in={showSuccessAlert}> */}
-            <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)} sx={{position:'static'}}>
+            <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)} sx={{position:'fixed', zIndex:'1', width:'80vw', left:'0', right:'0', margin:'-3em auto'}}>
               This is a success alert 
           </Alert>
-            {/* </Collapse> */}
           </Fade>
         )}
         {showErrorAlert && (
           <Fade in={showErrorAlert} timeout={1000}>
-            <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)}>
+            <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)} sx={{position:'fixed', zIndex:'1', width:'80vw', left:'0', right:'0', margin:'-3em auto'}}>
               This is an error alert — check it out!
             </Alert>
           </Fade>

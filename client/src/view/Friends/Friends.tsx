@@ -66,7 +66,7 @@ export default function Friends() {
             <h1>My Friends</h1>   
             <div> 
             <Box sx={{ p: 2 }}>
-                <TableContainer component={Paper}>
+                <Paper elevation={24}>
                     <Table>
                     <TableHead>
                         <TableRow>
@@ -85,11 +85,11 @@ export default function Friends() {
                         ))}
                     </TableBody>
                     </Table>
-                </TableContainer>
-             </Box>
-         </div>
-         </div>
-         </div>
+                </Paper>
+            </Box>
+            </div>
+        </div>
+    </div>
        
     )
 }

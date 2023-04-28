@@ -117,7 +117,6 @@ export default function Search() {
         <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
           <div>
             <h1>Search Buddies</h1>   
-            <div >  
                 <Grid container justifyContent="center" alignItems="center" spacing={2}>
                     <Grid item xs={12}>
                         <TextField
@@ -142,7 +141,6 @@ export default function Search() {
                         }}
                         />
                 </Grid>
-                            
                 <ResultFilter open={open} 
                             handleClickOpen={handleClickOpen}
                             handleClose={handleClose}
@@ -151,8 +149,10 @@ export default function Search() {
                             onSubmit={handleDataChange}
                         /> 
                 </Grid>
-                <Box sx={{ p: 2 }}>
-                <TableContainer component={Paper}>
+                
+                <Box sx={{ p: 2}}>
+                <Paper elevation={24}>
+                <TableContainer component={Paper} >
                     <Table>
                     <TableHead>
                         <TableRow>
@@ -184,8 +184,8 @@ export default function Search() {
                     </TableBody>
                     </Table>
                 </TableContainer>
+                </Paper>
              </Box>                   
-            </div>
          </div>
         </div>
     );
