@@ -38,11 +38,12 @@ import ImageListItem from '@mui/material/ImageListItem'; import {
 import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from './UserAvatar';
 import Course, { ICourse } from './Course';
+import Joi from 'joi';
 
 
 export const StyledContainer = styled("div")({
   margin: "0 auto",
-  paddingTop:"2.0em"
+  paddingTop: "2.0em"
 });
 
 
@@ -63,14 +64,14 @@ export interface IUserDetail {
   faculty: string,
   major: string,
   authID: string,
-  userAvatar:string,
-  _id:string,
-  courses:ICourse[]
+  userAvatar: string,
+  _id: string,
+  courses: ICourse[]
 }
 
 
 export default function Profile() {
-  
+
   const [userProfile, setUserProfile] = useState<IUserDetail>({
     name: "",
     uniID: "",
@@ -79,9 +80,9 @@ export default function Profile() {
     faculty: "",
     major: "",
     authID: "",
-    userAvatar:"",
-    _id:"",
-    courses:[]
+    userAvatar: "",
+    _id: "",
+    courses: []
   });
 
   const { user, isAuthenticated } = useAuth0();
@@ -133,15 +134,52 @@ export default function Profile() {
       axios.get(`http://localhost:8080/users/${user.sub}`, {
         signal: controller.signal
       }).then((res) => {
-        setUserProfile(res.data[0])
-        setSelectedFaculty(res.data[0].faculty)
-        console.log(res.data[0])
+        const dbUserValidate = Joi.object<IUserDetail>({
+          name: Joi.string().required(),
+          uniID: Joi.string().required(),
+          gender: Joi.string().required().allow(null, ''),
+          email: Joi.string().required().allow(null, ''),
+          faculty: Joi.string().required().allow(null, ''),
+          major: Joi.string().required().allow(null, ''),
+          authID: Joi.string().required(),
+          userAvatar: Joi.string().required(),
+          _id: Joi.string().required(),
+          courses: Joi.array().items(
+            Joi.object<ICourse>({
+              course_code: Joi.string().required(),
+              course_name: Joi.string().required(),
+              CourseNName: Joi.string().required(),
+            })
+          )
+        }).unknown(true).validate(res.data[0])
+        if (dbUserValidate.error) {
+          console.log(dbUserValidate.error)
+        } else {
+          setUserProfile(dbUserValidate.value)
+          setSelectedFaculty(dbUserValidate.value.faculty)
+
+        }
       });
       axios.get("http://localhost:8080/major/", {
         signal: controller.signal
       }).then((res) => {
-        setFaculties(res.data.faculties)
-        setMajors(res.data.majors)
+        const dbFacultiesValidate = Joi.array().items(Joi.string().required()).required().validate(res.data.faculties)
+        if (dbFacultiesValidate.error) {
+          console.log(dbFacultiesValidate.error)
+        } else {
+          setFaculties(dbFacultiesValidate.value)
+        }
+        const dbMajorsValidate = Joi.array().items(
+          Joi.object<IMajor>({
+            faculty: Joi.string().required(),
+            major: Joi.string().required()
+          }).unknown(true)
+        ).validate(res.data.majors)
+        if (dbMajorsValidate.error) {
+          console.log(dbMajorsValidate.error)
+        } else {
+          setMajors(dbMajorsValidate.value)
+        }
       })
     }
     return () => {
@@ -161,17 +199,22 @@ export default function Profile() {
     console.log(JSON.stringify(userProfile));
     // TODO send update request to backend
 
-    if(userProfile.name === '' || userProfile.uniID === ''){
+    if (userProfile.name === '' || userProfile.uniID === '') {
       handleError()
-    }else{
-      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile, {signal: controller.signal}).then((res) => {
-        if (res.data.acknowledged) {
-          handleSuccess()
+    } else {
+      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile, { signal: controller.signal }).then((res) => {
+        const acknowledgedValidate = Joi.boolean().required().validate(res.data.acknowledged)
+        if (acknowledgedValidate.error) {
+          console.log(acknowledgedValidate.error)
         } else {
-          handleError()
+          if (res.data.acknowledged) {
+            handleSuccess()
+          } else {
+            handleError()
+          }
         }
-    })
-  }
+      })
+    }
   };
 
 
@@ -198,11 +241,11 @@ export default function Profile() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handleClose = (close:boolean) => {
+  const handleClose = (close: boolean) => {
     setOpen(close)
   };
 
-  const setUserPic = (picSrc:string)=>{
+  const setUserPic = (picSrc: string) => {
     console.log(picSrc)
 
     setUserProfile({
@@ -211,7 +254,7 @@ export default function Profile() {
     });
   }
 
-  const setCourse = (value:ICourse[])=>{
+  const setCourse = (value: ICourse[]) => {
     setUserProfile({
       ...userProfile,
       courses: value,
@@ -221,136 +264,136 @@ export default function Profile() {
   return (
     <StyledContainer>
 
-    <>
-      {console.log(userProfile)}
+      <>
+        {console.log(userProfile)}
 
-      <Stack sx={{ width: '100%' }} spacing={2}>
-        {showSuccessAlert && (
-          <Fade in={showSuccessAlert} timeout={1000}>
-            {/* <Collapse in={showSuccessAlert}> */}
-            <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)}>
-              This is a success alert — check it out!
-          </Alert>
-            {/* </Collapse> */}
-          </Fade>
+        <Stack sx={{ width: '100%' }} spacing={2}>
+          {showSuccessAlert && (
+            <Fade in={showSuccessAlert} timeout={1000}>
+              {/* <Collapse in={showSuccessAlert}> */}
+              <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)}>
+                This is a success alert — check it out!
+              </Alert>
+              {/* </Collapse> */}
+            </Fade>
 
-        )}
-        {showErrorAlert && (
-          <Fade in={showErrorAlert} timeout={1000}>
-            <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)}>
-              This is an error alert — check it out!
-            </Alert>
-          </Fade>
-        )}
-      </Stack>
-      <StyledContainer style={{
+          )}
+          {showErrorAlert && (
+            <Fade in={showErrorAlert} timeout={1000}>
+              <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)}>
+                This is an error alert — check it out!
+              </Alert>
+            </Fade>
+          )}
+        </Stack>
+        <StyledContainer style={{
           display: "flex",
           flexDirection: "column",
           width: "60%",
           margin: "0 auto",
         }}>
-        <h1 style={{'textAlign':'center'}}>Edit Profile</h1>
-       
+          <h1 style={{ 'textAlign': 'center' }}>Edit Profile</h1>
+
         //TODO: user Avatar can be changed
-        <div style={{
+          <div style={{
             'display': 'flex',
             'justifyContent': 'center'
-          }}>   
-          <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56, marginBottom: "1rem" }}
-            src={userProfile.userAvatar}
-            onClick={handleClickOpen}
-          ></Avatar> 
+          }}>
+            <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56, marginBottom: "1rem" }}
+              src={userProfile.userAvatar}
+              onClick={handleClickOpen}
+            ></Avatar>
 
-          {/* user Avatar */}
-           <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
-        </div>
-
-        <form>
-          <StyledTextField
-            label="Name"
-            name="name"
-            value={userProfile.name}
-            onChange={handleChange}
-          />
-          <StyledTextField
-            label="University ID"
-            name="uniID"
-            value={userProfile.uniID}
-            onChange={handleChange}
-          />
-          <>
-            <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
-              <InputLabel id="gender-label">Gender</InputLabel>
-              <Select
-                labelId="gender-label"
-                id="gender-select"
-                label="Gender"
-                name="gender"
-                value={userProfile.gender}
-                onChange={handleGenderChange}
-              >
-                <MenuItem value="">
-                  <em>Prefer Not To Tell</em>
-                </MenuItem>
-                <MenuItem value={"Male"}>Male</MenuItem>
-                <MenuItem value={"Female"}>Female</MenuItem>
-                <MenuItem value={"Other"}>Other</MenuItem>
-              </Select>
-            </FormControl>
-          </>
-          <StyledTextField
-            label="Email"
-            name="email"
-            value={userProfile.email}
-            onChange={handleChange}
-          />
-
-          <div>
-            <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
-              <InputLabel id="faculty-label">Faculty</InputLabel>
-              <Select
-                labelId="faculty-label"
-                id="faculty-select"
-                value={userProfile.faculty}
-                label="Faculty"
-                name="faculty"
-                onChange={handleFacultyChange}
-              >
-                {faculties.map((faculty) => (
-                  <MenuItem key={faculty} value={faculty}>
-                    {faculty}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {/* user Avatar */}
+            <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar} />
           </div>
-          <div >
-            <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
-              <InputLabel id="major-label">Major</InputLabel>
-              <Select
-                labelId="major-label"
-                id="major-select"
-                value={userProfile.major}
-                label="Major"
-                name="major"
-                onChange={handleMajorChange}
-                disabled={!selectedFaculty}
-              >
-                {filteredMajors.map((major, index) => (
-                  <MenuItem key={index} value={major.major}>
-                    {major.major}
+
+          <form>
+            <StyledTextField
+              label="Name"
+              name="name"
+              value={userProfile.name}
+              onChange={handleChange}
+            />
+            <StyledTextField
+              label="University ID"
+              name="uniID"
+              value={userProfile.uniID}
+              onChange={handleChange}
+            />
+            <>
+              <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
+                <InputLabel id="gender-label">Gender</InputLabel>
+                <Select
+                  labelId="gender-label"
+                  id="gender-select"
+                  label="Gender"
+                  name="gender"
+                  value={userProfile.gender}
+                  onChange={handleGenderChange}
+                >
+                  <MenuItem value="">
+                    <em>Prefer Not To Tell</em>
                   </MenuItem>
-                ))}
-              </Select>
-              <Course selectedCourse={userProfile.courses} setCourse={setCourse}/>
-            </FormControl>
-          </div>
-          <StyledButton variant="contained" onClick={handleSaveChanges}>
-            Save Changes
-          </StyledButton>
-        </form>
-      </StyledContainer>
-    </>
+                  <MenuItem value={"Male"}>Male</MenuItem>
+                  <MenuItem value={"Female"}>Female</MenuItem>
+                  <MenuItem value={"Other"}>Other</MenuItem>
+                </Select>
+              </FormControl>
+            </>
+            <StyledTextField
+              label="Email"
+              name="email"
+              value={userProfile.email}
+              onChange={handleChange}
+            />
+
+            <div>
+              <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
+                <InputLabel id="faculty-label">Faculty</InputLabel>
+                <Select
+                  labelId="faculty-label"
+                  id="faculty-select"
+                  value={userProfile.faculty}
+                  label="Faculty"
+                  name="faculty"
+                  onChange={handleFacultyChange}
+                >
+                  {faculties.map((faculty) => (
+                    <MenuItem key={faculty} value={faculty}>
+                      {faculty}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+            <div >
+              <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
+                <InputLabel id="major-label">Major</InputLabel>
+                <Select
+                  labelId="major-label"
+                  id="major-select"
+                  value={userProfile.major}
+                  label="Major"
+                  name="major"
+                  onChange={handleMajorChange}
+                  disabled={!selectedFaculty}
+                >
+                  {filteredMajors.map((major, index) => (
+                    <MenuItem key={index} value={major.major}>
+                      {major.major}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <Course selectedCourse={userProfile.courses} setCourse={setCourse} />
+              </FormControl>
+            </div>
+            <StyledButton variant="contained" onClick={handleSaveChanges}>
+              Save Changes
+            </StyledButton>
+          </form>
+        </StyledContainer>
+      </>
     </StyledContainer>
 
   );
