@@ -32,10 +32,12 @@ import ImageListItem from '@mui/material/ImageListItem'; import {
 import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from './UserAvatar';
 import Course, { ICourse } from './Course';
+import Joi from 'joi';
 
 
 export const StyledContainer = styled("div")({
   margin: "0 auto",
+  paddingTop: "2.0em"
 });
 
 
@@ -56,14 +58,14 @@ export interface IUserDetail {
   faculty: string,
   major: string,
   authID: string,
-  userAvatar:string,
-  _id:string,
-  courses:ICourse[]
+  userAvatar: string,
+  _id: string,
+  courses: ICourse[]
 }
 
 
 export default function Profile() {
-  
+
   const [userProfile, setUserProfile] = useState<IUserDetail>({
     name: "",
     uniID: "",
@@ -72,9 +74,9 @@ export default function Profile() {
     faculty: "",
     major: "",
     authID: "",
-    userAvatar:"",
-    _id:"",
-    courses:[]
+    userAvatar: "",
+    _id: "",
+    courses: []
   });
 
   const { user, isAuthenticated } = useAuth0();
@@ -124,15 +126,52 @@ export default function Profile() {
       axios.get(`http://localhost:8080/users/${user.sub}`, {
         signal: controller.signal
       }).then((res) => {
-        setUserProfile(res.data[0])
-        setSelectedFaculty(res.data[0].faculty)
-        console.log(res.data[0])
+        const dbUserValidate = Joi.object<IUserDetail>({
+          name: Joi.string().required(),
+          uniID: Joi.string().required(),
+          gender: Joi.string().required().allow(null, ''),
+          email: Joi.string().required().allow(null, ''),
+          faculty: Joi.string().required().allow(null, ''),
+          major: Joi.string().required().allow(null, ''),
+          authID: Joi.string().required(),
+          userAvatar: Joi.string().required(),
+          _id: Joi.string().required(),
+          courses: Joi.array().items(
+            Joi.object<ICourse>({
+              course_code: Joi.string().required(),
+              course_name: Joi.string().required(),
+              CourseNName: Joi.string().required(),
+            })
+          )
+        }).unknown(true).validate(res.data[0])
+        if (dbUserValidate.error) {
+          console.log(dbUserValidate.error)
+        } else {
+          setUserProfile(dbUserValidate.value)
+          setSelectedFaculty(dbUserValidate.value.faculty)
+
+        }
       });
       axios.get("http://localhost:8080/major/", {
         signal: controller.signal
       }).then((res) => {
-        setFaculties(res.data.faculties)
-        setMajors(res.data.majors)
+        const dbFacultiesValidate = Joi.array().items(Joi.string().required()).required().validate(res.data.faculties)
+        if (dbFacultiesValidate.error) {
+          console.log(dbFacultiesValidate.error)
+        } else {
+          setFaculties(dbFacultiesValidate.value)
+        }
+        const dbMajorsValidate = Joi.array().items(
+          Joi.object<IMajor>({
+            faculty: Joi.string().required(),
+            major: Joi.string().required()
+          }).unknown(true)
+        ).validate(res.data.majors)
+        if (dbMajorsValidate.error) {
+          console.log(dbMajorsValidate.error)
+        } else {
+          setMajors(dbMajorsValidate.value)
+        }
       })
     }
     return () => {
@@ -152,17 +191,22 @@ export default function Profile() {
     console.log(JSON.stringify(userProfile));
     // TODO send update request to backend
 
-    if(userProfile.name === '' || userProfile.uniID === ''){
+    if (userProfile.name === '' || userProfile.uniID === '') {
       handleError()
-    }else{
-      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile, {signal: controller.signal}).then((res) => {
-        if (res.data.acknowledged) {
-          handleSuccess()
+    } else {
+      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile, { signal: controller.signal }).then((res) => {
+        const acknowledgedValidate = Joi.boolean().required().validate(res.data.acknowledged)
+        if (acknowledgedValidate.error) {
+          console.log(acknowledgedValidate.error)
         } else {
-          handleError()
+          if (res.data.acknowledged) {
+            handleSuccess()
+          } else {
+            handleError()
+          }
         }
-    })
-  }
+      })
+    }
   };
 
   // click save button, if success the green alert will appear, if failed alert will be red 
@@ -188,11 +232,11 @@ export default function Profile() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handleClose = (close:boolean) => {
+  const handleClose = (close: boolean) => {
     setOpen(close)
   };
 
-  const setUserPic = (picSrc:string)=>{
+  const setUserPic = (picSrc: string) => {
     console.log(picSrc)
 
     setUserProfile({
@@ -201,7 +245,7 @@ export default function Profile() {
     });
   }
 
-  const setCourse = (value:ICourse[])=>{
+  const setCourse = (value: ICourse[]) => {
     setUserProfile({
       ...userProfile,
       courses: value,
@@ -209,6 +253,7 @@ export default function Profile() {
   }
 
   return (
+
     <div style={{width: "100%", textAlign: "center", margin: "0 auto" }}>
       <Stack spacing={2}>
         {showSuccessAlert && (
