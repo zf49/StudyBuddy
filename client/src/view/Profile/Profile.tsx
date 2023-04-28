@@ -4,7 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useState } from "react";
-import { TextField } from "@mui/material";
+import { Box, TextField } from "@mui/material";
 import styled from "@mui/styled-engine";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
@@ -23,17 +23,11 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Paper from '@mui/material/Paper';
 import ImageList from '@mui/material/ImageList';
+import Container from '@mui/material/Container';
 import ImageListItem from '@mui/material/ImageListItem'; import {
+  
   Avatar,
-  Button,
-  Container,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Grid,
-  IconButton,
-  Typography,
+  Button
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from './UserAvatar';
@@ -42,7 +36,6 @@ import Course, { ICourse } from './Course';
 
 export const StyledContainer = styled("div")({
   margin: "0 auto",
-  paddingTop:"2.0em"
 });
 
 
@@ -93,6 +86,8 @@ export default function Profile() {
 
   const [faculties, setFaculties] = useState<string[]>([])
 
+  const controller = new AbortController()
+
   const handleFacultyChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
     setUserProfile({
@@ -120,31 +115,28 @@ export default function Profile() {
     });
   };
 
-
-
   const filteredMajors = majors.filter((major) => major.faculty === selectedFaculty);
 
   // get userprofile
   useEffect(() => {
-    const abort = new AbortController()
     if (user && isAuthenticated) {
       // setUserProfile;
       axios.get(`http://localhost:8080/users/${user.sub}`, {
-        signal: abort.signal
+        signal: controller.signal
       }).then((res) => {
         setUserProfile(res.data[0])
         setSelectedFaculty(res.data[0].faculty)
         console.log(res.data[0])
       });
       axios.get("http://localhost:8080/major/", {
-        signal: abort.signal
+        signal: controller.signal
       }).then((res) => {
         setFaculties(res.data.faculties)
         setMajors(res.data.majors)
       })
     }
     return () => {
-      abort.abort();
+      controller.abort();
     }
   }, [user, isAuthenticated]);
 
@@ -163,7 +155,7 @@ export default function Profile() {
     if(userProfile.name === '' || userProfile.uniID === ''){
       handleError()
     }else{
-      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile).then((res) => {
+      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile, {signal: controller.signal}).then((res) => {
         if (res.data.acknowledged) {
           handleSuccess()
         } else {
@@ -172,7 +164,6 @@ export default function Profile() {
     })
   }
   };
-
 
   // click save button, if success the green alert will appear, if failed alert will be red 
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
@@ -218,39 +209,25 @@ export default function Profile() {
   }
 
   return (
-    <StyledContainer>
-
-    <>
-      {console.log(userProfile)}
-
-      <Stack sx={{ width: '100%' }} spacing={2}>
+    <div style={{width: "100%", textAlign: "center", margin: "0 auto" }}>
+      <Stack spacing={2}>
         {showSuccessAlert && (
-          <Fade in={showSuccessAlert} timeout={1000}>
-            {/* <Collapse in={showSuccessAlert}> */}
-            <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)}>
-              This is a success alert — check it out!
+          <Fade in={showSuccessAlert} timeout={1000} >
+            <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)} sx={{position:'fixed', zIndex:'1', width:'80vw', left:'0', right:'0', margin:'-3em auto'}}>
+              This is a success alert 
           </Alert>
-            {/* </Collapse> */}
           </Fade>
-
         )}
         {showErrorAlert && (
           <Fade in={showErrorAlert} timeout={1000}>
-            <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)}>
+            <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)} sx={{position:'fixed', zIndex:'1', width:'80vw', left:'0', right:'0', margin:'-3em auto'}}>
               This is an error alert — check it out!
             </Alert>
           </Fade>
         )}
       </Stack>
-      <StyledContainer style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "60%",
-          margin: "0 auto",
-        }}>
-        <h1 style={{'textAlign':'center'}}>Edit Profile</h1>
-       
-        //TODO: user Avatar can be changed
+      <div >
+        <h1>Edit Profile</h1>   
         <div style={{
             'display': 'flex',
             'justifyContent': 'center'
@@ -264,7 +241,10 @@ export default function Profile() {
            <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar}/>
         </div>
 
-        <form>
+        
+          <Paper elevation={24} >
+
+        <form style={{padding:'1em'}}>
           <StyledTextField
             label="Name"
             name="name"
@@ -275,7 +255,8 @@ export default function Profile() {
             label="University ID"
             name="uniID"
             value={userProfile.uniID}
-            onChange={handleChange}
+            onChange={handleChange}  sx={{ opacity: 1 }}
+
           />
           <>
             <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
@@ -287,6 +268,7 @@ export default function Profile() {
                 name="gender"
                 value={userProfile.gender}
                 onChange={handleGenderChange}
+                sx={{ textAlign: 'left' }}
               >
                 <MenuItem value="">
                   <em>Prefer Not To Tell</em>
@@ -303,9 +285,8 @@ export default function Profile() {
             value={userProfile.email}
             onChange={handleChange}
           />
-
           <div>
-            <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
+            <FormControl sx={{ width: "100%" }} style={{textAlign: 'left' , marginBottom: "10px" }}>
               <InputLabel id="faculty-label">Faculty</InputLabel>
               <Select
                 labelId="faculty-label"
@@ -324,7 +305,7 @@ export default function Profile() {
             </FormControl>
           </div>
           <div >
-            <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
+            <FormControl sx={{ width: "100%" ,textAlign: 'left' }} >
               <InputLabel id="major-label">Major</InputLabel>
               <Select
                 labelId="major-label"
@@ -344,13 +325,14 @@ export default function Profile() {
               <Course selectedCourse={userProfile.courses} setCourse={setCourse}/>
             </FormControl>
           </div>
-          <StyledButton variant="contained" onClick={handleSaveChanges}>
+        </form>
+        </Paper>
+        <StyledButton variant="contained" onClick={handleSaveChanges} style={{ marginTop: "10px" , marginBottom: "3em"}}>
             Save Changes
           </StyledButton>
-        </form>
-      </StyledContainer>
-    </>
-    </StyledContainer>
-
+          {/* </form>
+          </Paper> */}
+      </div>
+</div>
   );
 }

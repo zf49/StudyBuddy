@@ -1,4 +1,4 @@
-import { addFriend, checkFollow, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
+import { addFriend, checkFollow, checkSelf, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
 
 var express = require('express');
 var router = express.Router();
@@ -34,8 +34,13 @@ router.get('/detail/:id', async (req, res) => {
 })
 
 router.post('/checkfollow', async (req, res) => {
-    const follow = await checkFollow(req.body.authID, req.body.friendID)
-    res.json(follow)
+    const ifFollow = await checkFollow(req.body.authID, req.body.friendID)
+    res.json(ifFollow)
+})
+
+router.post('/checkself', async (req, res) => {
+    const ifSelf = await checkSelf(req.body.authID, req.body.friendID)
+    res.json(ifSelf)
 })
 
 module.exports = router;

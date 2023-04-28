@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { storeUser } from "../../redux/reducer/userReducer";
 import { useNavigate } from 'react-router';
 import { StyledContainer } from '../Profile/Profile';
+import { Paper } from '@mui/material';
 // move to own file
 
 export interface IMajor {
@@ -81,11 +82,10 @@ export default function SignUp(props: ISignUpProps) {
     const [majors, setMajors] = React.useState<IMajor[]>([]);
     const [authID, setAuthID] = useState<any>('')
     const navigate = useNavigate()
-
     const { user, isAuthenticated } = useAuth0()
+    const controller = new AbortController()
 
     useEffect(() => {
-        const controller = new AbortController();
         // what happens if user navigates away from this page while this request is running?
         // error: tried to update state of unloaded component
         apiGetMajor({ signal: controller.signal }).then(data => {
@@ -167,14 +167,13 @@ export default function SignUp(props: ISignUpProps) {
     }
 
     return (
-        <StyledContainer style={{paddingTop:"100px"}}>
-
-        <div style={{ width: "60%", textAlign: "center", margin: "0 auto" }}>
-            <div style={{ marginTop: "20px", marginBottom: "20px" }}>
-                <Typography variant="h6" gutterBottom>
-                    Register
-                </Typography>
+        <StyledContainer>
+        <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
+            <div>
+                <h1>Sign Up</h1>
             </div>
+            <Paper elevation={24}>
+            <div style={{padding:'1em'}}>
             <div style={{ marginBottom: "10px" }}>
                 <TextField
                     required
@@ -198,6 +197,7 @@ export default function SignUp(props: ISignUpProps) {
                     <InputLabel>Gender</InputLabel>
                     <Select
                         id="gender"
+                        label="Gender"
                         value={gender}
                         onChange={handleGender}
                     >
@@ -223,6 +223,7 @@ export default function SignUp(props: ISignUpProps) {
                     <InputLabel>Faculty</InputLabel>
                     <Select
                         id="faculty"
+                        label="Faculty"
                         value={faculty}
                         onChange={handleFaculty}
                     >
@@ -237,11 +238,12 @@ export default function SignUp(props: ISignUpProps) {
                     </Select>
                 </FormControl>
             </div>
-            <div style={{ marginBottom: "10px" }}>
+            <div>
                 <FormControl sx={{ width: "100%" }}>
                     <InputLabel>Major</InputLabel>
                     <Select
                         id="major"
+                        label="Major"
                         value={major}
                         onChange={handleMajor}
                     >
@@ -257,7 +259,9 @@ export default function SignUp(props: ISignUpProps) {
                     </Select>
                 </FormControl>
             </div>
-            <div style={{ marginBottom: "10px" }}>
+            </div>
+            </Paper>
+            <div style={{marginTop:'10px'}}>
                 <Button variant="contained"
                     onClick={handleSubmit}
                     sx={{ width: "100%" }}
@@ -268,8 +272,6 @@ export default function SignUp(props: ISignUpProps) {
             <div>
                 {message && <Alert severity="error">{message}</Alert>}
             </div>
-
-
 
         </div>
         </StyledContainer>

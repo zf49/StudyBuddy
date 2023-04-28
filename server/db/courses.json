@@ -2,101 +2,108 @@
     {
       "course_code": "MUS101",
       "course_name": "Music History",
-      "CodeNName": "MUS101: Music History"
+      "CourseNName": "MUS101: Music History"
     },
     {
       "course_code": "PHI202",
       "course_name": "Philosophy of Language",
-      "CodeNName": "PHI202: Philosophy of Language"
+      "CourseNName": "PHI202: Philosophy of Language"
     },
     {
       "course_code": "BIO301",
       "course_name": "Cellular Biology",
-      "CodeNName": "BIO301: Cellular Biology"
+      "CourseNName": "BIO301: Cellular Biology"
     },
     {
       "course_code": "ENG205",
       "course_name": "Shakespearean Literature",
-      "CodeNName": "ENG205: Shakespearean Literature"
+      "CourseNName": "ENG205: Shakespearean Literature"
     },
     {
       "course_code": "COM100",
       "course_name": "Public Speaking",
-      "CodeNName": "COM100: Public Speaking"
+      "CourseNName": "COM100: Public Speaking"
     },
     {
       "course_code": "HIS220",
       "course_name": "American History",
-      "CodeNName": "HIS220: American History"
+      "CourseNName": "HIS220: American History"
     },
     {
       "course_code": "MAT110",
       "course_name": "Calculus I",
-      "CodeNName": "MAT110: Calculus I"
+      "CourseNName": "MAT110: Calculus I"
     },
     {
       "course_code": "CSC301",
       "course_name": "Artificial Intelligence",
-      "CodeNName": "CSC301: Artificial Intelligence"
+      "CourseNName": "CSC301: Artificial Intelligence"
     },
     {
       "course_code": "ECO202",
       "course_name": "Microeconomics",
-      "CodeNName": "ECO202: Microeconomics"
+      "CourseNName": "ECO202: Microeconomics"
     },
     {
       "course_code": "PSY101",
       "course_name": "Introduction to Psychology",
-      "CodeNName": "PSY101: Introduction to Psychology"
+      "CourseNName": "PSY101: Introduction to Psychology"
     },
     {
       "course_code": "POL201",
       "course_name": "International Relations",
-      "CodeNName": "POL201: International Relations"
+      "CourseNName": "POL201: International Relations"
     },
     {
       "course_code": "ART210",
       "course_name": "Oil Painting",
-      "CodeNName": "ART210: Oil Painting"
+      "CourseNName": "ART210: Oil Painting"
     },
     {
       "course_code": "MKT301",
       "course_name": "Marketing Management",
-      "CodeNName": "MKT301: Marketing Management"
+      "CourseNName": "MKT301: Marketing Management"
     },
     {
       "course_code": "ANT101",
       "course_name": "Cultural Anthropology",
-      "CodeNName": "ANT101: Cultural Anthropology"
+      "CourseNName": "ANT101: Cultural Anthropology"
     },
     {
       "course_code": "SOC301",
       "course_name": "Sociology of Gender",
-      "CodeNName": "SOC301: Sociology of Gender"
+      "CourseNName": "SOC301: Sociology of Gender"
     },
     {
       "course_code": "PHY205",
       "course_name": "Modern Physics",
-      "CodeNName": "PHY205: Modern Physics"
+      "CourseNName": "PHY205: Modern Physics"
     },
     {
       "course_code": "LIT200",
       "course_name": "Creative Writing",
-      "CodeNName": "LIT200: Creative Writing"
+      "CourseNName": "LIT200: Creative Writing"
     },
     {
       "course_code": "GEO101",
       "course_name": "Physical Geography",
-      "CodeNName": "GEO101: Physical Geography"
+      "CourseNName": "GEO101: Physical Geography"
     },
     {
       "course_code": "FIN302",
       "course_name": "Investments and Securities",
-      "CodeNName": "FIN302: Investments and Securities"
+      "CourseNName": "FIN302: Investments and Securities"
     },
     {
       "course_code": "FRE101",
       "course_name": "French Language",
-      "CodeNName": "FRE101: French Language"
+      "CourseNName": "FRE101: French Language"
     }
 ]
+
+
+
+
+
+
+
