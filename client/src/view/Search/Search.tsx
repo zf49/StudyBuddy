@@ -84,14 +84,8 @@ export default function Search() {
     setOpen(true);
   };
 
-  const [filterCourse, setFilterCourse] = useState<string[]>([])
   const handleClose = () => {
           setOpen(false);
-
-  };
-  const handleDataChange = (newData: string[]) => {
-    // setFilterCourse(newData);
-    // console.log(newData)
   };
 
   const handleSelectedCourses = (selectedCourses:string[]) => {
@@ -146,7 +140,7 @@ export default function Search() {
                             handleClose={handleClose}
                             users={searchRes}
                             onSelectedCoursesChange={handleSelectedCourses}
-                            onSubmit={handleDataChange}
+                            // onSubmit={handleDataChange}
                         /> 
                 </Grid>
                 

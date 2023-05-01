@@ -23,7 +23,6 @@ interface IFilterList{
     handleClickOpen:()=>void,
     handleClose:()=>void,
     users:IUserDetail[],
-    onSubmit: (selectedCourses: string[]) => void
     onSelectedCoursesChange:(selectedCourses: string[])=>void
 }
 
@@ -58,9 +57,7 @@ export default function ResultFilter(props:IFilterList) {
       setSelectedCourses([...selectedCourses, course]);
     }
   }
-
   const handleApply = () => {
-    props.onSubmit(selectedCourses);
     props.handleClose();
     props.onSelectedCoursesChange(selectedCourses);
     console.log(selectedCourses)
@@ -68,7 +65,6 @@ export default function ResultFilter(props:IFilterList) {
 
   const handleKeyDown =  (e:React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key==='Enter'){
-    props.onSubmit(selectedCourses);
     props.handleClose();
     props.onSelectedCoursesChange(selectedCourses);
     console.log(selectedCourses)

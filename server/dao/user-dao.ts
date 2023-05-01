@@ -17,7 +17,8 @@ export async function searchUser(keyword:string) {
           { email: { $regex: keyword, $options: "i" } },
           { faculty: { $regex: keyword, $options: "i" } },
           { major: { $regex: keyword, $options: "i" } },
-        //   { courses: { $regex: keyword, $options: "i" } },
+          { "courses.CourseNName": { $regex: new RegExp(keyword, "i") } }
+
         ]
       }).sort({name:1}).collation( { locale: 'en', strength: 2 } )
 }
