@@ -13,6 +13,8 @@ import axios from 'axios';
 import { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import Joi from 'joi';
+import { Input } from '@mui/material';
+import { StyledTextField } from './Profile';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -50,6 +52,11 @@ export default function Course(props:ICourseProps) {
     const [courseName, setCourseName] = useState<ICourse[]>()
     const [courseToArrary, setcourseToArrary] = useState<string[]>([])
     const controller = new AbortController()
+
+
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1; 
+    const currentDay = currentDate.getDate();
 
 
   useEffect(() => {
@@ -94,8 +101,17 @@ export default function Course(props:ICourseProps) {
 
   return (
     <>
+          {console.log(currentMonth,currentDay)}
       <div>
-        <FormControl style={{ 'width': '100%', marginTop: '10px' }}>
+      <FormControl style={{ 'width': '100%', marginTop: '10px' }}>
+          <StyledTextField
+            label="Semester"
+            name="Semester"
+            disabled
+            value={(currentMonth >= 7 && currentDay >= 1)?"Semester 2":"Semester 1"}
+          />
+        </FormControl>
+        <FormControl style={{ 'width': '100%' }}>
           <InputLabel id="demo-multiple-checkbox-label">Course</InputLabel>
           <Select
             labelId="demo-multiple-checkbox-label"

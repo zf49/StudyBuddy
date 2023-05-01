@@ -7,11 +7,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import axios from 'axios'
 import Alert from '@mui/material/Alert';
-import Typography from '@mui/material/Typography';
 import Joi from 'joi';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useDispatch } from "react-redux";
-import { storeUser } from "../../redux/reducer/userReducer";
 import { useNavigate } from 'react-router';
 import { StyledContainer } from '../Profile/Profile';
 import { Paper } from '@mui/material';
@@ -253,9 +250,7 @@ export default function SignUp(props: ISignUpProps) {
                         {majors.map((major: IMajor) => {
                             if (major.faculty == faculty)
                                 return (<MenuItem value={major.major}>{major.major}</MenuItem>)
-
                         })}
-
                     </Select>
                 </FormControl>
             </div>

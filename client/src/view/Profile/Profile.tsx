@@ -42,7 +42,7 @@ export const StyledContainer = styled("div")({
 
 
 
-const StyledTextField = styled(TextField)({
+export const StyledTextField = styled(TextField)({
   width: "100%",
   marginBottom: "1rem",
 });
@@ -367,6 +367,7 @@ export default function Profile() {
                   </MenuItem>
                 ))}
               </Select>
+              
               <Course selectedCourse={userProfile.courses} setCourse={setCourse}/>
             </FormControl>
           </div>
