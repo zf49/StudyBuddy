@@ -44,7 +44,7 @@ router.patch('/profile/:authID', async (req, res, next) => {
           course_code: Joi.string().required(),
           course_name: Joi.string().required(),
           CourseNName: Joi.string().required()
-        })
+        }).unknown(true)
       ).required().allow(null, '')
     }).unknown(true).validate(req.body)
     if (userDataValidate.error) {

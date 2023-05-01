@@ -141,8 +141,8 @@ export default function Profile() {
               course_code: Joi.string().required(),
               course_name: Joi.string().required(),
               CourseNName: Joi.string().required(),
-            })
-          )
+            }).unknown(true)
+          ).required().allow(null)
         }).unknown(true).validate(res.data[0])
         if (dbUserValidate.error) {
           console.log(dbUserValidate.error)
