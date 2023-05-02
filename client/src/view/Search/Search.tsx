@@ -19,6 +19,7 @@ import { ICourse } from '../Profile/Course';
 
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import Recommendation from './Recommendation';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontWeight: 'bold',
@@ -143,7 +144,7 @@ export default function Search() {
                             // onSubmit={handleDataChange}
                         /> 
                 </Grid>
-                
+                <Recommendation/>
                 <Box sx={{ p: 2}}>
                 <Paper elevation={24}>
                 <TableContainer component={Paper} >

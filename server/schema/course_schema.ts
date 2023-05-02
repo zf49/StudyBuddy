@@ -22,7 +22,8 @@ export interface ICourse {
 const courseSchema = new Schema<ICourse>({
     course_code: { type: String, required: true },
     course_name: { type: String, required: true },
-    CourseNName: { type: String, required: true }
+    CourseNName: { type: String, required: true },
+    // course_display_name: { type: String, required: true }
 
 })
 
