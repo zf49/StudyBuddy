@@ -38,7 +38,7 @@ router.patch('/profile/:authID', async (req, res, next) => {
       major: Joi.string().required().allow(null, ''),
       authID: Joi.string().required(),
       userAvatar: Joi.string().required(),
-      semester: Joi.string().required(),
+      // semester: Joi.string().required(),
       courses: Joi.array().items(
         Joi.object({
           course_code: Joi.string().required(),
@@ -98,7 +98,7 @@ router.post("/api/register", async (req, res) => {
       faculty: Joi.string().required().allow(null, ''),
       major: Joi.string().required().allow(null, ''),
       authID: Joi.string().required(),
-      semester: Joi.string().required(),
+      // semester: Joi.string().required(),
       userAvatar: Joi.string().required(),
     }).validate(req.body)
     if (userDataValidate.error) {
