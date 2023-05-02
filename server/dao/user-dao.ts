@@ -26,44 +26,26 @@ export async function searchUser(keyword:string) {
 
 
 export async function recommand(courses: ICourse[], usermajor: string) {
-    try {
-      console.log(usermajor);
-      const filteredUsers = await User.aggregate([
-        {
-          $match: {
-            $or: [
-              { major: { $regex: usermajor, $options: "i" } },
-              { courses: { $in: courses } },
-            ],
-          },
+  try {
+    console.log(usermajor);
+    const filteredUsers = await User.aggregate([
+      {
+        $match: {
+          $or: [
+            { major: { $regex: usermajor, $options: "i" } },
+            { courses: { $in: courses } },
+          ],
         },
-        {
-          $addFields: {
-            commonCourses: {
-              $size: {
-                $setIntersection: ["$courses", courses],
-              },
-            },
-          },
-        },
-        {
-          $sort: {
-            commonCourses: -1,
-            major: 1,
-          },
-        },
-        {
-            $limit: 50,
-        },
-      ]);
-      console.log("Filtered users: ", filteredUsers);
-      return filteredUsers;
-    } catch (error) {
-      console.error("error", error);
-      throw error;
-    }
+      },
+    ]);
+    console.log("Filtered users: ", filteredUsers);
+    return filteredUsers;
+  } catch (error) {
+    console.error("error", error);
+    throw error;
   }
-  
+}
+
 
 
 

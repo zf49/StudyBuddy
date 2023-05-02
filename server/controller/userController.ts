@@ -8,8 +8,9 @@ export const userRecommand = async (req, res, next) => {
     // const userMajor = req.body.major
     const  allUsers = await recommand(userCourses,req.body.major)
     
-    console.log("allUsers",allUsers)
+    allUsers.sort((a, b) => b.courses.length - a.courses.length);
 
+    console.log("allUsers",allUsers)
 
     res.send(allUsers)
 }

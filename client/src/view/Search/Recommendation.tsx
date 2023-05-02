@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Avatar, Box, Divider, List, ListItem, Paper, Typography } from '@mui/material';
+import { Avatar, Box, Divider, Grid, List, ListItem, Paper, Typography } from '@mui/material';
 import ListItemText from '@mui/material/ListItemText';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import axios from 'axios';
@@ -78,53 +78,13 @@ export default function Recommendation() {
     return (
         <div>
                 <h1>user u may know</h1>
-                <Box sx={{ overflowX: 'auto', maxWidth: '100%', display: 'flex' }}>
-                <List sx={{ display: 'flex', flexDirection: 'row' }}>
-                    {recommand?.map(item => (
-                    <Paper elevation={24} sx={{margin:'0.5em'}}>
-                    <ListItem key={item._id} onClick={()=>handleClick(item._id)}>
-                        <ListItemText
-                        primary= {<div><Avatar src={item.userAvatar}/>{item.name}</div>}
-                        secondary={
-                            <React.Fragment>
-                            <Typography
-                                sx={{ display: 'inline' }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                            >
-                                {<><p>Email:</p>{item.email}</>}
-                            </Typography>
-                            {/* {" — I'll be in your neighborhood doing errands this…"} */}
-                            
-                            //TODO add a tag show how many same courses, or samr major
-                        
-                            </React.Fragment>
-                        }
-                        />
-                    </ListItem>                        <Divider orientation="vertical" variant="middle" flexItem /></Paper>))}
-                    <Paper elevation={24} sx={{margin:'0.5em'}}>
-
-                    <ListItem >
-                        <ListItemText
-                        secondary={
-                            <React.Fragment>
-                            <Typography
-                                sx={{ display: 'inline' }}
-                                component="span"
-                                variant="body2"
-                                color="text.primary"
-                            >
-                            </Typography>
-                            {"More USers"}
-                            <ArrowCircleRightIcon/>
-                            </React.Fragment>
-                        }
-                        />
-                    </ListItem>
-                    </Paper>
-                </List>
-                </Box>
+                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                    {recommand?.map((item, index) => (
+                        <Grid item xs={2} sm={4} md={4} key={index}>
+                        <Paper>{item.name}</Paper>
+                        </Grid>
+                    ))}
+                </Grid>
         </div>
     )
 }
