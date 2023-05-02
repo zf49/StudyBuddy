@@ -20,6 +20,10 @@ const items = [
 
 
 export default function Recommendation() {
+
+    
+
+
     return (
         <div>
                 <h1>user u may know</h1>

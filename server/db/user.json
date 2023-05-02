@@ -389,6 +389,102 @@
         "major": "Early Childhood Education",
         "authID": "auth0|aldkfj827",
         "userAvatar": "https://i.pravatar.cc/150?img=8"
+      },
+      {
+        "courses":[
+          {
+            "course_code": "LIT200",
+            "course_name": "Creative Writing",
+            "CodeNName": "LIT200: Creative Writing"
+          },
+          {
+            "course_code": "GEO101",
+            "course_name": "Physical Geography",
+            "CodeNName": "GEO101: Physical Geography"
+          },
+          {
+            "course_code": "FIN302",
+            "course_name": "Investments and Securities",
+            "CodeNName": "FIN302: Investments and Securities"
+          },
+          {
+            "course_code": "FRE101",
+            "course_name": "French Language",
+            "CodeNName": "FRE101: French Language"
+          }
+        ],
+        "name":"aaaaaaaaaaaaaaaaaaaa",
+        "uniID":"asd",
+        "gender":"Female",
+        "email":"wangzhifang000@gmail.com",
+        "faculty":"Education",
+        "major":"Political Science",
+        "authID":"auth0|aa"
+      },
+      {
+        "courses":[
+          
+          {
+            "course_code": "GEO101",
+            "course_name": "Physical Geography",
+            "CodeNName": "GEO101: Physical Geography"
+          },
+          {
+            "course_code": "FIN302",
+            "course_name": "Investments and Securities",
+            "CodeNName": "FIN302: Investments and Securities"
+          },
+          {
+            "course_code": "FRE101",
+            "course_name": "French Language",
+            "CodeNName": "FRE101: French Language"
+          }
+        ],
+        "name":"Test1",
+        "uniID":"asd",
+        "gender":"Female",
+        "email":"wangzhifang000@gmail.com",
+        "faculty":"Education",
+        "major":"Political Science",
+        "authID":"auth0|aa"
+      },
+      {
+        "courses":[
+          
+          {
+            "course_code": "FIN302",
+            "course_name": "Investments and Securities",
+            "CodeNName": "FIN302: Investments and Securities"
+          },
+          {
+            "course_code": "FRE101",
+            "course_name": "French Language",
+            "CodeNName": "FRE101: French Language"
+          }
+        ],
+        "name":"aaaaaaaaaaaaaaaaaaaa",
+        "uniID":"asd",
+        "gender":"Female",
+        "email":"wangzhifang000@gmail.com",
+        "faculty":"Education",
+        "major":"Political Science",
+        "authID":"auth0|aa"
+      },
+      {
+        "courses":[
+          {
+            "course_code": "FRE101",
+            "course_name": "French Language",
+            "CodeNName": "FRE101: French Language"
+          }
+        ],
+        "name":"aaaaaaaaaaaaaaaaaaaa",
+        "uniID":"asd",
+        "gender":"Female",
+        "email":"wangzhifang000@gmail.com",
+        "faculty":"Education",
+        "major":"Political Science",
+        "authID":"auth0|aa"
       }
 
 ]

@@ -3,8 +3,7 @@ var router = express.Router();
 import Joi from 'joi';
 import { checkAuthID, createUser, getUserProfile, searchUser, updateUserProfile } from '../dao/user-dao'
 import { IUser } from '../schema/user-schema';
-import { ICourse } from '../schema/course_schema';
-
+import {userRecommand} from './../controller/userController'
 
 const HTTP_CREATED = 201;
 const HTTP_NOT_FOUND = 404;
@@ -74,7 +73,7 @@ router.get('/:uniID', async (req, res, next) => {
 });
 
 // Get users login Email
-router.get('/authID/:authID', async (req, res, next) => {
+router.get('/authID/:authID', async (req, res) => {
   const authIDValidate = Joi.string().required().validate(req.params.authID)
   if (authIDValidate.error) {
     console.error(authIDValidate.error)
@@ -84,6 +83,11 @@ router.get('/authID/:authID', async (req, res, next) => {
   }
 });
 
+
+router.post("/api/recomand",userRecommand)
+
+
+// sign up
 router.post("/api/register", async (req, res) => {
   try {
     const userDataValidate = Joi.object<IUser>({

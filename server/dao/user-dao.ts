@@ -1,4 +1,5 @@
 
+import { ICourse } from "../schema/course_schema";
 import {User} from "../schema/user-schema"
 
 export async function createUser(user: object) {
@@ -18,10 +19,53 @@ export async function searchUser(keyword:string) {
           { faculty: { $regex: keyword, $options: "i" } },
           { major: { $regex: keyword, $options: "i" } },
           { "courses.CourseNName": { $regex: new RegExp(keyword, "i") } }
-
         ]
       }).sort({name:1}).collation( { locale: 'en', strength: 2 } )
 }
+
+
+
+export async function recommand(courses: ICourse[], usermajor: string) {
+    try {
+      console.log(usermajor);
+      const filteredUsers = await User.aggregate([
+        {
+          $match: {
+            $or: [
+              { major: { $regex: usermajor, $options: "i" } },
+              { courses: { $in: courses } },
+            ],
+          },
+        },
+        {
+          $addFields: {
+            commonCourses: {
+              $size: {
+                $setIntersection: ["$courses", courses],
+              },
+            },
+          },
+        },
+        {
+          $sort: {
+            commonCourses: -1,
+            major: 1,
+          },
+        },
+        {
+            $limit: 50,
+        },
+      ]);
+      console.log("Filtered users: ", filteredUsers);
+      return filteredUsers;
+    } catch (error) {
+      console.error("error", error);
+      throw error;
+    }
+  }
+  
+
+
 
 export async function checkAuthID(authID:String) {
     return await User.find({'authID':authID})
