@@ -25,7 +25,7 @@ export async function searchUser(keyword:string) {
 
 
 
-export async function recommand(courses: ICourse[], usermajor: string) {
+export async function recommend(courses: ICourse[], usermajor: string) {
   try {
     console.log(usermajor);
     const filteredUsers = await User.aggregate([
@@ -42,7 +42,7 @@ export async function recommand(courses: ICourse[], usermajor: string) {
     return filteredUsers;
   } catch (error) {
     console.error("error", error);
-    throw error;
+    return []
   }
 }
 
