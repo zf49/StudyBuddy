@@ -6,6 +6,7 @@ import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import axios from 'axios';
 import { IUserDetail } from '../Profile/Profile';
 import { useNavigate } from 'react-router';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 
 const items = [
     { id: 1, name: 'Item 1' },
@@ -77,13 +78,30 @@ export default function Recommendation() {
 
     return (
         <div>
-                <h1>user u may know</h1>
+                <h3>users u may know</h3>
                 <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                    {recommand?.map((item, index) => (
-                        <Grid item xs={2} sm={4} md={4} key={index}>
-                        <Paper>{item.name}</Paper>
-                        </Grid>
-                    ))}
+                {recommand?.map((item, index) => (
+                    <Grid item xs={2} sm={4} md={4} key={index} onClick={()=>handleClick(item._id)}>
+                    <Paper elevation={24}>
+                        <List sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                        <ListItemAvatar sx={{ alignSelf: 'center' }}>
+                            <Avatar src={item.userAvatar} />
+                        </ListItemAvatar>
+                        <ListItemText
+                            primary={item.name}
+                            sx={{ textAlign: 'center' }}
+                        />
+                        <ListItemText
+                            primary={item.courses.length>0?"Same course":"Same Major"}
+                            sx={{ textAlign: 'center' }}
+                            secondary={item.courses.length>0?item.courses.map((item)=>{
+                                return <>{item.CourseNName}</>
+                            }):item.major}
+                        />
+                        </List>                                
+                    </Paper>
+                    </Grid>                      
+                ))}
                 </Grid>
         </div>
     )

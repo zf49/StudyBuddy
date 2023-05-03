@@ -8,6 +8,12 @@ export async function addFriend(authID: string, friendID: string) {
     return await newFriend.save()
 }
 
+export async function getAllFriends(){
+    const allFriends = await Friend.find()
+    return allFriends
+}
+
+
 export async function findFriends(authID: string) {
     const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()
     const friends = await Friend.aggregate([
