@@ -60,6 +60,11 @@
         "CourseNName": "HIS220: American History"
       },
       {
+        "course_code": "ART210",
+        "course_name": "Oil Painting",
+        "CourseNName": "ART210: Oil Painting"
+      },
+      {
         "course_code": "MAT110",
         "course_name": "Calculus I",
         "CourseNName": "MAT110: Calculus I"
@@ -133,6 +138,16 @@
         "course_code": "MAT110",
         "course_name": "Calculus I",
         "CourseNName": "MAT110: Calculus I"
+      },
+      {
+        "course_code": "MKT301",
+        "course_name": "Marketing Management",
+        "CourseNName": "MKT301: Marketing Management"
+      },
+      {
+        "course_code": "GEO101",
+        "course_name": "Physical Geography",
+        "CourseNName": "GEO101: Physical Geography"
       }]
     },
     {
@@ -164,11 +179,7 @@
       "major": "Early Childhood Education",
       "authID": "auth0|qweruiop789",
       "userAvatar": "https://i.pravatar.cc/150?img=8",
-      "courses":[ {
-        "course_code": "FIN302",
-        "course_name": "Investments and Securities",
-        "CourseNName": "FIN302: Investments and Securities"
-      },
+      "courses":[ 
       {
         "course_code": "FRE101",
         "course_name": "French Language",
@@ -198,11 +209,6 @@
           "course_code": "GEO101",
           "course_name": "Physical Geography",
           "CourseNName": "GEO101: Physical Geography"
-        },
-        {
-          "course_code": "FIN302",
-          "course_name": "Investments and Securities",
-          "CourseNName": "FIN302: Investments and Securities"
         }]
       },
       {

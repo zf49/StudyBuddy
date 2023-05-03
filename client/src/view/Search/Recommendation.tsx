@@ -25,26 +25,26 @@ const items = [
 
   const testData= {
     "courses":[
-      {
-        "course_code": "LIT200",
-        "course_name": "Creative Writing",
-        "CodeNName": "LIT200: Creative Writing"
-      },
-      {
-        "course_code": "GEO101",
-        "course_name": "Physical Geography",
-        "CodeNName": "GEO101: Physical Geography"
-      },
-      {
-        "course_code": "FIN302",
-        "course_name": "Investments and Securities",
-        "CodeNName": "FIN302: Investments and Securities"
-      },
-      {
-        "course_code": "FRE101",
-        "course_name": "French Language",
-        "CodeNName": "FRE101: French Language"
-      }
+        // {
+        //     "course_code": "COM100",
+        //     "course_name": "Public Speaking",
+        //     "CourseNName": "COM100: Public Speaking"
+        //   },
+        //   {
+        //     "course_code": "HIS220",
+        //     "course_name": "American History",
+        //     "CourseNName": "HIS220: American History"
+        //   },
+          {
+            "course_code": "MAT110",
+            "course_name": "Calculus I",
+            "CourseNName": "MAT110: Calculus I"
+          },
+        {
+            "course_code": "ART210",
+            "course_name": "Oil Painting",
+            "CourseNName": "ART210: Oil Painting"
+          }
     ],
     "_id":"644520119787a6b4f51baccb",
     "name":"aaaaaaaaaaaaaaaaaaaa",
@@ -57,8 +57,6 @@ const items = [
     "userAvatar":"https://s.gravatar.com/avatar/aedd9141fa9a7ae6fb0ff3a52efc7884?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2F16.png"
   }
 
-
-  
 export default function Recommendation() {
 
     const [recommand, setRecommand] = useState<IUserDetail[]>()
@@ -95,7 +93,7 @@ export default function Recommendation() {
                             primary={item.courses.length>0?"Same course":"Same Major"}
                             sx={{ textAlign: 'center' }}
                             secondary={item.courses.length>0?item.courses.map((item)=>{
-                                return <>{item.CourseNName}</>
+                                return <>{item.course_code+","}</>
                             }):item.major}
                         />
                         </List>                                

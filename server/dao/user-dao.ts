@@ -27,24 +27,24 @@ export async function searchUser(keyword:string) {
 
 export async function recommend(courses: ICourse[], usermajor: string) {
   try {
-    console.log(usermajor);
     const filteredUsers = await User.aggregate([
       {
         $match: {
           $or: [
-            { major: { $regex: usermajor, $options: "i" } },
-            { courses: { $in: courses } },
+            { major: { $eq: usermajor } },
+            { courses: { $elemMatch: { $in: courses } } },
           ],
         },
       },
     ]);
-    console.log("Filtered users: ", filteredUsers);
+    // console.log("Filtered users: ", filteredUsers);
     return filteredUsers;
   } catch (error) {
     console.error("error", error);
     return []
   }
 }
+  
 
 
 
