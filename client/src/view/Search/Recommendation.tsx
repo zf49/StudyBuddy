@@ -77,12 +77,12 @@ export default function Recommendation() {
     }
 
     return (
-        <div>
+        <div style={{marginBottom:"0.5em"}}>
                 <h3>users u may know</h3>
                 <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 {recommand?.map((item, index) => (
                     <Grid item xs={2} sm={4} md={4} key={index} onClick={()=>handleClick(item._id)}>
-                    <Paper elevation={24}>
+                    <Paper elevation={1}>
                         <List sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                         <ListItemAvatar sx={{ alignSelf: 'center' }}>
                             <Avatar src={item.userAvatar} />

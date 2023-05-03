@@ -16,7 +16,6 @@ export const userRecommand = async (req, res, next) => {
     const allFriends = await getAllFriends()
     // console.log("allFriends",allFriends[0]._id.toString())
 
-    
     const recoFriends = allUsers.filter((user) => {
         return allFriends.every((friend) => {
           return user._id.toString() !== friend.friendID;
@@ -24,7 +23,6 @@ export const userRecommand = async (req, res, next) => {
       });
     
     console.log("reco",recoFriends)
-
 
     res.send(recoFriends)
 }
