@@ -1,6 +1,9 @@
 import Joi from "joi";
 import { addFriend, checkFollow, checkSelf, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
 import { isElementAccessExpression } from "typescript";
+import jwksRsa from 'jwks-rsa';
+const { expressjwt: jwt } = require('express-jwt');
+
 
 var express = require('express');
 var router = express.Router();
@@ -12,13 +15,25 @@ const HTTP_NOT_FOUND = 404;
 const HTTP_NO_CONTENT = 204;
 const HTTP_BAD_REQUEST = 400;
 
+const checkJwt = jwt({
+    secret: jwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://dev-7wmg2yatswbx560y.us.auth0.com/.well-known/jwks.json`
+    }),
+    audience: `https://studybuddy`,
+    issuer: `https://dev-7wmg2yatswbx560y.us.auth0.com/`,
+    algorithms: ['RS256']
+  })
+
 export interface IPayload {
     authID: string,
     friendID: string
 }
 
 
-router.post("/add", async (req, res) => {
+router.post("/add", checkJwt, async (req, res) => {
     const payloadValidate = Joi.object<IPayload>({
         authID: Joi.string().required(),
         friendID: Joi.string().required()

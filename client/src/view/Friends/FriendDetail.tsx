@@ -31,6 +31,7 @@ export default function FriendDetail() {
     const navigate = useNavigate()
     const [self, setSelf] = React.useState<Boolean>()
     const { user, isAuthenticated } = useAuth0();
+    const {getAccessTokenSilently} = useAuth0()
     const payload: IPayload = {
         authID: user?.sub,
         friendID: location.state.id
@@ -76,7 +77,8 @@ export default function FriendDetail() {
     }
 
     async function handleUnFollow() {
-        await axios.post("http://localhost:8080/friends/delete", payload, {signal: controller.signal})
+        const token = getAccessTokenSilently()
+        await axios.post("http://localhost:8080/friends/delete", payload, {signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
         setFollow(false)
     }
 
