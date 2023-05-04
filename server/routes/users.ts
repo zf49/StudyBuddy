@@ -3,7 +3,7 @@ var router = express.Router();
 import Joi from 'joi';
 import { checkAuthID, createUser, getUserProfile, searchUser, updateUserProfile } from '../dao/user-dao'
 import { IUser } from '../schema/user-schema';
-import {userRecommand} from './../controller/userController'
+import {spiltpage, userRecommand} from './../controller/userController'
 
 const HTTP_CREATED = 201;
 const HTTP_NOT_FOUND = 404;
@@ -85,6 +85,8 @@ router.get('/authID/:authID', async (req, res) => {
 
 // user recommend
 router.post("/api/recomand",userRecommand)
+
+router.post("/api/recommendations/:page",spiltpage)
 
 // sign up
 router.post("/api/register", async (req, res) => {
