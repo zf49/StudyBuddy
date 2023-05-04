@@ -20,6 +20,7 @@ import { ICourse } from '../Profile/Course';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Recommendation from './Recommendation';
+import TestRoll from './testroll';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontWeight: 'bold',
@@ -37,7 +38,7 @@ export default function Search() {
     
     const [searchRes, setSearchRes] = useState<IUserDetail[]>(users);
 
-    const [flag, setFlag] = useState(false)
+    const [flag, setFlag] = useState(true)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const controller = new AbortController()
@@ -56,14 +57,12 @@ export default function Search() {
     // main logic of search user
     const handleSearchClick =  () => {
         // TODO: logic of search friend
+        setFlag(false)
              axios.post(`http://localhost:8080/users/${searchTerm}`,{signal: controller.signal}).then((res) => {
-                 if(res.data.length===0){
-                    setFlag(false)
-                 }else{
-                setFlag(true)
-                setSearchRes(res.data)
-                dispatch(storeUser(res.data))
-                }
+                 if(res.data.length!==0){
+                    setSearchRes(res.data)
+                    dispatch(storeUser(res.data))                 
+                 }
             })
     };
 
@@ -145,7 +144,7 @@ export default function Search() {
                             // onSubmit={handleDataChange}
                         /> 
                 </Grid>
-                <Recommendation/>
+                {flag?<TestRoll/>:
                 <Box>
                 <Paper elevation={1}>
                 <TableContainer component={Paper} >
@@ -181,7 +180,7 @@ export default function Search() {
                     </Table>
                 </TableContainer>
                 </Paper>
-             </Box>   
+             </Box>}  
              </Paper>                
          </div>
         </div>

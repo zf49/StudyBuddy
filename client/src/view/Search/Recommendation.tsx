@@ -2,39 +2,13 @@ import React, { useEffect, useState } from 'react'
 
 import { Avatar, Box, Divider, Grid, List, ListItem, Paper, Typography } from '@mui/material';
 import ListItemText from '@mui/material/ListItemText';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import axios from 'axios';
 import { IUserDetail } from '../Profile/Profile';
 import { useNavigate } from 'react-router';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 
-const items = [
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-    { id: 3, name: 'Item 3' },
-    { id: 4, name: 'Item 4' },
-    { id: 5, name: 'Item 5' },
-    { id: 5, name: 'Item 5' },
-    { id: 5, name: 'Item 5' },
-    { id: 5, name: 'Item 5' },
-    { id: 5, name: 'Item 5' },
-    { id: 5, name: 'Item 5' },
-    { id: 5, name: 'Item 5' },
-  ];
-
-
   const testData= {
     "courses":[
-        // {
-        //     "course_code": "COM100",
-        //     "course_name": "Public Speaking",
-        //     "CourseNName": "COM100: Public Speaking"
-        //   },
-        //   {
-        //     "course_code": "HIS220",
-        //     "course_name": "American History",
-        //     "CourseNName": "HIS220: American History"
-        //   },
           {
             "course_code": "MAT110",
             "course_name": "Calculus I",
@@ -59,7 +33,7 @@ const items = [
 
 export default function Recommendation() {
 
-    const [recommand, setRecommand] = useState<IUserDetail[]>()
+    const [recommand, setRecommand] = useState<IUserDetail[]>([])
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -67,19 +41,22 @@ export default function Recommendation() {
             console.log(res.data)
             setRecommand(res.data)
         })
-    }, [])
 
+    }, [])
 
     const handleClick = (id:string)=>{
         navigate("/frienddetail/", { state: {id:id}})
     }
+
+    const [isBottom, setIsBottom] = useState(false);
+
 
     return (
         <div style={{marginBottom:"0.5em"}}>
                 <h3>users u may know</h3>
                 <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 {recommand?.map((item, index) => (
-                    <Grid item xs={2} sm={4} md={4} key={index} onClick={()=>handleClick(item._id)}>
+                    <Grid item xs={2} sm={4} md={4} sx={{height:'100%'}} key={index} onClick={()=>handleClick(item._id)}>
                     <Paper elevation={1}>
                         <List sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                         <ListItemAvatar sx={{ alignSelf: 'center' }}>
@@ -91,7 +68,7 @@ export default function Recommendation() {
                         />
                         <ListItemText
                             primary={item.courses.length>0?"Same course":"Same Major"}
-                            sx={{ textAlign: 'center' }}
+                            sx={{ textAlign: 'center', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                             secondary={item.courses.length>0?item.courses.map((item)=>{
                                 return <>{item.course_code+","}</>
                             }):item.major}
@@ -100,7 +77,8 @@ export default function Recommendation() {
                     </Paper>
                     </Grid>                      
                 ))}
-                </Grid>
+            </Grid>
         </div>
+       
     )
 }
