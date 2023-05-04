@@ -11,10 +11,11 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <Auth0Provider
-    domain="dev-6-070568.us.auth0.com"
-    clientId="c5yHIO5uqKX3SkUfWnTMkSyx5dwiD69W"
+    domain="dev-7wmg2yatswbx560y.us.auth0.com"
+    clientId="zPUg4hsChKmduSdWFCZF6SbwVMEExlYV"
     authorizationParams={{
       redirect_uri: window.location.origin,
+      audience: "https://studybuddy"
     }}
   >
      <Provider store={store}>

@@ -9,7 +9,6 @@ var usersRouter = require('./routes/users');
 var majorRouter = require('./routes/major')
 var friendsRouter = require('./routes/friends')
 var courseRouter = require('./routes/course')
-
 import connectToDatabase from "./config/db-connect";
 import mongoose from "mongoose";
 import { initCourseData, initMajorData, initUserData } from "./config/db-init";
@@ -18,8 +17,8 @@ const cors = require('cors');
 var app = express();
 app.use(cors())
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
