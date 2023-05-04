@@ -13,6 +13,12 @@ export async function getAllFriends(){
     return allFriends
 }
 
+export async function getUserFriends(userID: string) {
+    const allFriends = await Friend.find({
+      userID: userID,
+    });
+    return allFriends;
+}
 
 export async function findFriends(authID: string) {
     const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()

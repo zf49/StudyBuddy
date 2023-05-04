@@ -1,6 +1,6 @@
 
 import { ICourse } from "../schema/course_schema";
-import {User} from "../schema/user-schema"
+import {IUser, User} from "../schema/user-schema"
 
 export async function createUser(user: object) {
     const dbUser = new User(user);
@@ -46,16 +46,13 @@ export async function recommend(courses: ICourse[], usermajor: string) {
 }
   
 
-
-
-
 export async function checkAuthID(authID:String) {
     return await User.find({'authID':authID})
 }
 
 export const getUserProfile = async (authId:string)=>{
-   const userProfile =  await User.find({'authID':authId})
-   return userProfile
+   const userProfile:IUser[] =  await User.find({'authID':authId})
+   return userProfile[0]
 }
 
 

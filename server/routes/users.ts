@@ -83,6 +83,7 @@ router.get('/authID/:authID', async (req, res) => {
   }
 });
 
+// user recommend
 router.post("/api/recomand",userRecommand)
 
 // sign up
