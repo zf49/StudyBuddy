@@ -46,20 +46,21 @@ export const userRecommand = async (req, res, next) => {
       console.log(matchedCourses);
 
 
-    // TODO : logic unitest
+     // TODO : logic unitest
     // recommendedUsers.sort((a, b) => b.courses.length - a.courses.length);
 
     // TODO: check the user in allUsers arr whether has been follow, if yes, not show
-    const allFriends = await getUserFriends(userAuthID)
+    const allFriends = await getUserFriends(userProfile._id)
 
     // const allFriends = await getAllFriends()
-    // console.log("allFriends",allFriends[0]._id.toString())
+    console.log("allFriends",allFriends)
 
     const nonFriendRecommendedUsers = matchedCourses.filter((user) => {
         return allFriends.every((friend) => {
-            return user._id.toString() !== friend.friendID;
+            return user._id.toString() !== friend.friendID && user._id.toString() !== userProfile._id;
         });
     });
+    
 
     console.log("reco", nonFriendRecommendedUsers)
 
