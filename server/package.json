@@ -6,7 +6,9 @@
     "start": "ts-node ./bin/www",
     "dev": "nodemon -e ts --exec ts-node ./bin/www",
     "build": "tsc",
-    "server": "node ./dist/bin/www"
+    "server": "node ./dist/bin/www",
+    "test": "jest"
+
   },
   "nodemonConfig": {
     "watch": "server/"

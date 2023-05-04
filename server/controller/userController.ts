@@ -68,7 +68,8 @@ export const userRecommand = async (req, res, next) => {
 
 
 export const spiltpage = async (req, res, next) => {
-  const page = req.params.page || 1;
+
+  const page = req.params.page;
   const limit = 3; 
 
   const userAuthID = req.body.authID
