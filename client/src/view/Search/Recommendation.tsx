@@ -26,8 +26,7 @@ export default function Recommendation() {
       .post("http://localhost:8080/users/api/recomand", 
             {"authID":user?.sub,
              "page":0
-            }
-            )
+            })
       .then((res) => {
         console.log(res.data);
         setRecommand(res.data);
@@ -35,8 +34,10 @@ export default function Recommendation() {
   }, []);
 
   const handleClick = (id: string) => {
-    navigate("/frienddetail/", { state: { id: id } });
-  };
+      console.log(id)
+      navigate("/frienddetail/", { state: { "id": id }})
+    };
+    
     return (
         <div style={{marginBottom:"0.5em"}}>
                 <h3>users u may know</h3>

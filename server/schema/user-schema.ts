@@ -4,7 +4,6 @@ import { Course, ICourse } from "./course_schema";
 const Schema = mongoose.Schema;
 
 export interface IUser {
-    _id:string,
     name: string,
     uniID: string,
     gender: string,
@@ -17,7 +16,6 @@ export interface IUser {
 }
 
 const userSchema = new Schema<IUser>({
-    _id:String,
     name: {type: String, required: true},
     uniID: {type: String, required: true},
     gender: String,

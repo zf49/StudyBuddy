@@ -51,7 +51,7 @@ export async function checkAuthID(authID:String) {
 }
 
 export const getUserProfile = async (authId:string)=>{
-   const userProfile:IUser[] =  await User.find({'authID':authId})
+   const userProfile =  await User.find({'authID':authId})
    return userProfile[0]
 }
 
