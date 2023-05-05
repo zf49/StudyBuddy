@@ -60,9 +60,7 @@ export const userRecommand = async (req, res, next) => {
         });
     });
     
-
     console.log("reco", nonFriendRecommendedUsers)
-
     res.send(nonFriendRecommendedUsers)
 }
 
