@@ -22,30 +22,38 @@ export default function IndexRouter() {
   const [userExists, setUserExists] = useState(false);
   const { user, isAuthenticated, isLoading } = useAuth0()
   const navigate = useNavigate()
+  const { getAccessTokenSilently } = useAuth0()
 
   const userStore = useSelector((state: RootState) => state.storeUser);
 
 
 
   useEffect(() => {
-    const abort = new AbortController()
 
-    if (isAuthenticated && user) {
-      axios.get(`http://localhost:8080/users/authID/${user.sub}`, {
-        signal: abort.signal
-      })
-        .then(response => {
-          if (response.data.length == 0) {
-            setUserExists(false);
-            navigate('/signup')
-          } else {
-            setUserExists(true);
-          }
+    const abort = new AbortController()
+    const fetchData = async () => {
+
+      if (isAuthenticated && user) {
+        const token = await getAccessTokenSilently()
+        axios.get(`http://localhost:8080/users/authID/${user.sub}`, {
+          signal: abort.signal,
+          headers: { Authorization: `Bearer ${token}` }
         })
+          .then(response => {
+            if (response.data.length == 0) {
+              setUserExists(false);
+              navigate('/signup')
+            } else {
+              setUserExists(true);
+            }
+          })
+      }
     }
+    fetchData()
     return () => {
       abort.abort();
     }
+
 
   }, [user, isAuthenticated])
 

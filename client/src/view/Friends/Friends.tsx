@@ -27,10 +27,12 @@ export default function Friends() {
     const [friends, setFriends] = React.useState<IFriend[]>()
     const navigate = useNavigate()
     const controller = new AbortController()
+    const {getAccessTokenSilently} = useAuth0()
 
     async function getFriends() {
         if (user) {
-            const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`,{signal: controller.signal})
+            const token = await getAccessTokenSilently()
+            const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`,{signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
             const dbDataValidate = Joi.array().items(
                 Joi.object<IFriend>({
                 name: Joi.string().required(),

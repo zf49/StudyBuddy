@@ -40,7 +40,8 @@ export default function FriendDetail() {
 
 
     async function getFriendDetail() {
-        const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`, {signal: controller.signal})
+        const token = await getAccessTokenSilently()
+        const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`, {signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
         const dbDataValidate = Joi.object<IFriendDetail>({
             name: Joi.string().required(),
             uniID: Joi.string().required(),
@@ -55,14 +56,14 @@ export default function FriendDetail() {
         }else{
             setFriendDetail(dbDataValidate.value)
         }
-            const dbFollow: boolean = (await axios.post('http://localhost:8080/friends/checkfollow', payload,{signal: controller.signal})).data
+            const dbFollow: boolean = (await axios.post('http://localhost:8080/friends/checkfollow', payload,{signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})).data
             const dbFollowValidate = Joi.boolean().required().validate(dbFollow)
             if(dbFollowValidate.error){
                 console.error(dbFollowValidate.error)
             }else{
                 setFollow(dbFollowValidate.value)
             }
-            const dbSelf: boolean = (await axios.post(`http://localhost:8080/friends/checkself`, payload,{signal: controller.signal})).data
+            const dbSelf: boolean = (await axios.post(`http://localhost:8080/friends/checkself`, payload,{signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})).data
             const dbSelfValidate = Joi.boolean().required().validate(dbSelf)
             if(dbSelfValidate.error){
                 console.error(dbSelfValidate.error)
@@ -77,13 +78,14 @@ export default function FriendDetail() {
     }
 
     async function handleUnFollow() {
-        const token = getAccessTokenSilently()
+        const token = await getAccessTokenSilently()
         await axios.post("http://localhost:8080/friends/delete", payload, {signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
         setFollow(false)
     }
 
     async function handleFollow() {
-        await axios.post("http://localhost:8080/friends/add", payload, {signal: controller.signal})
+        const token = await getAccessTokenSilently()
+        await axios.post("http://localhost:8080/friends/add", payload, {signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
         setFollow(true)
     }
 
