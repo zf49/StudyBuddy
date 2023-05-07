@@ -35,33 +35,7 @@ interface IApiOptions {
 // @param - possibly give authentication token to this api function
 // @param - possibly give abort signal (research this!)
 
-const apiGetMajor = async (option: IApiOptions): Promise<IMajorApiReturn | null> => {
-    const res = await axios.get("http://localhost:8080/major/", {
-        signal: option.signal
-    })
 
-    // consider console.error to log the failure
-    if (res.status != 200) return null;
-
-    // you can validate data here as well
-    // consider doing this serverside for any user submission data
-    const validationResult = Joi.object<IMajorApiReturn>({
-        faculties: Joi.array().items(Joi.string()),
-        majors: Joi.array().items(
-            Joi.object({
-                faculty: Joi.string().required(),
-                major: Joi.string().required()
-            }).unknown(true)
-        )
-    }).validate(res.data)
-
-    if (validationResult.error) {
-        console.error(validationResult.error)
-        return null;
-    }
-
-    return validationResult.value;
-}
 
 interface ISignUpProps {
     changeUserState: (state: boolean) => void;
@@ -84,6 +58,7 @@ export default function SignUp(props: ISignUpProps) {
     const navigate = useNavigate()
     const { user, isAuthenticated } = useAuth0()
     const controller = new AbortController()
+    const {getAccessTokenSilently} = useAuth0()
 
     useEffect(() => {
         // what happens if user navigates away from this page while this request is running?
@@ -103,6 +78,36 @@ export default function SignUp(props: ISignUpProps) {
             controller.abort()
         }
     }, [isAuthenticated, user])
+
+    const apiGetMajor = async (option: IApiOptions): Promise<IMajorApiReturn | null> => {
+        const token = await getAccessTokenSilently()
+        const res = await axios.get("http://localhost:8080/major/", {
+            signal: option.signal, 
+            headers: {Authorization: `Bearer ${token}`}
+        })
+    
+        // consider console.error to log the failure
+        if (res.status != 200) return null;
+    
+        // you can validate data here as well
+        // consider doing this serverside for any user submission data
+        const validationResult = Joi.object<IMajorApiReturn>({
+            faculties: Joi.array().items(Joi.string()),
+            majors: Joi.array().items(
+                Joi.object({
+                    faculty: Joi.string().required(),
+                    major: Joi.string().required()
+                }).unknown(true)
+            )
+        }).validate(res.data)
+    
+        if (validationResult.error) {
+            console.error(validationResult.error)
+            return null;
+        }
+    
+        return validationResult.value;
+    }
 
 
     const handleName = (event: ChangeEvent<HTMLInputElement>) => {
@@ -160,9 +165,13 @@ export default function SignUp(props: ISignUpProps) {
         // TODO : persisting stoer data
         console.log(user)
         // dispatch(storeUser(user))
+        const token = await getAccessTokenSilently()
         await axios.post(
             "http://localhost:8080/users/api/register",
-            user
+            user,
+            {
+                headers: {Authorization: `Bearer ${token}`}
+            }
         )
     }
 
