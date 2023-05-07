@@ -13,7 +13,7 @@ const HTTP_BAD_REQUEST = 400;
 
 
 // get search user result
-router.post('/:keyword', async (req, res) => {
+router.get('/search/:keyword', async (req, res) => {
   const keywordValidate = Joi.string().required().validate(req.params.keyword)
   if (keywordValidate.error) {
     console.error(keywordValidate.error)
