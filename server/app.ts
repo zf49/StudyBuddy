@@ -12,13 +12,29 @@ var courseRouter = require('./routes/course')
 import connectToDatabase from "./config/db-connect";
 import mongoose from "mongoose";
 import { initCourseData, initMajorData, initUserData } from "./config/db-init";
+import jwksRsa from 'jwks-rsa';
+const { expressjwt: jwt } = require('express-jwt');
 const cors = require('cors');
 
 var app = express();
+
+const checkJwt = jwt({
+  secret: jwksRsa.expressJwtSecret({
+      cache: true,
+      rateLimit: true,
+      jwksRequestsPerMinute: 5,
+      jwksUri: "https://dev-7wmg2yatswbx560y.us.auth0.com/.well-known/jwks.json"
+  }),
+  audience: "https://studybuddy",
+  issuer: "https://dev-7wmg2yatswbx560y.us.auth0.com/",
+  algorithms: ['RS256']
+})
+
+app.use(checkJwt)
 app.use(cors())
 // view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
