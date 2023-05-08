@@ -53,14 +53,14 @@ router.post("/delete", async (req, res) => {
 })
 
 
-router.get('/:authID', async (req, res) => {
-    const authIDValidate = Joi.string().required().validate(req.params.authID)
-    if (authIDValidate.error) {
-        console.log(authIDValidate.error)
-    } else {
-        const friends = await findFriends(authIDValidate.value)
+router.get('/getfriends', async (req, res) => {
+    const userToken = req.headers.authorization
+    const token = userToken.split(' ')
+    const decoded = jwtDecode<JwtPayload>(token[1])
+    const authID = decoded.sub
+        const friends = await findFriends(authID)
         res.json(friends)
-    }
+    
 })
 
 router.get('/detail/:id', async (req, res) => {
