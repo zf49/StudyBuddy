@@ -75,14 +75,17 @@ router.get('/detail/:id', async (req, res) => {
 })
 
 router.post('/checkfollow', async (req, res) => {
+    const userToken = req.headers.authorization
+    const token = userToken.split(' ')
+    const decoded = jwtDecode<JwtPayload>(token[1])
+    const authID = decoded.sub
     const payloadValidate = Joi.object<IPayload>({
-        authID: Joi.string().required(),
         friendID: Joi.string().required()
     }).validate(req.body)
     if (payloadValidate.error) {
         console.log(payloadValidate.error)
     } else {
-        const ifFollow = await checkFollow(payloadValidate.value.authID, payloadValidate.value.friendID)
+        const ifFollow = await checkFollow(authID, payloadValidate.value.friendID)
         res.json(ifFollow)
     }
 })
