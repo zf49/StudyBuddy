@@ -1,7 +1,6 @@
 import Joi from "joi";
+import { emailSend } from "../controller/emailController";
 import { addFriend, checkFollow, checkSelf, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
-import { isElementAccessExpression } from "typescript";
-
 var express = require('express');
 var router = express.Router();
 
@@ -27,7 +26,12 @@ router.post("/add", async (req, res) => {
         console.log(payloadValidate.error)
     } else {
         await addFriend(payloadValidate.value.authID, payloadValidate.value.friendID)
-        res.sendStatus(HTTP_OK)
+        const sendEmail:boolean = await emailSend();
+
+        if(sendEmail === false){
+            res.sendStatus(HTTP_NOT_FOUND)
+        }else{ res.sendStatus(HTTP_OK)
+        }
     }
 })
 

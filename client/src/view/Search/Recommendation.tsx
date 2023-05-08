@@ -7,9 +7,6 @@ import { IUserDetail } from '../Profile/Profile';
 import { useNavigate } from 'react-router';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import { useAuth0 } from '@auth0/auth0-react';
-import InfiniteScroll from "react-infinite-scroll-component";
-import { CircularProgress } from '@mui/material';
-import { Button } from '@mui/material';
 
 
 
@@ -37,7 +34,7 @@ export default function Recommendation() {
       console.log(id)
       navigate("/frienddetail/", { state: { "id": id }})
     };
-    
+
     return (
         <div style={{marginBottom:"0.5em"}}>
                 <h3>users u may know</h3>

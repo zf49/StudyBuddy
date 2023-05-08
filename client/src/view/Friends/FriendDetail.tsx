@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import Button from '@mui/material/Button';
 import { useAuth0 } from "@auth0/auth0-react"
 import Joi from "joi"
+import { ContactUs } from "./EmailNotification"
 
 
 export interface IFriendDetail {
@@ -82,7 +83,10 @@ export default function FriendDetail() {
 
     async function handleFollow() {
         await axios.post("http://localhost:8080/friends/add", payload, {signal: controller.signal})
+
+        
         setFollow(true)
+
     }
 
     useEffect(() => {
@@ -97,6 +101,7 @@ export default function FriendDetail() {
     return (
         <Paper elevation={24}>
         <Box>
+           {/* <><ContactUs/></> */}
         <div style={{ width: "80%", textAlign: "center", margin: "0 auto",paddingTop:"2em", paddingBottom:"2em", wordWrap:'break-word' }}>
             <div>
                 <Avatar sx={{ width: 56, height: 56, margin: "0 auto" }}
