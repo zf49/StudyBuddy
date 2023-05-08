@@ -127,7 +127,7 @@ export default function Profile() {
       if (user && isAuthenticated) {
         // setUserProfile;
         const token = await getAccessTokenSilently()
-        axios.get(`http://localhost:8080/users/${user.sub}`, {
+        axios.get(`http://localhost:8080/users/getprofile`, {
           signal: controller.signal,
           headers: { Authorization: `Bearer ${token}` }
         }).then((res) => {
