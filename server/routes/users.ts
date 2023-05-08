@@ -4,6 +4,7 @@ import Joi from 'joi';
 import { checkAuthID, createUser, getUserProfile, searchUser, updateUserProfile } from '../dao/user-dao'
 import { IUser } from '../schema/user-schema';
 import { ICourse } from '../schema/course_schema';
+import jwtDecode, { JwtPayload } from "jwt-decode";
 
 
 const HTTP_CREATED = 201;
@@ -73,14 +74,14 @@ router.get('/:uniID', async (req, res, next) => {
 });
 
 // Get users login Email
-router.get('/authID/:authID', async (req, res, next) => {
-  const authIDValidate = Joi.string().required().validate(req.params.authID)
-  if (authIDValidate.error) {
-    console.error(authIDValidate.error)
-  } else {
-    const isHave: object = await checkAuthID(authIDValidate.value);
+router.get('/authID/check', async (req, res, next) => {
+  const userToken = req.headers.authorization
+    const token = userToken.split(' ')
+    const decoded = jwtDecode<JwtPayload>(token[1])
+    const authID = decoded.sub
+    const isHave: object = await checkAuthID(authID);
     res.send(isHave)
-  }
+  
 });
 
 router.post("/api/register", async (req, res) => {
