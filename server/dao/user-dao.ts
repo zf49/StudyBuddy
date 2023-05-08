@@ -63,4 +63,13 @@ export const updateUserProfile = async (authId:string,user:object)=>{
     )
     return updatedUser
  }
+
+
+ export const getUserName = async (authId:string)=>{
+
+  const userName = await User.find({ authID: authId }, {  name: 1 });
+  
+  return userName
+
+ }
  
