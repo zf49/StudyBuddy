@@ -19,7 +19,6 @@ export interface IFriendDetail {
 }
 
 interface IPayload {
-    authID?: string
     friendID: string
 }
 
@@ -33,7 +32,6 @@ export default function FriendDetail() {
     const { user, isAuthenticated } = useAuth0();
     const {getAccessTokenSilently} = useAuth0()
     const payload: IPayload = {
-        authID: user?.sub,
         friendID: location.state.id
     }
     const controller = new AbortController()
@@ -85,6 +83,7 @@ export default function FriendDetail() {
 
     async function handleFollow() {
         const token = await getAccessTokenSilently()
+        console.log(token)
         await axios.post("http://localhost:8080/friends/add", payload, {signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
         setFollow(true)
     }
