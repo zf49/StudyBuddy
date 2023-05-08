@@ -91,14 +91,17 @@ router.post('/checkfollow', async (req, res) => {
 })
 
 router.post('/checkself', async (req, res) => {
+    const userToken = req.headers.authorization
+    const token = userToken.split(' ')
+    const decoded = jwtDecode<JwtPayload>(token[1])
+    const authID = decoded.sub
     const payloadValidate = Joi.object<IPayload>({
-        authID: Joi.string().required(),
         friendID: Joi.string().required()
     }).validate(req.body)
     if (payloadValidate.error) {
         console.log(payloadValidate.error)
     } else {
-    const ifSelf = await checkSelf(payloadValidate.value.authID, payloadValidate.value.friendID)
+    const ifSelf = await checkSelf(authID, payloadValidate.value.friendID)
     res.json(ifSelf)
     }
 })
