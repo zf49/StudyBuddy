@@ -63,14 +63,13 @@ router.patch('/profile/update', async (req, res, next) => {
 // });
 
 /* GET users listing. */
-router.get('/:uniID', async (req, res, next) => {
-  const uniIDValidate = Joi.string().required().validate(req.params.uniID)
-  if (uniIDValidate.error) {
-    console.error(uniIDValidate.error)
-  } else {
-    const user = await getUserProfile(uniIDValidate.value)
+router.get('/getprofile', async (req, res, next) => {
+  const userToken = req.headers.authorization
+    const token = userToken.split(' ')
+    const decoded = jwtDecode<JwtPayload>(token[1])
+    const authID = decoded.sub
+    const user = await getUserProfile(authID)
     res.json(user);
-  }
 });
 
 // Get users login Email
