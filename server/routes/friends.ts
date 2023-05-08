@@ -1,7 +1,7 @@
 import Joi from "joi";
 import { addFriend, checkFollow, checkSelf, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
 import { isElementAccessExpression } from "typescript";
-
+import jwtDecode, { JwtPayload } from "jwt-decode";
 
 var express = require('express');
 var router = express.Router();
@@ -21,14 +21,17 @@ export interface IPayload {
 
 
 router.post("/add", async (req, res) => {
+    const userToken = req.headers.authorization
+    const token = userToken.split(' ')
+    const decoded = jwtDecode<JwtPayload>(token[1])
+    const authID = decoded.sub
     const payloadValidate = Joi.object<IPayload>({
-        authID: Joi.string().required(),
         friendID: Joi.string().required()
     }).validate(req.body)
     if (payloadValidate.error) {
         console.log(payloadValidate.error)
     } else {
-        await addFriend(payloadValidate.value.authID, payloadValidate.value.friendID)
+        await addFriend(authID, payloadValidate.value.friendID)
         res.sendStatus(HTTP_OK)
     }
 })
