@@ -37,14 +37,17 @@ router.post("/add", async (req, res) => {
 })
 
 router.post("/delete", async (req, res) => {
+    const userToken = req.headers.authorization
+    const token = userToken.split(' ')
+    const decoded = jwtDecode<JwtPayload>(token[1])
+    const authID = decoded.sub
     const payloadValidate = Joi.object<IPayload>({
-        authID: Joi.string().required(),
         friendID: Joi.string().required()
     }).validate(req.body)
     if (payloadValidate.error) {
         console.log(payloadValidate.error)
     } else {
-        await deleteFriend(payloadValidate.value.authID, payloadValidate.value.friendID)
+        await deleteFriend(authID, payloadValidate.value.friendID)
         res.sendStatus(HTTP_OK)
     }
 })
