@@ -203,7 +203,7 @@ export default function Profile() {
       handleError()
     } else {
       const token = await getAccessTokenSilently()
-      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } }).then((res) => {
+      await axios.patch(`http://localhost:8080/users/profile/update`, userProfile, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } }).then((res) => {
         const acknowledgedValidate = Joi.boolean().required().validate(res.data.acknowledged)
         if (acknowledgedValidate.error) {
           console.log(acknowledgedValidate.error)
