@@ -26,11 +26,11 @@ router.get('/search/:keyword', async (req, res) => {
 })
 
 // update userProfile
-router.patch('/profile/:authID', async (req, res, next) => {
-  const authIDValidate = Joi.string().required().validate(req.params.authID)
-  if (authIDValidate.error) {
-    console.error(authIDValidate.error)
-  } else {
+router.patch('/profile/update', async (req, res, next) => {
+  const userToken = req.headers.authorization
+    const token = userToken.split(' ')
+    const decoded = jwtDecode<JwtPayload>(token[1])
+    const authID = decoded.sub
     const userDataValidate = Joi.object<IUser>({
       name: Joi.string().required(),
       uniID: Joi.string().required(),
@@ -51,10 +51,10 @@ router.patch('/profile/:authID', async (req, res, next) => {
     if (userDataValidate.error) {
       console.error(userDataValidate.error)
     } else {
-      const updatedUser = await updateUserProfile(authIDValidate.value, userDataValidate.value)
+      const updatedUser = await updateUserProfile(authID, userDataValidate.value)
       res.json(updatedUser);
     }
-  }
+  
 });
 
 // set pic
