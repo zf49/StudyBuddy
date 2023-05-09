@@ -73,6 +73,8 @@ router.get('/:authID', async (req, res) => {
             }
             return unique;
           }, []);
+
+
         res.json(uniqueFriendsArr)
     }
 })

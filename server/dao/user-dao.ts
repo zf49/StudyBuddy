@@ -37,7 +37,7 @@ export async function recommend(courses: ICourse[], usermajor: string) {
         },
       },
     ]);
-    // console.log("Filtered users: ", filteredUsers);
+    console.log("Filtered users: ", filteredUsers);
     return filteredUsers;
   } catch (error) {
     console.error("error", error);
