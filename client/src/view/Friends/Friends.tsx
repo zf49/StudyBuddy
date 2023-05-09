@@ -48,12 +48,15 @@ export default function Friends() {
     }
 
     function handleFriendDetail(id: string) {
-        navigate("/frienddetail/", { state: { "id": id }})
+
+        // console.log(id)
+
+        navigate("/frienddetail", { state: { "id": id }})
+
     }
 
     useEffect(() => {
         getFriends()
-
         return () =>{
             controller.abort()
         }

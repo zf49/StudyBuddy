@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { emailSend } from "../controller/emailController";
-import { addFriend, checkFollow, checkSelf, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
+import { addFriend, checkFollow, checkSelf, deleteFriend, findFriendDetail, findFriends, getUserFriends } from "../dao/friend-dao";
 var express = require('express');
 var router = express.Router();
 
@@ -22,16 +22,24 @@ router.post("/add", async (req, res) => {
         authID: Joi.string().required(),
         friendID: Joi.string().required()
     }).validate(req.body)
-    if (payloadValidate.error) {
+
+    if (payloadValidate.error ) {
         console.log(payloadValidate.error)
     } else {
-        await addFriend(payloadValidate.value.authID, payloadValidate.value.friendID)
 
+        const userFriendsArr = getUserFriends(payloadValidate.value.authID)
+
+        console.log("userFriends",userFriendsArr)
+
+
+
+        await addFriend(payloadValidate.value.authID, payloadValidate.value.friendID)
         const sendEmail:boolean = await emailSend(payloadValidate.value.authID,payloadValidate.value.friendID);
         
         if(sendEmail === false){
             res.sendStatus(HTTP_NOT_FOUND)
-        }else{ res.sendStatus(HTTP_OK)
+        }else{ 
+            res.sendStatus(HTTP_OK)
         }
     }
 })
@@ -56,6 +64,7 @@ router.get('/:authID', async (req, res) => {
         console.log(authIDValidate.error)
     } else {
         const friends = await findFriends(authIDValidate.value)
+        console.log(friends)
         res.json(friends)
     }
 })

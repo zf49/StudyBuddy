@@ -21,10 +21,12 @@ export interface IFriendDetail {
 
 interface IPayload {
     authID?: string
-    friendID: string
+    friendID: string | null
 }
 
+
 export default function FriendDetail() {
+
 
     const location = useLocation()
     const [friendDetail, setFriendDetail] = React.useState<IFriendDetail>()
@@ -32,9 +34,13 @@ export default function FriendDetail() {
     const navigate = useNavigate()
     const [self, setSelf] = React.useState<Boolean>()
     const { user, isAuthenticated } = useAuth0();
+
+    const searchParams = new URLSearchParams(location.search);
+    const friendId = searchParams.get('id');
+
     const payload: IPayload = {
         authID: user?.sub,
-        friendID: location.state.id
+        friendID: location.state.id,
     }
     const controller = new AbortController()
 
@@ -90,7 +96,7 @@ export default function FriendDetail() {
     }
 
     useEffect(() => {
-        
+        console.log(location)
         getFriendDetail()
 
         return () => {

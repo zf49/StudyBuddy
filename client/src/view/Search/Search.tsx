@@ -75,7 +75,10 @@ export default function Search() {
 
     //redirect to /frienddetail/
     const handleFriendDetail = (id:string)=>{
-        navigate("/frienddetail/", { state: {id:id}})
+        console.log(id)
+        navigate("/frienddetail", { state: { "id": id }})
+        // navigate(`/frienddetail?id=${id}`)
+
     }
 
   const [open, setOpen] = React.useState(false);
@@ -185,5 +188,9 @@ export default function Search() {
          </div>
         </div>
     );
+}
+
+function useHistory() {
+    throw new Error('Function not implemented.');
 }
 

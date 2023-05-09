@@ -32,7 +32,7 @@ export default function Recommendation() {
 
   const handleClick = (id: string) => {
       console.log(id)
-      navigate("/frienddetail/", { state: { "id": id }})
+      navigate("/frienddetail", { state: { "id": id }})
     };
 
     return (
