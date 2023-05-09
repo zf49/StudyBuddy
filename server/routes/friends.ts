@@ -27,8 +27,8 @@ router.post("/add", async (req, res) => {
     } else {
         await addFriend(payloadValidate.value.authID, payloadValidate.value.friendID)
 
-        const sendEmail:boolean = await emailSend(payloadValidate.value.authID);
-
+        const sendEmail:boolean = await emailSend(payloadValidate.value.authID,payloadValidate.value.friendID);
+        
         if(sendEmail === false){
             res.sendStatus(HTTP_NOT_FOUND)
         }else{ res.sendStatus(HTTP_OK)

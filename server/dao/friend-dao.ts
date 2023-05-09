@@ -83,3 +83,12 @@ export async function deleteFriend(authID: string, friendID: string) {
     const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()
     return await Friend.deleteOne({ userID: userID, friendID: friendID })
 }
+
+
+export async function getFriendEmailByFriendId(friendID: string){
+
+    
+
+
+
+}

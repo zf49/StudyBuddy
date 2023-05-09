@@ -30,10 +30,11 @@ function App() {
   return (
 
     <ThemeSystem>
-      <CssBaseline />
-      <HashRouter>
+      <CssBaseline >
+      <BrowserRouter>
         <IndexRouter />
-      </HashRouter>
+      </BrowserRouter>
+      </CssBaseline>
     </ThemeSystem>
 
   );

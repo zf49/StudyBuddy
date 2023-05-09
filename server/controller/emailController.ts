@@ -1,5 +1,5 @@
 import * as nodemailer from "nodemailer";
-import { getUserName } from "../dao/user-dao";
+import { getUserName, getUserProfile } from "../dao/user-dao";
 
 interface MailOptions {
     from: string;
@@ -11,11 +11,12 @@ interface MailOptions {
 
 
 
-export const emailSend = async (authID:string): Promise<boolean> => {
+export const emailSend = async (authID:string,friendID:string): Promise<boolean> => {
 
     console.log(authID)
     const userName = await getUserName(authID)
-
+   
+    
     console.log(userName[0].name)
 
 
@@ -47,7 +48,7 @@ export const emailSend = async (authID:string): Promise<boolean> => {
         from: 'wangzhifang97@live.com',
         // from: 'wangzhifang000@gmail.com',
         to: 'wangzhifang97@live.com',
-        subject: userName[0].name + ' followed you!',
+        subject: userName[0].name + ' has followed you!',
         text: '666666'
     };
     try {
