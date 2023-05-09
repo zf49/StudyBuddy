@@ -27,7 +27,7 @@ router.post("/add", async (req, res) => {
         console.log(payloadValidate.error)
     } else {
 
-        const userFriendsArr = getUserFriends(payloadValidate.value.authID)
+        const userFriendsArr = await getUserFriends(payloadValidate.value.authID)
 
         console.log("userFriends",userFriendsArr)
 
@@ -65,7 +65,15 @@ router.get('/:authID', async (req, res) => {
     } else {
         const friends = await findFriends(authIDValidate.value)
         console.log(friends)
-        res.json(friends)
+
+        const uniqueFriendsArr = friends.reduce((unique, current) => {
+            const friendID = current.friendID;
+            if (!unique.some(friend => friend.friendID === friendID)) {
+              unique.push(current);
+            }
+            return unique;
+          }, []);
+        res.json(uniqueFriendsArr)
     }
 })
 
