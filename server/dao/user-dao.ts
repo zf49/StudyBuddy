@@ -27,18 +27,18 @@ export async function searchUser(keyword:string) {
 
 export async function recommend(courses: ICourse[], usermajor: string) {
   try {
-    const filteredUsers = await User.aggregate([
-      {
-        $match: {
-          $or: [
-            { major: { $eq: usermajor } },
-            { courses: { $elemMatch: { $in: courses } } },
-          ],
-        },
-      },
-    ]);
+  
+    const courseCodes = courses.map((course) => course.course_code);
+    const filteredUsers = await User.find({
+      $or: [
+        { major: usermajor },
+        { courses: { $elemMatch: { course_code: { $in: courseCodes } } } }
+      ]
+    });
+
     console.log("Filtered users: ", filteredUsers);
     return filteredUsers;
+
   } catch (error) {
     console.error("error", error);
     return []

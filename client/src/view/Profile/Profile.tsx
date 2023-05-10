@@ -51,6 +51,7 @@ const StyledButton = styled(Button)({
   width: "100%",
 });
 export interface IUserDetail {
+  matchedCount: number;
   name: string,
   uniID: string,
   gender: string,
@@ -76,7 +77,8 @@ export default function Profile() {
     authID: "",
     userAvatar: "",
     _id: "",
-    courses: []
+    courses: [],
+    matchedCount:0
   });
 
   const { user, isAuthenticated } = useAuth0();
