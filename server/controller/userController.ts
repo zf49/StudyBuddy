@@ -7,7 +7,7 @@ import { IUser } from "../schema/user-schema";
 
 // user Recommand 
 // 3 same courses > in 2 same courses > in same major
-export const userRecommand = async (req, res, next) => {
+export const userRecommand = async (req, res) => {
 
     const userAuthID = req.body.authID
 

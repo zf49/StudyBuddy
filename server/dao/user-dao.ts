@@ -28,6 +28,10 @@ export async function searchUser(keyword:string) {
 export async function recommend(courses: ICourse[], usermajor: string) {
   try {
   
+    console.log(courses)
+    console.log(usermajor)
+
+
     const courseCodes = courses.map((course) => course.course_code);
     const filteredUsers = await User.find({
       $or: [
