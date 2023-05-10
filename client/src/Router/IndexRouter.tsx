@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'
 import FriendDetail from '../view/Friends/FriendDetail'
+import {io, Socket} from "socket.io-client"
 
 
 
@@ -45,6 +46,12 @@ export default function IndexRouter() {
               navigate('/signup')
             } else {
               setUserExists(true);
+              console.log(token)
+              const socket: Socket = io("http://localhost:8080", {transports: ['websocket'], extraHeaders: {Authorization: `Bearer ${token}`}})
+              socket.emit("Ping")
+              socket.on("Pong", ()=>{
+                console.log("pong")
+              })
             }
           })
       }
