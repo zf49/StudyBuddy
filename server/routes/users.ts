@@ -5,6 +5,7 @@ import { checkAuthID, createUser, getUserProfile, searchUser, updateUserProfile 
 import { IUser } from '../schema/user-schema';
 import { ICourse } from '../schema/course_schema';
 import jwtDecode, { JwtPayload } from "jwt-decode";
+import { jwtDecodeUser } from '../auth/jwt';
 
 
 const HTTP_CREATED = 201;
@@ -27,34 +28,31 @@ router.get('/search/:keyword', async (req, res) => {
 
 // update userProfile
 router.patch('/profile/update', async (req, res, next) => {
-  const userToken = req.headers.authorization
-    const token = userToken.split(' ')
-    const decoded = jwtDecode<JwtPayload>(token[1])
-    const authID = decoded.sub
-    const userDataValidate = Joi.object<IUser>({
-      name: Joi.string().required(),
-      uniID: Joi.string().required(),
-      gender: Joi.string().required().allow(null, ''),
-      email: Joi.string().required().allow(null, ''),
-      faculty: Joi.string().required().allow(null, ''),
-      major: Joi.string().required().allow(null, ''),
-      authID: Joi.string().required(),
-      userAvatar: Joi.string().required(),
-      courses: Joi.array().items(
-        Joi.object({
-          course_code: Joi.string().required(),
-          course_name: Joi.string().required(),
-          CourseNName: Joi.string().required()
-        }).unknown(true)
-      ).required().allow(null, '')
-    }).unknown(true).validate(req.body)
-    if (userDataValidate.error) {
-      console.error(userDataValidate.error)
-    } else {
-      const updatedUser = await updateUserProfile(authID, userDataValidate.value)
-      res.json(updatedUser);
-    }
-  
+  const authID = jwtDecodeUser(req.headers.authorization)
+  const userDataValidate = Joi.object<IUser>({
+    name: Joi.string().required(),
+    uniID: Joi.string().required(),
+    gender: Joi.string().required().allow(null, ''),
+    email: Joi.string().required().allow(null, ''),
+    faculty: Joi.string().required().allow(null, ''),
+    major: Joi.string().required().allow(null, ''),
+    authID: Joi.string().required(),
+    userAvatar: Joi.string().required(),
+    courses: Joi.array().items(
+      Joi.object({
+        course_code: Joi.string().required(),
+        course_name: Joi.string().required(),
+        CourseNName: Joi.string().required()
+      }).unknown(true)
+    ).required().allow(null, '')
+  }).unknown(true).validate(req.body)
+  if (userDataValidate.error) {
+    console.error(userDataValidate.error)
+  } else {
+    const updatedUser = await updateUserProfile(authID, userDataValidate.value)
+    res.json(updatedUser);
+  }
+
 });
 
 // set pic
@@ -64,23 +62,17 @@ router.patch('/profile/update', async (req, res, next) => {
 
 /* GET users listing. */
 router.get('/getprofile', async (req, res, next) => {
-  const userToken = req.headers.authorization
-    const token = userToken.split(' ')
-    const decoded = jwtDecode<JwtPayload>(token[1])
-    const authID = decoded.sub
-    const user = await getUserProfile(authID)
-    res.json(user);
+  const authID = jwtDecodeUser(req.headers.authorization)
+  const user = await getUserProfile(authID)
+  res.json(user);
 });
 
 // Get users login Email
 router.get('/authID/check', async (req, res, next) => {
-  const userToken = req.headers.authorization
-    const token = userToken.split(' ')
-    const decoded = jwtDecode<JwtPayload>(token[1])
-    const authID = decoded.sub
-    const isHave: object = await checkAuthID(authID);
-    res.send(isHave)
-  
+  const authID = jwtDecodeUser(req.headers.authorization)
+  const isHave: object = await checkAuthID(authID);
+  res.send(isHave)
+
 });
 
 router.post("/api/register", async (req, res) => {

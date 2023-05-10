@@ -2,6 +2,7 @@ import Joi from "joi";
 import { addFriend, checkFollow, checkSelf, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
 import { isElementAccessExpression } from "typescript";
 import jwtDecode, { JwtPayload } from "jwt-decode";
+import { jwtDecodeUser } from "../auth/jwt";
 
 var express = require('express');
 var router = express.Router();
@@ -21,10 +22,7 @@ export interface IPayload {
 
 
 router.post("/add", async (req, res) => {
-    const userToken = req.headers.authorization
-    const token = userToken.split(' ')
-    const decoded = jwtDecode<JwtPayload>(token[1])
-    const authID = decoded.sub
+    const authID = jwtDecodeUser(req.headers.authorization)
     const payloadValidate = Joi.object<IPayload>({
         friendID: Joi.string().required()
     }).validate(req.body)
@@ -37,10 +35,7 @@ router.post("/add", async (req, res) => {
 })
 
 router.post("/delete", async (req, res) => {
-    const userToken = req.headers.authorization
-    const token = userToken.split(' ')
-    const decoded = jwtDecode<JwtPayload>(token[1])
-    const authID = decoded.sub
+    const authID = jwtDecodeUser(req.headers.authorization)
     const payloadValidate = Joi.object<IPayload>({
         friendID: Joi.string().required()
     }).validate(req.body)
@@ -54,13 +49,10 @@ router.post("/delete", async (req, res) => {
 
 
 router.get('/getfriends', async (req, res) => {
-    const userToken = req.headers.authorization
-    const token = userToken.split(' ')
-    const decoded = jwtDecode<JwtPayload>(token[1])
-    const authID = decoded.sub
-        const friends = await findFriends(authID)
-        res.json(friends)
-    
+    const authID = jwtDecodeUser(req.headers.authorization)
+    const friends = await findFriends(authID)
+    res.json(friends)
+
 })
 
 router.get('/detail/:id', async (req, res) => {
@@ -75,10 +67,7 @@ router.get('/detail/:id', async (req, res) => {
 })
 
 router.post('/checkfollow', async (req, res) => {
-    const userToken = req.headers.authorization
-    const token = userToken.split(' ')
-    const decoded = jwtDecode<JwtPayload>(token[1])
-    const authID = decoded.sub
+    const authID = jwtDecodeUser(req.headers.authorization)
     const payloadValidate = Joi.object<IPayload>({
         friendID: Joi.string().required()
     }).validate(req.body)
@@ -91,18 +80,15 @@ router.post('/checkfollow', async (req, res) => {
 })
 
 router.post('/checkself', async (req, res) => {
-    const userToken = req.headers.authorization
-    const token = userToken.split(' ')
-    const decoded = jwtDecode<JwtPayload>(token[1])
-    const authID = decoded.sub
+    const authID = jwtDecodeUser(req.headers.authorization)
     const payloadValidate = Joi.object<IPayload>({
         friendID: Joi.string().required()
     }).validate(req.body)
     if (payloadValidate.error) {
         console.log(payloadValidate.error)
     } else {
-    const ifSelf = await checkSelf(authID, payloadValidate.value.friendID)
-    res.json(ifSelf)
+        const ifSelf = await checkSelf(authID, payloadValidate.value.friendID)
+        res.json(ifSelf)
     }
 })
 
