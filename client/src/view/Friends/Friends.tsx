@@ -50,7 +50,7 @@ export default function Friends() {
     }
 
     function handleFriendDetail(id: string) {
-        navigate("/frienddetail/", { state: { "id": id }})
+        navigate("/chat/", { state: { "id": id }})
     }
 
     useEffect(() => {
