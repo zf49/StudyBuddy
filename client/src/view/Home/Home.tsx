@@ -14,7 +14,20 @@ const Home = () => {
     setAnchorEl(event.currentTarget);
   };
 
+  // give axios.get
+//   useEffect(() => {
+//       effect
+//       return () => {
+//           cleanup
+//       }
+//   }, [input])
+
+
+
+
+
   const handleClose = () => {
+    console.log('adasd')
     setAnchorEl(null);
   };
 
@@ -56,6 +69,23 @@ const Home = () => {
           <p>lormasdasd</p>
         </Paper>
       </Grid>
+
+      <Grid item xs={12}>
+        <Paper style={{ padding: 8 }}>
+          <h1>Home</h1>
+          <p>lormasdasd</p>
+        </Paper>
+      </Grid><Grid item xs={12}>
+        <Paper style={{ padding: 8 }}>
+          <h1>Home</h1>
+          <p>lormasdasd</p>
+        </Paper>
+      </Grid>
+
+
+
+
+
       <Fab
         style={{
           position: 'fixed',
@@ -73,16 +103,28 @@ const Home = () => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}><CreateIcon/>Post Question</MenuItem>
-        <MenuItem onClick={handleClose}><RateReviewIcon/>My Question</MenuItem>
+        <MenuItem onClick={handleClose}>
+        <IconButton size="large" color="inherit">
 
-        <MenuItem onClick={handleClose}> <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+            <CreateIcon/>
+        </IconButton>
+        <p>Post Question</p>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+        <IconButton size="large" color="inherit">
+
+            <RateReviewIcon/>
+        </IconButton>
+        <p>My Question</p>
+        </MenuItem>
+
+        <MenuItem onClick={handleClose}> 
+        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
           <Badge badgeContent={4} color="error">
-            <NotificationsIcon />
+            <NotificationsIcon /> 
           </Badge>
         </IconButton>
         <p>Messages</p>
-        
         </MenuItem>
       </Menu>
     </Grid>

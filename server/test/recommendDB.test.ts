@@ -22,7 +22,6 @@ test('userRecommand', () => {
         mockRes = {
             send: jest.fn(),
         };
-
     });
 
     afterEach(() => {

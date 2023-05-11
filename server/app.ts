@@ -9,6 +9,9 @@ var usersRouter = require('./routes/users');
 var majorRouter = require('./routes/major')
 var friendsRouter = require('./routes/friends')
 var courseRouter = require('./routes/course')
+var questionRouter = require('./routes/question')
+var replyRouter = require('./routes/reply')
+var commentRouter = require('./routes/comment')
 
 import connectToDatabase from "./config/db-connect";
 import mongoose from "mongoose";
@@ -32,7 +35,9 @@ app.use('/users', usersRouter);
 app.use('/major', majorRouter);
 app.use('/friends', friendsRouter)
 app.use('/courses', courseRouter)
-
+app.use('/question', questionRouter)
+app.use('/reply', replyRouter)
+app.use('/comment',commentRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
