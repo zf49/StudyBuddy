@@ -15,7 +15,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'
 import FriendDetail from '../view/Friends/FriendDetail'
 import {io, Socket} from "socket.io-client"
+import React from 'react'
+import Chat from '../Chat/Chat'
 
+var socket: Socket
 
 
 export default function IndexRouter() {
@@ -24,6 +27,7 @@ export default function IndexRouter() {
   const { user, isAuthenticated, isLoading } = useAuth0()
   const navigate = useNavigate()
   const { getAccessTokenSilently } = useAuth0()
+  
 
   const userStore = useSelector((state: RootState) => state.storeUser);
 
@@ -47,10 +51,16 @@ export default function IndexRouter() {
             } else {
               setUserExists(true);
               console.log(token)
-              const socket: Socket = io("http://localhost:8080", {transports: ['websocket'], extraHeaders: {Authorization: `Bearer ${token}`}})
+              socket = io("http://localhost:8080", {transports: ['websocket'], extraHeaders: {Authorization: `Bearer ${token}`}, query: {token: `${token}`}})
               socket.emit("Ping")
               socket.on("Pong", ()=>{
                 console.log("pong")
+              })
+              socket.on("checkChat", (msgID:string, userID:string)=>{
+                socket.emit("checkChat",msgID,userID)
+              })
+              socket.on("sendChat", (msgID:string, joinedChat:string)=>{
+                socket.emit(`joinedChat${msgID}`,joinedChat)
               })
             }
           })
@@ -102,6 +112,10 @@ export default function IndexRouter() {
         {
           path: "frienddetail",
           element: userExists ? <FriendDetail /> : <Navigate to="/signup" />
+        },
+        {
+          path: "chat",
+          element: userExists ? <Chat /> : <Navigate to="/signup" />
         },
         {
           path: "signup",
@@ -179,3 +193,5 @@ export default function IndexRouter() {
     </div>
   )
 }
+
+export {socket}
