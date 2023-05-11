@@ -128,8 +128,9 @@ export default function Chat() {
                         onChange={handleMsg}
                         onKeyDown={handleSend}
                         value={msg}
+                        label="Type Message Here"
                         fullWidth
-                        sx={{ paddingTop: "5vh" }}
+                        sx={{ marginTop: "5vh", borderRadius: 1, border: 1}}
                     />
                 </div>
                 : <div>You're not friends yet</div>}
