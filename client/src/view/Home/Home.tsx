@@ -19,6 +19,7 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
+import FloatingButton from './FloatingButton';
 
 
 
@@ -65,10 +66,7 @@ const Home = () => {
 
 
 
-    const handleButtonClose = () => {
-        console.log('adasd')
-        setAnchorEl(null);
-    };
+    
 
 
     const checkQuestion = () => {
@@ -144,48 +142,8 @@ const Home = () => {
             </>
 
 
-
-            <Fab
-                style={{
-                    position: 'fixed',
-                    bottom: 16,
-                    right: 16,
-                }}
-                color="secondary"
-                aria-label="add"
-                onClick={handleClick}
-            >
-                <UpIcon />
-            </Fab>
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleButtonClose}
-            >
-                <MenuItem onClick={handleButtonClose}>
-                    <IconButton size="large" color="inherit">
-
-                        <CreateIcon />
-                    </IconButton>
-                    <p>Post Question</p>
-                </MenuItem>
-                <MenuItem onClick={handleButtonClose}>
-                    <IconButton size="large" color="inherit">
-
-                        <RateReviewIcon />
-                    </IconButton>
-                    <p>My Question</p>
-                </MenuItem>
-
-                <MenuItem onClick={handleButtonClose}>
-                    <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-                        <Badge badgeContent={4} color="error">
-                            <NotificationsIcon />
-                        </Badge>
-                    </IconButton>
-                    <p>Messages</p>
-                </MenuItem>
-            </Menu>
+                <FloatingButton/>
+           
         </Grid>
     );
 };
