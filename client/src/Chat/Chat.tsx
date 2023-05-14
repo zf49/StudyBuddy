@@ -1,10 +1,11 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { ChangeEvent, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { socket } from "../Router/IndexRouter";
 import React from "react";
 import TextField from '@mui/material/TextField';
 import { Avatar, Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import dayjs from "dayjs";
 
 export interface IMsg {
     sender: string,
@@ -28,7 +29,7 @@ export default function Chat() {
     const [msgs, setMsgs] = React.useState<IMsg[]>([])
     const [msg, setMsg] = React.useState<string>()
     const [friendName, setFriendName] = React.useState<string>()
-    const msgBoxRef = useRef<null | HTMLDivElement>(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
         async function getChat() {
@@ -81,13 +82,12 @@ export default function Chat() {
 
     const scrollToBottom = () => {
         const msgBox = document.getElementById("msgBox")
-        console.log(msgBoxRef)
-        setTimeout(() => {
-            msgBox?.scroll(0, msgBox.scrollHeight)
-        }, 100)
-        // msgBoxRef.current?.scrollIntoView({block: "start"})
-        console.log("scroll")
+        msgBox?.scroll(0, msgBox.scrollHeight)
 
+    }
+
+    const handleProfile = () => {
+        navigate("/frienddetail/", { state: { "id": location.state.id } })
     }
 
     return (
@@ -111,13 +111,19 @@ export default function Chat() {
                         <div id="msgBox" style={{ height: "70vh", overflow: "scroll", padding: 20 }}>
                             {msgs?.map((msg) => (
                                 <div>
-                                    <div style={{ display: "inline" }}>
-                                        <Avatar alt="Remy Sharp" src={msg.senderPic} />
-                                        {msg.senderName}
-                                        {msg.sendTime.toString()}
+                                    <div style={{ display: "flex" }}>
+                                        <div>
+                                            <Avatar src={msg.senderPic} onClick={handleProfile} />
+                                        </div>
+                                        <div style={{ marginTop: "5px", marginLeft: "10px" }}>
+                                            <b style={{ fontSize: "20px" }}>{msg.senderName}</b>
+                                        </div>
+                                        <div style={{ marginTop: "10px", marginLeft: "10px" }}>
+                                            <small style={{ color: "gray" }}>{dayjs(msg.sendTime).format("DD/MM/YYYY HH:mm:ss")}</small>
+                                        </div>
                                     </div>
                                     <div>
-                                        {msg.msg}
+                                        <p style={{ fontSize: "16px" }}>{msg.msg}</p>
                                     </div>
                                 </div>
                             ))}
@@ -130,7 +136,7 @@ export default function Chat() {
                         value={msg}
                         label="Type Message Here"
                         fullWidth
-                        sx={{ marginTop: "5vh", borderRadius: 1, border: 1}}
+                        sx={{ marginTop: "5vh", borderRadius: 1, border: 1 }}
                     />
                 </div>
                 : <div>You're not friends yet</div>}
