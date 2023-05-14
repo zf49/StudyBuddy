@@ -113,10 +113,10 @@ export default function Chat() {
                                 <div>
                                     <div style={{ display: "flex" }}>
                                         <div>
-                                            <Avatar src={msg.senderPic} onClick={handleProfile} />
+                                            <Avatar src={msg.senderPic} onClick={handleProfile} style={{ cursor: "pointer" }} />
                                         </div>
                                         <div style={{ marginTop: "5px", marginLeft: "10px" }}>
-                                            <b style={{ fontSize: "20px" }}>{msg.senderName}</b>
+                                            <b style={{ fontSize: "20px", cursor: "pointer" }} onClick={handleProfile}>{msg.senderName}</b>
                                         </div>
                                         <div style={{ marginTop: "10px", marginLeft: "10px" }}>
                                             <small style={{ color: "gray" }}>{dayjs(msg.sendTime).format("DD/MM/YYYY HH:mm:ss")}</small>
