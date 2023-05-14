@@ -32,7 +32,6 @@ export default function createSocketIoConnection(server) {
         var joinedChat: string = null
         socket.join(userID)
         console.log(`joined${userID}`)
-        const userInfo: IUser = (await getUserProfile(authID))[0]
 
         socket.on("Ping", () => {
             socket.emit("Pong")
@@ -67,6 +66,7 @@ export default function createSocketIoConnection(server) {
             const followBack = await checkFriends(payload.friendID, userID)
             if (follow || followBack) {
                 const currentTime: Date = dayjs().toDate()
+                const userInfo: IUser = (await getUserProfile(authID))[0]
                 const msg = await addMsg(userID, payload.friendID, userInfo.name, userInfo.userAvatar, payload.msg, currentTime)
                 const newMsg: IMsg = {
                     sender: userID,
@@ -93,7 +93,7 @@ export default function createSocketIoConnection(server) {
                     } else {
                         console.log("not in chat")
                     }
-                }, 3000)
+                }, 100)
 
             }
         })
