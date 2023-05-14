@@ -3,7 +3,7 @@ var router = express.Router();
 import Joi from 'joi';
 import { checkAuthID, createUser, getUserProfile, searchUser, updateUserProfile } from '../dao/user-dao'
 import { IUser } from '../schema/user-schema';
-import { userRecommand} from './../controller/userController'
+import { getUserByID, userRecommand} from './../controller/userController'
 
 const HTTP_CREATED = 201;
 const HTTP_NOT_FOUND = 404;
@@ -20,8 +20,8 @@ router.post('/:keyword', async (req, res) => {
     const userResult = await searchUser(keywordValidate.value)
     res.json(userResult)
   }
-
 })
+
 
 // update userProfile
 router.patch('/profile/:authID', async (req, res, next) => {
@@ -55,6 +55,10 @@ router.patch('/profile/:authID', async (req, res, next) => {
     }
   }
 });
+
+  router.post('/api/getUserProfile',getUserByID)
+
+
 
 // set pic
 // router.patch('/:authID/pic',async (req, res, next) => {

@@ -63,3 +63,13 @@ export const userRecommand = async (req, res) => {
 
     res.send(nonFriendRecommendedUsers)
 }
+
+
+
+export const getUserByID = async (req,res)=>{
+  console.log(req.body)
+  const userProfile = await getUserProfile(req.body.authID)
+
+  res.json(userProfile)
+
+}

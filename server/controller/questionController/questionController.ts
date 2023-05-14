@@ -9,6 +9,12 @@ export const checkAllQuestion = async(req,res)=>{
 }
 
 
+
+
+
+
+
+
 export const postQuestion = async(req,res)=>{
 
     const { authId, title, content,course,semester } = req.body;

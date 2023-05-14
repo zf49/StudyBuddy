@@ -14,6 +14,7 @@ export interface IComment extends Document {
     updatedAt: Date;
   }
 
+
   const commentSchema = new Schema<IComment>({
     questionId: {
       type: Schema.Types.ObjectId,

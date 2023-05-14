@@ -20,19 +20,31 @@ import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import FloatingButton from './FloatingButton';
+import { useAuth0 } from '@auth0/auth0-react';
+import QuestionDialog from './QuestionDialog';
 
 
 
-interface IQuestion {
+export interface IQuestion {
     _id: string;
     authorId: string;
+    authorName: string;
     title: string;
     content: string;
-    // comments: IComment[];
+    comments: IComment[];
     createdAt: Date;
     updatedAt: Date;
 }
 
+export interface IComment{
+    questionId: string;
+    authorId: string;
+    content: string;
+    parentId: string;
+    // replies: Types.ObjectId[] | IReply[];
+    createdAt: Date;
+    updatedAt: Date;
+  }
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -44,130 +56,77 @@ const Transition = React.forwardRef(function Transition(
 });
 
 const Home = () => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
 
     const [allQuestion, setAllQuestion] = useState<IQuestion[]>([]);
 
-    const fetchAllQuestions = () => {
+
+    const fetchAllQuestionsAndAuthor = () => {
         axios.get('http://localhost:8080/question/allQuestion').then((res) => {
-          setAllQuestion(res.data)
+            console.log(res.data)
+            setAllQuestion(res.data)
         })
-      }
 
-    useEffect(() => {
-        fetchAllQuestions();
-    },[])
+        
 
 
-
-
-const makeComment = ()=>{
-
-    console.log(comment)
-
-}
-   const [comment, setComment] = useState("") 
-const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(event.target.value);
-  };
-
-    const checkQuestion = () => {
-        console.log('checkQuestion')
     }
 
-    const [open, setOpen] = React.useState(false);
+    useEffect(() => {
+        fetchAllQuestionsAndAuthor();
+    },[])
 
-    const handleClickOpen = () => {
-        setOpen(true);
+    const [open, setOpen] = React.useState(false);
+    const [question, setQuestion] = useState<IQuestion>({
+        _id: '',
+        authorId: '',
+        authorName: '',
+        title: '',
+        content: '',
+        comments: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    const handleClickOpen = async (item:IQuestion) => {
+        await axios.post('http://localhost:8080/users/api/getUserProfile',{
+            "authID":item.authorId
+        }).then((res)=>{
+            console.log('asdasda',res.data.name)
+            setQuestion({...item,authorName:res.data.name});
+            setOpen(true);
+        })
     };
 
     const handleClose = () => {
         setOpen(false);
     };
 
-
-
-
     return (
         <div>
-        <Grid container spacing={2} >
-            <Grid item xs={12}>
-                <Paper style={{ padding: 8 }}>
-                    <h1>Home</h1>
-                    <p>lormasdasd</p>
-                </Paper>
-            </Grid>
-            <>
-                {allQuestion.map((item) => {
-                    return (
-
-                        <>
-                            <Grid item xs={12} onClick={handleClickOpen}>
-                                <Paper style={{ padding: 8 }}>
-                                    <h1>{item.title}</h1>
-                                    <p>{item.content}</p>
-                                </Paper>
-                            </Grid>
-                            <div>
-                                <Dialog
-                                    fullScreen
-                                    open={open}
-                                    onClose={handleClose}
-                                    TransitionComponent={Transition}
-                                >
-                                    <AppBar sx={{ position: 'relative' }}>
-                                        <Toolbar>
-                                            <IconButton
-                                                edge="start"
-                                                color="inherit"
-                                                onClick={handleClose}
-                                                aria-label="close"
-                                            >
-                                                <CloseIcon />
-                                            </IconButton>
-                                            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                                                {item.title}
-                                            </Typography>
-                                        </Toolbar>
-                                    </AppBar>
-                                    <Paper>
-                                    <h1>{item.content}</h1>
-                                    <p>{item.authorId}</p>
-                                    <p>{item._id}</p>
-                                    <p>{new Date(item.createdAt).toLocaleString()}</p>
-                                    </Paper>
-                                    <div style={{ textAlign: 'center' }}>
-                                    <Paper elevation={3} sx={{ marginTop: '1em' }}>
-                                        <TextField
-                                        id="filled-textarea"
-                                        label="Comment"
-                                        multiline
-                                        variant="filled"
-                                        fullWidth
-                                        onChange={handleCommentChange}
-                                        />
-                                        <Button sx={{width:'80%'}} onClick={makeComment}>Submit</Button>
-                                    </Paper>
-                                    </div>
-                                </Dialog>
-                            </div>
-                        </>
-
-
-                    );
-                })}
-            </>
-
-
-                <FloatingButton/>
-           
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Paper style={{ padding: 8 }}>
+            <h1>Home</h1>
+            <p>lormasdasd</p>
+          </Paper>
         </Grid>
-        </div>
+        {allQuestion.map((item) => (
+          <Grid item xs={12} key={item._id} onClick={() => handleClickOpen(item)}>
+            <Paper style={{ padding: 8 }}>
+              <h1>{item.title}</h1>
+              <p>{item.content}</p>
+            </Paper>
+          </Grid>
+        ))}
+        <FloatingButton />
+      </Grid>
+      <QuestionDialog open={open} close={handleClose} question={question} setQuestion={setQuestion} setAllQuestion={setAllQuestion} />
+    </div>
+       
     );
 };
 
 export default Home;
+
+
+                     
