@@ -4,20 +4,20 @@ export const checkAllQuestion = async(req,res)=>{
 
    const allQuestions =  await getAllQuestion();
 
-   res.status(200).json({ success: true, data: allQuestions })
+   res.status(201).json(allQuestions)
    
 }
 
 
-
-
 export const postQuestion = async(req,res)=>{
 
-    const { authorId, title, content } = req.body;
+    const { authId, title, content,course,semester } = req.body;
+
+    console.log(authId, title, content,course,semester)
 
     try {
         
-        const addQues = await addQuestion(authorId,title,content)
+        const addQues = await addQuestion(authId, title, content,course,semester)
 
         console.log(addQues)
 

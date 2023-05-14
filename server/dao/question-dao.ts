@@ -12,12 +12,14 @@ export const getAllQuestion = async ()=>{
 
 
 
-export const addQuestion = async (authorId:string,title:string,content:string)=>{
+export const addQuestion = async (authorId:string,title:string,content:string,semester:string,course:string)=>{
 
     const question: IQuestion = new Question({
         authorId,
         title,
-        content
+        content,
+        semester,
+        course
       });
 
       const postInfo = await question.save();

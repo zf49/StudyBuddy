@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Grid, Paper, Fab, Menu, MenuItem, IconButton, Badge, } from '@mui/material';
+import { Grid, Paper, Fab, Menu, MenuItem, IconButton, Badge, TextField, } from '@mui/material';
 import UpIcon from '@mui/icons-material/KeyboardArrowUp';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import CreateIcon from '@mui/icons-material/Create';
@@ -52,22 +52,28 @@ const Home = () => {
 
     const [allQuestion, setAllQuestion] = useState<IQuestion[]>([]);
 
-
+    const fetchAllQuestions = () => {
+        axios.get('http://localhost:8080/question/allQuestion').then((res) => {
+          setAllQuestion(res.data)
+        })
+      }
 
     useEffect(() => {
-
-        axios.get('http://localhost:8080/question/allQuestion').then((res) => {
-            setAllQuestion(res.data.data)
-        })
-
-    })
+        fetchAllQuestions();
+    },[])
 
 
 
 
+const makeComment = ()=>{
 
-    
+    console.log(comment)
 
+}
+   const [comment, setComment] = useState("") 
+const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(event.target.value);
+  };
 
     const checkQuestion = () => {
         console.log('checkQuestion')
@@ -87,7 +93,8 @@ const Home = () => {
 
 
     return (
-        <Grid container spacing={2}>
+        <div>
+        <Grid container spacing={2} >
             <Grid item xs={12}>
                 <Paper style={{ padding: 8 }}>
                     <h1>Home</h1>
@@ -130,8 +137,22 @@ const Home = () => {
                                     <Paper>
                                     <h1>{item.content}</h1>
                                     <p>{item.authorId}</p>
+                                    <p>{item._id}</p>
                                     <p>{new Date(item.createdAt).toLocaleString()}</p>
                                     </Paper>
+                                    <div style={{ textAlign: 'center' }}>
+                                    <Paper elevation={3} sx={{ marginTop: '1em' }}>
+                                        <TextField
+                                        id="filled-textarea"
+                                        label="Comment"
+                                        multiline
+                                        variant="filled"
+                                        fullWidth
+                                        onChange={handleCommentChange}
+                                        />
+                                        <Button sx={{width:'80%'}} onClick={makeComment}>Submit</Button>
+                                    </Paper>
+                                    </div>
                                 </Dialog>
                             </div>
                         </>
@@ -145,6 +166,7 @@ const Home = () => {
                 <FloatingButton/>
            
         </Grid>
+        </div>
     );
 };
 

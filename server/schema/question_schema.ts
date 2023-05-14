@@ -8,10 +8,20 @@ export interface IQuestion extends Document {
     comments: Types.ObjectId[] | IComment[];
     createdAt: Date;
     updatedAt: Date;
+    semester:string;
+    course:string;
 }
 
 const questionSchema = new Schema<IQuestion>({
     authorId: {
+        type: String,
+        required: true,
+    },
+    semester: {
+        type: String,
+        required: true,
+    },
+    course: {
         type: String,
         required: true,
     },
