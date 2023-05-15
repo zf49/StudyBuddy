@@ -116,11 +116,12 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
             </Typography>
           </Toolbar>
         </AppBar>
-        <Paper elevation={12}>
-          <h1>{question.content}</h1>
-          <p>{question.authorName}</p>
-          <p>{new Date(question.createdAt).toLocaleString()}</p>
-        </Paper>
+        <Paper elevation={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
+  <h3>{question.content}</h3>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize:'10%',marginRight:'10em'}}>
+    <p style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>{"Author name: " + question.authorName+"  "+new Date(question.createdAt).toLocaleString()}</p>
+  </div>
+</Paper>
         <div style={{ textAlign: 'center' }}>
           <Paper elevation={3} sx={{ marginTop: '1em' }}>
             <TextField
