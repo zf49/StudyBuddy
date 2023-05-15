@@ -1,3 +1,5 @@
+import { postNewReply } from "../controller/replyComment/replyController";
+
 var express = require('express');
 var router = express.Router();
 
@@ -5,10 +7,12 @@ var router = express.Router();
 
 
 router.get('/getreply', async (req, res) => {
-
     res.send('test_reply')
-
 });
+
+router.post('/postNewReply', postNewReply);
+
+
 
 
 

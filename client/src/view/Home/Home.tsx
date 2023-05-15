@@ -36,12 +36,23 @@ export interface IQuestion {
     updatedAt: Date;
 }
 
-export interface IComment{
+export interface IComment {
     questionId: string;
     authorId: string;
     content: string;
     parentId: string;
-    // replies: Types.ObjectId[] | IReply[];
+    replies: IReply[];
+    createdAt: Date;
+    updatedAt: Date;
+    _id:string;
+}
+
+
+export interface IReply  {
+    commentId: IComment;
+    authorId: string;
+    content: string;
+    parentId: IReply | null;
     createdAt: Date;
     updatedAt: Date;
   }
@@ -66,15 +77,11 @@ const Home = () => {
             console.log(res.data)
             setAllQuestion(res.data)
         })
-
-        
-
-
     }
 
     useEffect(() => {
         fetchAllQuestionsAndAuthor();
-    },[])
+    }, [])
 
     const [open, setOpen] = React.useState(false);
     const [question, setQuestion] = useState<IQuestion>({
@@ -86,13 +93,13 @@ const Home = () => {
         comments: [],
         createdAt: new Date(),
         updatedAt: new Date(),
-      });
-    const handleClickOpen = async (item:IQuestion) => {
-        await axios.post('http://localhost:8080/users/api/getUserProfile',{
-            "authID":item.authorId
-        }).then((res)=>{
-            console.log('asdasda',res.data.name)
-            setQuestion({...item,authorName:res.data.name});
+    });
+    const handleClickOpen = async (item: IQuestion) => {
+        await axios.post('http://localhost:8080/users/api/getUserProfile', {
+            "authID": item.authorId
+        }).then((res) => {
+            console.log('asdasda', res.data.name)
+            setQuestion({ ...item, authorName: res.data.name });
             setOpen(true);
         })
     };
@@ -103,30 +110,29 @@ const Home = () => {
 
     return (
         <div>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Paper style={{ padding: 8 }}>
-            <h1>Home</h1>
-            <p>lormasdasd</p>
-          </Paper>
-        </Grid>
-        {allQuestion.map((item) => (
-          <Grid item xs={12} key={item._id} onClick={() => handleClickOpen(item)}>
-            <Paper style={{ padding: 8 }}>
-              <h1>{item.title}</h1>
-              <p>{item.content}</p>
-            </Paper>
-          </Grid>
-        ))}
-        <FloatingButton />
-      </Grid>
-      <QuestionDialog open={open} close={handleClose} question={question} setQuestion={setQuestion} setAllQuestion={setAllQuestion} />
-    </div>
-       
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <Paper style={{ padding: 8 }}>
+                        <h1>Home</h1>
+                        <p>lormasdasd</p>
+                    </Paper>
+                </Grid>
+                {allQuestion.map((item) => (
+                    <Grid item xs={12} key={item._id} onClick={() => handleClickOpen(item)}>
+                        <Paper style={{ padding: 8 }}>
+                            <h1>{item.title}</h1>
+                            <p>{item.content}</p>
+                        </Paper>
+                    </Grid>
+                ))}
+                <FloatingButton />
+            </Grid>
+            <QuestionDialog open={open} close={handleClose} question={question} setQuestion={setQuestion} setAllQuestion={setAllQuestion} />
+        </div>
+
     );
 };
 
 export default Home;
 
 
-                     
