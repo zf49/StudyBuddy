@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStyles, makeStyles} from '@mui/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -9,9 +9,11 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import SideBar from './SideBar';
 import PetsIcon from '@mui/icons-material/Pets';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 import { Theme } from '@mui/material';
+import Badge from '@mui/material/Badge';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 
 
@@ -55,13 +57,13 @@ export default function TopBar() {
   };
 
 
-  const redirectToProfile = ()=>{
+  const redirectToProfile = () => {
     console.log('MyAccount')
     navigate('/profile')
     handleClose()
   }
 
-  const logOut = ()=>{
+  const logOut = () => {
     console.log('log out')
     logout({ logoutParams: { returnTo: window.location.origin } })
     localStorage.removeItem('token')
@@ -71,60 +73,70 @@ export default function TopBar() {
 
   return (
     <div className={classes.root}>
-      
+
       <AppBar position="fixed">
         <Toolbar>
-            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={()=>{
-              // console.log('123')
-            }}>
-              <SideBar/>
-            </IconButton>
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => {
+            // console.log('123')
+          }}>
+            <SideBar />
+          </IconButton>
 
 
           <Typography variant="h6" className={classes.title} style={{
-            textAlign:'center'
+            textAlign: 'center'
           }}>
-            <PetsIcon/>
+            <PetsIcon />
           </Typography>
           {auth && (
             <div className="123">
-               <Typography variant="h6" className={classes.title} style={{
-          }}>
-            
-              <IconButton
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={()=>{
-                  redirectToProfile()
-                }} >My account</MenuItem>
+              <Typography variant="h6" className={classes.title} style={{
+              }}>
 
-                <MenuItem onClick={()=>{
-                  logOut()
-                }}>Log out</MenuItem>
-              </Menu>
-              
-          </Typography>
+                <IconButton
+                  size="large"
+                  aria-label="show 17 new notifications"
+                  color="inherit"
+                >
+                  <Badge badgeContent={17} color="error">
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+
+                <IconButton
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={() => {
+                    redirectToProfile()
+                  }} >My account</MenuItem>
+
+                  <MenuItem onClick={() => {
+                    logOut()
+                  }}>Log out</MenuItem>
+                </Menu>
+
+              </Typography>
             </div>
           )}
         </Toolbar>
