@@ -36,11 +36,9 @@ export default function Recommendation() {
             >
               <Paper elevation={1}>
                 <List sx={{ width: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-                  <ListItemAvatar sx={{ alignSelf: "center" }}>
-                    <Avatar src={item.userAvatar} />
-                  </ListItemAvatar>
+                    <Avatar src={item.userAvatar}  sx={{ alignSelf: "center" }}/>
                   <ListItemText primary={item.name} sx={{ textAlign: "center" }} />
-                  <ListItemText primary={item.courses?.length > 0 ? "Same course" : "Same Major"} secondary={item.courses.length > 0 ? item.courses.map((item) => <>{item.course_code + ","}</>) : item.major} />
+                  <ListItemText primary={item.matchedCount > 0 ? "Same course" : "Same Major"} secondary={item.matchedCount > 0 ? item.courses.map((item) => <>{item.course_code + ","}</>) : item.major} />
                 </List>
               </Paper>
             </Grid>

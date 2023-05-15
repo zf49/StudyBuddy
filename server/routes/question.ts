@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-import { checkAllQuestion, postQuestion } from "../controller/questionController/questionController";
+import { checkAllQuestion, deleteQuestion, postQuestion } from "../controller/questionController/questionController";
 
 
 
@@ -12,6 +12,7 @@ const HTTP_BAD_REQUEST = 400;
 router.get('/allQuestion', checkAllQuestion);
 
 router.post('/postquestion',postQuestion)
+router.delete('/deletequestion/:questionId',deleteQuestion)
 
 module.exports = router;
 

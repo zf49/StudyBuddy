@@ -60,7 +60,7 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
       "questionId": questionId,
       "comment_author_id": user?.sub
     }
-
+    if(comment!==""){
     //TODO:post to backend
     axios.post("http://localhost:8080/comment/postcomment", postComment)
       .then((res) => {
@@ -71,6 +71,9 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
           }
         })
       });
+
+    }
+    setComment("");
   }
 
   const [commentId, setCommentId] = useState('')
@@ -126,6 +129,7 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
               multiline
               variant="filled"
               fullWidth
+              value={comment}
               onChange={handleCommentChange}
             />
             <Button sx={{ width: '80%' }} onClick={() => makeComment(question._id)}>Submit</Button>

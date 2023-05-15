@@ -11,7 +11,7 @@ export const userRecommand = async (req, res) => {
 
     const userAuthID = req.body.authID
 
-    console.log(userAuthID)
+    console.log('req.body',req.body)
 
     const userProfile = await getUserProfile(req.body.authID)
 
@@ -20,9 +20,16 @@ export const userRecommand = async (req, res) => {
     // const userMajor = req.body.major
     const recommendedUsers = await recommend(userCourses, userProfile.major)
 
-    recommendedUsers.sort((a, b) => b.courses.length - a.courses.length)
 
-    const matchedCourses = recommendedUsers.map((user) => {
+    const arr =recommendedUsers.filter((user)=>{
+        return user.authID !== userAuthID
+    })
+    arr.sort((a, b) => b.courses.length - a.courses.length)
+
+    console.log('recommendedUsers',recommendedUsers)
+
+
+    const matchedCourses = arr.map((user) => {
       const matched = user.courses.filter((course) => {
         return userCourses.some((userCourse) => {
           return userCourse.CourseNName === course.CourseNName;
@@ -36,11 +43,10 @@ export const userRecommand = async (req, res) => {
       };
     });
 
-    
       matchedCourses.sort((a,b)=>{
         return b.matchedCount - a.matchedCount
       })
-
+    
 
       console.log("matchedCourses",matchedCourses)
 
@@ -53,15 +59,23 @@ export const userRecommand = async (req, res) => {
 
     // const allFriends = await getAllFriends()
 
-    console.log("allfriends",allFriends)
-    const nonFriendRecommendedUsers = matchedCourses.filter((user) => {
-        return allFriends.every((friend) => {
-            return user._id.toString() !== friend.friendID && user._id.toString() !== userProfile._id.toString();
-        });
+  console.log('allFriends',allFriends)
+
+  const nonFriendRecommendedUsers = allFriends.length > 0 ? matchedCourses.filter((user) => {
+    return allFriends.every((friend) => {
+        return user._id.toString() !== friend.friendID && user._id.toString() !== userProfile._id.toString();
     });
+}) : matchedCourses
+
+
+    console.log("nonFriendRecommendedUsers",nonFriendRecommendedUsers)
+
 
 
     res.send(nonFriendRecommendedUsers)
+
+    // res.send(matchedCourses)
+
 }
 
 

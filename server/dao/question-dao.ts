@@ -28,9 +28,21 @@ export const getQuestionById = async (questionId:string)=>{
     const question: IQuestion | null = await Question.findById(new Types.ObjectId(questionId)).populate('comments');
 
         // console.log(question)
-
     return question
 }
+
+export const deleteQuestionById = async (questionId:string)=>{
+
+
+    console.log(questionId)
+
+    const deleteQuestion = await Question.deleteOne({ _id: new Types.ObjectId(questionId) });
+
+    
+}
+
+
+
 
 
 export const addQuestion = async (authorId:string,title:string,content:string,semester:string,course:string)=>{

@@ -6,7 +6,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import CreateIcon from '@mui/icons-material/Create';
 import axios from 'axios'
 import RateReviewIcon from '@mui/icons-material/RateReview';
-
+import ArticleIcon from '@mui/icons-material/Article';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -14,28 +14,65 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import FormDialog from './FormDialog';
+import FormDialog from './MyQuestionDialog';
 import { ICourse } from '../Profile/Course';
 import { useAuth0 } from '@auth0/auth0-react';
+import { IQuestion } from './Home';
 
 export interface IPostQuestion {
-    title:string, content:string, semester:string, course:string,authId:string|undefined
+    title:string, content:string, semester:string, course:string,authId:string|undefined,
 }
 
 
+interface IProps{
+    allQuestion:IQuestion[],
+    setAllQuestion: React.Dispatch<React.SetStateAction<IQuestion[]>>,
+    fetchAllQuestionsAndAuthor:()=>void
 
+}
 
-export default function FloatingButton() {
+interface Position {
+    x: number;
+    y: number;
+  }
+
+export default function FloatingButton(props:IProps) {
+    
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
+
+    const [allQues, setAllQues] = useState(props.allQuestion)
+
+
+    const {user} = useAuth0()
+
+    const [flag, setFlag] = useState(false)
+
+    const handleMyQuestion = ()=>{
+
+        setFlag(true)
+
+        const filteredQuestions = props.allQuestion.filter(question => question.authorId === user?.sub);
+        // console.log(filteredQuestions)
+        props.setAllQuestion(filteredQuestions)
+        handleButtonClose()
+    }
+
+    const handleAllQuestion = ()=>{
+        setFlag(false)
+        props.fetchAllQuestionsAndAuthor()
+        handleButtonClose()
+    }
+
+
+
     const handleButtonClose = () => {
-        console.log('adasd')
+
         setAnchorEl(null);
     };
-        const {user} = useAuth0()
 
     const [openPost, setOpenPost] = React.useState(false);
 
@@ -54,7 +91,6 @@ export default function FloatingButton() {
         axios.get('http://localhost:8080/courses').then((res) => {
             setcourses(res.data)
         })
-
     }, [])
 
 
@@ -88,17 +124,20 @@ export default function FloatingButton() {
             "authId":user?.sub
         }
         console.log(question)
-        axios.post('http://localhost:8080/question/postquestion',question)
+        axios.post('http://localhost:8080/question/postquestion',question).then((res)=>{
+            props.setAllQuestion(res.data.data)
+        })
         handlePostClose()
     }
 
     return (
         <div>
             <Fab
+              
                 style={{
                     position: 'fixed',
-                    bottom: 16,
-                    right: 16,
+                    bottom: 50,
+                    right: 30,
                 }}
                 color="secondary"
                 aria-label="add"
@@ -118,21 +157,26 @@ export default function FloatingButton() {
                     </IconButton>
                     <p>Post Question</p>
                 </MenuItem>
-                <MenuItem onClick={handleButtonClose}>
+                {!flag?<MenuItem onClick={handleMyQuestion}>
                     <IconButton size="large" color="inherit">
                         <RateReviewIcon />
                     </IconButton>
                     <p>My Question</p>
-                </MenuItem>
+                </MenuItem>:<MenuItem onClick={handleAllQuestion}>
+                    <IconButton size="large" color="inherit">
+                        <ArticleIcon />
+                    </IconButton>
+                    <p>All Question</p>
+                </MenuItem>}
 
-                <MenuItem onClick={handleButtonClose}>
+                {/* <MenuItem onClick={handleButtonClose}>
                     <IconButton size="large" aria-label="show 4 new mails" color="inherit">
                         <Badge badgeContent={4} color="error">
                             <NotificationsIcon />
                         </Badge>
                     </IconButton>
                     <p>Messages</p>
-                </MenuItem>
+                </MenuItem> */}
             </Menu>
 
              <div>
@@ -171,7 +215,6 @@ export default function FloatingButton() {
                                 multiline
                                 rows={4}
                                 onChange={handleContentChange}
-
                             />
                         </Box>
                     </DialogContent>

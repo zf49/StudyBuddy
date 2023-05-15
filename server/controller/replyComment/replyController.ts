@@ -13,6 +13,7 @@ export const postNewReply = async(req,res)=>{
            console.log('newcomment',comment)
            const allQuestions:IQuestion[] =  await getAllQuestion();
 
+
            res.json(allQuestions)
     
  }

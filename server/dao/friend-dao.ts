@@ -17,6 +17,7 @@ export async function getUserFriends(userID: string) {
     const allFriends = await Friend.find({
       userID: userID,
     });
+    console.log('1123123123')
     return allFriends;
 }
 
