@@ -48,8 +48,7 @@ export async function findFriendDetail(ID: string) {
     return detail
 }
 
-export async function checkFollow(authID: string, friendID: string) {
-    const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()
+export async function checkFriends(userID: string, friendID: string) {
     const follow = await Friend.findOne({ userID: userID, friendID: friendID })
     if (follow) {
         return true

@@ -7,6 +7,7 @@
 var app = require('../app.ts');
 var debug = require('debug')('server:server');
 var http = require('http');
+const { default: createSocketIoConnection } = require('../socket-io/socket-io.ts');
 
 
 
@@ -23,6 +24,8 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+const io = createSocketIoConnection(server)
+app.set("socketio", io)
 
 /**
  * Listen on provided port, on all network interfaces.

@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { addFriend, checkFollow, checkSelf, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
+import { addFriend, checkSelf, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
 import { isElementAccessExpression } from "typescript";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { jwtDecodeUser } from "../auth/jwt";
@@ -66,18 +66,18 @@ router.get('/detail/:id', async (req, res) => {
 
 })
 
-router.post('/checkfollow', async (req, res) => {
-    const authID = jwtDecodeUser(req.headers.authorization)
-    const payloadValidate = Joi.object<IPayload>({
-        friendID: Joi.string().required()
-    }).validate(req.body)
-    if (payloadValidate.error) {
-        console.log(payloadValidate.error)
-    } else {
-        const ifFollow = await checkFollow(authID, payloadValidate.value.friendID)
-        res.json(ifFollow)
-    }
-})
+// router.post('/checkfollow', async (req, res) => {
+//     const authID = jwtDecodeUser(req.headers.authorization)
+//     const payloadValidate = Joi.object<IPayload>({
+//         friendID: Joi.string().required()
+//     }).validate(req.body)
+//     if (payloadValidate.error) {
+//         console.log(payloadValidate.error)
+//     } else {
+//         const ifFollow = await checkFollow(authID, payloadValidate.value.friendID)
+//         res.json(ifFollow)
+//     }
+// })
 
 router.post('/checkself', async (req, res) => {
     const authID = jwtDecodeUser(req.headers.authorization)
