@@ -1,11 +1,11 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { ChangeEvent, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { socket } from "../Router/IndexRouter";
 import React from "react";
 import TextField from '@mui/material/TextField';
 import { Avatar, Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import dayjs from "dayjs";
+import { socket } from "../view/SandBox";
 
 export interface IMsg {
     sender: string,
