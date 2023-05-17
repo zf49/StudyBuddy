@@ -1,13 +1,13 @@
 import jwtDecode, { JwtPayload } from "jwt-decode"
 import { Server } from "socket.io"
 import { IUser, User } from "../schema/user-schema"
-import { checkFriends, findFriendDetail } from "../dao/friend-dao"
+import { addFriend, checkFriends, deleteFriend, findFriendDetail } from "../dao/friend-dao"
 import { addMsg, retriveMsg } from "../dao/msg_dao"
 import { getUserProfile } from "../dao/user-dao"
 import dayjs from "dayjs";
 import { ICourse } from "../schema/course_schema"
 import { IMsg } from "../schema/msg_schema"
-import { addNotification, deleteMsgNotifications, deleteNotification, retriveNotification } from "../dao/notification-dao"
+import { addNotification, deleteMsgNotifications, deleteNotification, deleteNotificationBySender, deleteNotifications, retriveNotification } from "../dao/notification-dao"
 
 export interface IPayload {
     friendID: string,
@@ -149,16 +149,101 @@ export default function createSocketIoConnection(server) {
         socket.on("deleteAllMsgFromSender", async (sender: string, receiver: string, type: string) => {
             await deleteMsgNotifications(sender, receiver, type)
             const notifications = await retriveNotification(userID)
-            socket.emit("getNotifications",notifications)
+            socket.emit("getNotifications", notifications)
             socket.emit("getNotificationCount", notifications.length)
         })
 
         socket.on("deleteNotificationMsg", async (id: string) => {
             await deleteNotification(id)
             const notifications = await retriveNotification(userID)
-            socket.emit("getNotifications",notifications)
+            socket.emit("getNotifications", notifications)
             socket.emit("getNotificationCount", notifications.length)
         })
+
+        socket.on("unFriend", async (friendID: string) => {
+            await deleteFriend(userID, friendID)
+            await deleteFriend(friendID, userID)
+            await deleteNotifications(userID, friendID)
+            await deleteNotifications(friendID, userID)
+            io.sockets.in(friendID).emit("statusChange")
+            const notifications = await retriveNotification(userID)
+            socket.emit("getNotifications", notifications)
+            socket.emit("getNotificationCount", notifications.length)
+            const friendNotifications = await retriveNotification(friendID)
+            io.sockets.in(friendID).emit("getNotifications", friendNotifications)
+            io.sockets.in(friendID).emit("getNotificationCount", friendNotifications.length)
+
+        })
+
+        socket.on("sendRequest", async (friendID: string) => {
+            const userInfo: IUser = (await getUserProfile(authID))[0]
+            const currentTime: Date = dayjs().toDate()
+            const notification = await addNotification(userID, friendID, userInfo.name, userInfo.userAvatar, "Requested to be your friend", currentTime, "request")
+            var targetUserChat: string = null
+            const listenerName = `joinedChat${notification.id.toString()}`
+            socket.on(listenerName, (joinedChat: string) => {
+                targetUserChat = joinedChat
+            })
+            io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
+            setTimeout(async () => {
+                socket.off(listenerName, (joinedChat: string) => {
+                    targetUserChat = joinedChat
+                })
+                if (targetUserChat == "notification") {
+                    io.sockets.in(friendID).emit("newNotification", notification)
+                } else {
+                    io.sockets.in(friendID).emit("newNotificationAlert", notification)
+
+                }
+                io.sockets.in(friendID).emit("statusChange")
+            }, 100)
+            const friendInfo: IUser = await findFriendDetail(friendID)
+            const selfNotification = await addNotification(friendID, userID, friendInfo.name, friendInfo.userAvatar, "Pending friend request", currentTime, "pendingRequest")
+            socket.emit("newNotification", selfNotification)
+        })
+
+        socket.on("acceptRequest", async (friendID: string) => {
+            await addFriend(userID, friendID)
+            await addFriend(friendID, userID)
+            await deleteNotificationBySender(friendID, userID, "request")
+            await deleteNotificationBySender(userID, friendID, "pendingRequest")
+            const userInfo: IUser = (await getUserProfile(authID))[0]
+            const friendInfo: IUser = await findFriendDetail(friendID)
+            const currentTime: Date = dayjs().toDate()
+            const notification = await addNotification(userID, friendID, userInfo.name, userInfo.userAvatar, "They've approved your friend request!", currentTime, "newFriend")
+            const selfNotification = await addNotification(friendID, userID, friendInfo.name, friendInfo.userAvatar, "You just got youself a new friend!", currentTime, "newFriend")
+            const notifications = await retriveNotification(userID)
+            socket.emit("getNotifications", notifications)
+            socket.emit("getNotificationCount", notifications.length)
+            var targetUserChat: string = null
+            const listenerName = `joinedChat${notification.id.toString()}`
+            socket.on(listenerName, (joinedChat: string) => {
+                targetUserChat = joinedChat
+            })
+            io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
+            setTimeout(async () => {
+                socket.off(listenerName, (joinedChat: string) => {
+                    targetUserChat = joinedChat
+                })
+                if (targetUserChat != "notification") {
+                    io.sockets.in(friendID).emit("newNotificationAlert", notification)
+                }
+                const notifications = await retriveNotification(friendID)
+                io.sockets.in(friendID).emit("getNotifications", notifications)
+                io.sockets.in(friendID).emit("getNotificationCount", notifications.length)
+                io.sockets.in(friendID).emit("statusChange")
+            }, 100)
+        })
+
+        socket.on("denyRequest", async () => {
+
+        })
+
+        socket.on("cancelRequest", async () => {
+
+        })
+
+
 
         socket.on("disconnect", () => onDisconnect())
 
