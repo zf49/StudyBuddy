@@ -17,8 +17,8 @@ import FriendDetail from '../view/Friends/FriendDetail'
 import {io, Socket} from "socket.io-client"
 import React from 'react'
 import Chat from '../Chat/Chat'
+import Notification from '../Notification/Notification'
 
-var socket: Socket
 
 
 export default function IndexRouter() {
@@ -37,7 +37,7 @@ export default function IndexRouter() {
 
     const abort = new AbortController()
     const fetchData = async () => {
-
+      console.log(isAuthenticated)
       if (isAuthenticated && user) {
         const token = await getAccessTokenSilently()
         axios.get(`http://localhost:8080/users/authID/check`, {
@@ -50,18 +50,6 @@ export default function IndexRouter() {
               navigate('/signup')
             } else {
               setUserExists(true);
-              console.log(token)
-              socket = io("http://localhost:8080", {transports: ['websocket'], extraHeaders: {Authorization: `Bearer ${token}`}, query: {token: `${token}`}})
-              socket.emit("Ping")
-              socket.on("Pong", ()=>{
-                console.log("pong")
-              })
-              socket.on("checkChat", (msgID:string, userID:string)=>{
-                socket.emit("checkChat",msgID,userID)
-              })
-              socket.on("sendChat", (msgID:string, joinedChat:string)=>{
-                socket.emit(`joinedChat${msgID}`,joinedChat)
-              })
             }
           })
       }
@@ -72,7 +60,9 @@ export default function IndexRouter() {
     }
 
 
-  }, [user, isAuthenticated])
+  }, [isAuthenticated,user])
+
+
 
 
   const changeUserState = (state: boolean) => {
@@ -85,7 +75,7 @@ export default function IndexRouter() {
       element:
         isLoading ? <div>Loading...</div> : (
           isAuthenticated ? (
-            <SandBox />
+            <SandBox userExists = {userExists}/>
           ) : (
             <Navigate to="/login" />
           )
@@ -116,6 +106,10 @@ export default function IndexRouter() {
         {
           path: "chat",
           element: userExists ? <Chat /> : <Navigate to="/signup" />
+        },
+        {
+          path: "notification",
+          element: userExists ? <Notification /> : <Navigate to="/signup" />
         },
         {
           path: "signup",
@@ -194,4 +188,3 @@ export default function IndexRouter() {
   )
 }
 
-export {socket}

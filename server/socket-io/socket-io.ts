@@ -7,13 +7,23 @@ import { getUserProfile } from "../dao/user-dao"
 import dayjs from "dayjs";
 import { ICourse } from "../schema/course_schema"
 import { IMsg } from "../schema/msg_schema"
+import { addNotification, deleteMsgNotifications, deleteNotification, retriveNotification } from "../dao/notification-dao"
 
 export interface IPayload {
     friendID: string,
     msg: string
 }
 
-
+interface INotification {
+    _id: string,
+    sender: string,
+    receiver: string,
+    senderName: string,
+    senderPic: string,
+    msg: string,
+    sendTime: Date,
+    type: string
+}
 
 export default function createSocketIoConnection(server) {
     console.log(1)
@@ -46,6 +56,10 @@ export default function createSocketIoConnection(server) {
                 joinedChat = friendID
                 const msgs = await retriveMsg(userID, friendID)
                 socket.emit("friends", msgs, friendName)
+                await deleteMsgNotifications(friendID, userID, "msg")
+                const notificationCount = (await retriveNotification(userID)).length
+                socket.emit("getNotificationCount", notificationCount)
+
             } else {
                 console.log("not followed")
             }
@@ -83,20 +97,69 @@ export default function createSocketIoConnection(server) {
                     targetUserChat = joinedChat
                 })
                 io.sockets.in(payload.friendID).emit("checkChat", msg.id.toString(), userID)
-                setTimeout(() => {
+                setTimeout(async () => {
                     socket.off(listenerName, (joinedChat: string) => {
                         targetUserChat = joinedChat
                     })
                     if (targetUserChat == userID) {
                         io.sockets.in(payload.friendID).emit("newMsg", newMsg)
                         console.log("in chat")
+                    } else if (targetUserChat == "notification") {
+                        const notification = await addNotification(newMsg.sender, newMsg.receiver, newMsg.senderName, newMsg.senderPic, newMsg.msg, newMsg.sendTime, "msg")
+                        const newNotification: INotification = {
+                            _id: notification._id.toString(),
+                            sender: notification.sender,
+                            receiver: notification.receiver,
+                            senderName: notification.senderName,
+                            senderPic: notification.senderPic,
+                            msg: notification.msg,
+                            sendTime: notification.sendTime,
+                            type: notification.type
+
+                        }
+                        io.sockets.in(payload.friendID).emit("newNotification", newNotification)
+                        console.log(newNotification)
                     } else {
-                        console.log("not in chat")
+                        const notification = await addNotification(newMsg.sender, newMsg.receiver, newMsg.senderName, newMsg.senderPic, newMsg.msg, newMsg.sendTime, "msg")
+                        io.sockets.in(payload.friendID).emit("newNotificationAlert", notification)
+
                     }
                 }, 100)
 
             }
         })
+
+        socket.on("getNotificationCount", async () => {
+            console.log("count")
+            const notificationCount = (await retriveNotification(userID)).length
+            console.log(notificationCount)
+            socket.emit("getNotificationCount", notificationCount)
+        })
+
+        socket.on("getNotifications", async () => {
+            joinedChat = "notification"
+            const notifications = await retriveNotification(userID)
+            socket.emit("getNotifications", notifications)
+        })
+
+        socket.on("leaveNotification", () => {
+            joinedChat = null
+        })
+
+        socket.on("deleteAllMsgFromSender", async (sender: string, receiver: string, type: string) => {
+            await deleteMsgNotifications(sender, receiver, type)
+            const notifications = await retriveNotification(userID)
+            socket.emit("getNotifications",notifications)
+            socket.emit("getNotificationCount", notifications.length)
+        })
+
+        socket.on("deleteNotificationMsg", async (id: string) => {
+            await deleteNotification(id)
+            const notifications = await retriveNotification(userID)
+            socket.emit("getNotifications",notifications)
+            socket.emit("getNotificationCount", notifications.length)
+        })
+
         socket.on("disconnect", () => onDisconnect())
 
 
