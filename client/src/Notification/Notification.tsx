@@ -72,7 +72,7 @@ export default function Notification() {
                             <TableCell style={{width: 50, cursor: "pointer"}} onClick={()=>handleChat(notification.sender)}>{notification.senderName}</TableCell>
                             <TableCell onClick={()=>handleChat(notification.sender)} align="left" style={{overflow: "hidden", maxWidth: 10, cursor: "pointer"}}>{notification.msg}</TableCell>
                             <TableCell onClick={()=>handleChat(notification.sender)} style={{width: 180, cursor: "pointer"}}>{dayjs(notification.sendTime).format("DD/MM/YYYY HH:mm:ss")}</TableCell>
-                            <TableCell style={{width: 250}}><Button variant="contained" style={{width: 120}} onClick={()=> handleDeleteAllFromSender(notification.sender, notification.receiver, "msg")}>Delete All</Button><Button variant="contained" style={{marginLeft: 10, width: 20}} onClick={()=> handleDeleteMsg(notification._id)}>Delete</Button></TableCell>
+                            <TableCell style={{width: 100}}><Button variant="contained" style={{marginLeft: 10, width: 20}} onClick={()=> handleDeleteMsg(notification._id)}>Clear</Button></TableCell>
                         </TableRow>
                     )
                 }
