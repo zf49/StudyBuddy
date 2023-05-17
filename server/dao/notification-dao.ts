@@ -20,3 +20,11 @@ export async function deleteNotification(notificationID: string) {
 export async function deleteMsgNotifications(sender: string, receiver: string, type: string) {
     return await Notification.deleteMany({ sender: sender, receiver: receiver, type: type })
 }
+
+export async function deleteNotifications(sender: string, receiver: string){
+    return await Notification.deleteMany({ sender: sender, receiver: receiver })
+}
+
+export async function deleteNotificationBySender(sender: string, receiver: string, type: string){
+    return await Notification.deleteOne({ sender: sender, receiver: receiver, type: type })
+}
