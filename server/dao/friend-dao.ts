@@ -1,9 +1,9 @@
 import { Friend } from "../schema/friend-schema";
+import { Notification } from "../schema/notification-schema";
 import { User } from "../schema/user-schema";
 
 
-export async function addFriend(authID: string, friendID: string) {
-    const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()
+export async function addFriend(userID: string, friendID: string) {
     const newFriend = new Friend({ userID: userID, friendID: friendID })
     return await newFriend.save()
 }
@@ -66,7 +66,19 @@ export async function checkSelf(authID: string, friendID: string){
     }
 }
 
-export async function deleteFriend(authID: string, friendID: string) {
-    const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()
+export async function deleteFriend(userID: string, friendID: string) {
     return await Friend.deleteOne({ userID: userID, friendID: friendID })
 }
+
+export async function checkFriendRequest(userID: string, friendID: string) {
+    const request = await Notification.findOne({sender: userID, receiver: friendID, type: "request"})
+    const incomingRequest = await Notification.findOne({sender: friendID, receiver: userID, type: "request"})
+    if(request){
+        return "request"
+    }else if(incomingRequest){
+        return "incomingRequest"
+    }else{
+        return "none"
+    }
+}
+
