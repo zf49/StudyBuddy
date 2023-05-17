@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import Button from '@mui/material/Button';
 import { useAuth0 } from "@auth0/auth0-react"
 import Joi from "joi"
+import { socket } from "../SandBox"
 
 
 export interface IFriendDetail {
@@ -26,11 +27,11 @@ export default function FriendDetail() {
 
     const location = useLocation()
     const [friendDetail, setFriendDetail] = React.useState<IFriendDetail>()
-    const [follow, setFollow] = React.useState<Boolean>()
+    const [status, setStatus] = React.useState<String>()
     const navigate = useNavigate()
     const [self, setSelf] = React.useState<Boolean>()
     const { user, isAuthenticated } = useAuth0();
-    const {getAccessTokenSilently} = useAuth0()
+    const { getAccessTokenSilently } = useAuth0()
     const payload: IPayload = {
         friendID: location.state.id
     }
@@ -39,7 +40,7 @@ export default function FriendDetail() {
 
     async function getFriendDetail() {
         const token = await getAccessTokenSilently()
-        const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`, {signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
+        const dbData = await axios.get(`http://localhost:8080/friends/detail/${location.state.id}`, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } })
         const dbDataValidate = Joi.object<IFriendDetail>({
             name: Joi.string().required(),
             uniID: Joi.string().required(),
@@ -49,25 +50,21 @@ export default function FriendDetail() {
             major: Joi.string().required().allow(null, ''),
             userAvatar: Joi.string().required().allow(null, '')
         }).unknown(true).validate(dbData.data)
-        if(dbDataValidate.error){
+        if (dbDataValidate.error) {
             console.error(dbDataValidate.error)
-        }else{
+        } else {
             setFriendDetail(dbDataValidate.value)
         }
-            const dbFollow: boolean = (await axios.post('http://localhost:8080/friends/checkfollow', payload,{signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})).data
-            const dbFollowValidate = Joi.boolean().required().validate(dbFollow)
-            if(dbFollowValidate.error){
-                console.error(dbFollowValidate.error)
-            }else{
-                setFollow(dbFollowValidate.value)
-            }
-            const dbSelf: boolean = (await axios.post(`http://localhost:8080/friends/checkself`, payload,{signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})).data
-            const dbSelfValidate = Joi.boolean().required().validate(dbSelf)
-            if(dbSelfValidate.error){
-                console.error(dbSelfValidate.error)
-            }else{
-                setSelf(dbSelfValidate.value)
-            }
+        const dbStatus: string = (await axios.post('http://localhost:8080/friends/checkStatus', payload, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } })).data
+        setStatus(dbStatus)
+
+        const dbSelf: boolean = (await axios.post(`http://localhost:8080/friends/checkself`, payload, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } })).data
+        const dbSelfValidate = Joi.boolean().required().validate(dbSelf)
+        if (dbSelfValidate.error) {
+            console.error(dbSelfValidate.error)
+        } else {
+            setSelf(dbSelfValidate.value)
+        }
 
     }
 
@@ -75,120 +72,153 @@ export default function FriendDetail() {
         navigate(-1)
     }
 
-    async function handleUnFollow() {
-        const token = await getAccessTokenSilently()
-        await axios.post("http://localhost:8080/friends/delete", payload, {signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
-        setFollow(false)
+    async function handleUnfriend() {
+        socket.emit("unFriend", location.state.id)
+        setStatus("none")
     }
 
-    async function handleFollow() {
-        const token = await getAccessTokenSilently()
-        console.log(token)
-        await axios.post("http://localhost:8080/friends/add", payload, {signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
-        setFollow(true)
+    async function handleSendRequest() {
+        socket.emit("sendRequest", location.state.id)
+        setStatus("requested")
+    }
+
+    async function handleCancelRequest() {
+        socket.emit("cancelRequest", location.state.id)
+        setStatus("none")
+    }
+
+    async function handleDeny() {
+        socket.emit("denyRequest", location.state.id)
+        setStatus("none")
     }
 
     useEffect(() => {
-        
+        socket.on("statusChange", async ()=>{
+            const token = await getAccessTokenSilently()
+            const dbStatus: string = (await axios.post('http://localhost:8080/friends/checkStatus', payload, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } })).data
+        setStatus(dbStatus)
+        })
+
         getFriendDetail()
 
         return () => {
             controller.abort()
+            socket.off("statusChange")
         }
     }, [])
 
     return (
         <Paper elevation={24}>
-        <Box>
-        <div style={{ width: "80%", textAlign: "center", margin: "0 auto",paddingTop:"2em", paddingBottom:"2em", wordWrap:'break-word' }}>
-            <div>
-                <Avatar sx={{ width: 56, height: 56, margin: "0 auto" }}
-                    src={friendDetail?.userAvatar} />
-            </div>
-            <div style={{ marginBottom: "20px" }}>
-                <Typography variant="h4" gutterBottom>
-                    {friendDetail?.name}
-                </Typography>
-            </div>
-            <div style={{ textAlign: "left", marginBottom: "10px" }}>
-                <Typography variant="h6" gutterBottom>
-                    UniID: {friendDetail?.uniID}
-                </Typography>
-            </div>
-            <div style={{ textAlign: "left", marginBottom: "10px" }}>
-            {friendDetail?.gender ?
-                    <Typography variant="h6" gutterBottom>
-                        Gender: {friendDetail?.gender}
-                    </Typography>
-                    :
-                    <Typography variant="h6" gutterBottom>
-                        Gender: Prefer Not To Tell
-                    </Typography>
-                }
-            </div>
-            <div style={{ textAlign: "left", width: "100%", marginBottom: "10px" }}>
-            {friendDetail?.email ?
-                    <Typography variant="h6" gutterBottom>
-                        Email: {friendDetail?.email}
-                    </Typography>
-                    :
-                    <Typography variant="h6" gutterBottom>
-                        Email: Prefer Not To Tell
-                    </Typography>
-                }
-            </div>
-            <div style={{ textAlign: "left", marginBottom: "10px" }}>
-            {friendDetail?.faculty ?
-                    <Typography variant="h6" gutterBottom>
-                        Faculty: {friendDetail?.faculty}
-                    </Typography>
-                    :
-                    <Typography variant="h6" gutterBottom>
-                        Faculty: Prefer Not To Tell
-                    </Typography>
-                }
-            </div>
-            <div style={{ textAlign: "left", marginBottom: "10px" }}>
-                {friendDetail?.major ?
-                    <Typography variant="h6" gutterBottom>
-                        Major: { friendDetail?.major}
-                    </Typography>
-                    :
-                    <Typography variant="h6" gutterBottom>
-                        Major: Prefer Not To Tell
-                    </Typography>
-                }
+            <Box>
+                <div style={{ width: "80%", textAlign: "center", margin: "0 auto", paddingTop: "2em", paddingBottom: "2em", wordWrap: 'break-word' }}>
+                    <div>
+                        <Avatar sx={{ width: 56, height: 56, margin: "0 auto" }}
+                            src={friendDetail?.userAvatar} />
+                    </div>
+                    <div style={{ marginBottom: "20px" }}>
+                        <Typography variant="h4" gutterBottom>
+                            {friendDetail?.name}
+                        </Typography>
+                    </div>
+                    <div style={{ textAlign: "left", marginBottom: "10px" }}>
+                        <Typography variant="h6" gutterBottom>
+                            UniID: {friendDetail?.uniID}
+                        </Typography>
+                    </div>
+                    <div style={{ textAlign: "left", marginBottom: "10px" }}>
+                        {friendDetail?.gender ?
+                            <Typography variant="h6" gutterBottom>
+                                Gender: {friendDetail?.gender}
+                            </Typography>
+                            :
+                            <Typography variant="h6" gutterBottom>
+                                Gender: Prefer Not To Tell
+                            </Typography>
+                        }
+                    </div>
+                    <div style={{ textAlign: "left", width: "100%", marginBottom: "10px" }}>
+                        {friendDetail?.email ?
+                            <Typography variant="h6" gutterBottom>
+                                Email: {friendDetail?.email}
+                            </Typography>
+                            :
+                            <Typography variant="h6" gutterBottom>
+                                Email: Prefer Not To Tell
+                            </Typography>
+                        }
+                    </div>
+                    <div style={{ textAlign: "left", marginBottom: "10px" }}>
+                        {friendDetail?.faculty ?
+                            <Typography variant="h6" gutterBottom>
+                                Faculty: {friendDetail?.faculty}
+                            </Typography>
+                            :
+                            <Typography variant="h6" gutterBottom>
+                                Faculty: Prefer Not To Tell
+                            </Typography>
+                        }
+                    </div>
+                    <div style={{ textAlign: "left", marginBottom: "10px" }}>
+                        {friendDetail?.major ?
+                            <Typography variant="h6" gutterBottom>
+                                Major: {friendDetail?.major}
+                            </Typography>
+                            :
+                            <Typography variant="h6" gutterBottom>
+                                Major: Prefer Not To Tell
+                            </Typography>
+                        }
 
-            </div>
-            <div>
-                <Button variant="contained"
-                    sx={{ width: "40%" }}
-                    onClick={handleReturn}
-                >
-                    back
-                </Button>
-                {!self &&
-                    (follow ?
+                    </div>
+                    <div>
                         <Button variant="contained"
-                            sx={{ width: "40%", marginLeft: "10%" }}
-                            onClick={handleUnFollow}
+                            sx={{ width: "40%" }}
+                            onClick={handleReturn}
                         >
-                            Unfollow
+                            back
                         </Button>
-                        :
-                        <Button variant="contained"
-                            sx={{ width: "40%", marginLeft: "10%" }}
-                            onClick={handleFollow}
-                        >
-                            Follow
-                        </Button>
-                    )
+                        {!self &&
+                            (status == "none" ?
+                                <Button variant="contained"
+                                    sx={{ width: "40%", marginLeft: "10%" }}
+                                    onClick={handleSendRequest}
+                                >
+                                    Send Request
+                                </Button>
+                                :
+                                (status == "requested" ?
+                                    <Button variant="contained"
+                                        sx={{ width: "40%", marginLeft: "10%" }}
+                                        onClick={handleCancelRequest}
+                                    >
+                                        Pending
+                                    </Button>
+                                    : (status == "incomingRequest" ?
+                                        (
+                                            <Button variant="contained"
+                                                sx={{ width: "40%", marginLeft: "10%" }}
+                                                onClick={handleDeny}
+                                            >
+                                                Pending
+                                            </Button>
+                                        ) : (
+                                            status == "friends" &&
+                                            <Button variant="contained"
+                                                sx={{ width: "40%", marginLeft: "10%" }}
+                                                onClick={handleUnfriend}
+                                            >
+                                                Unfriend
+                                            </Button>
+                                        )
+                                    )
+                                )
+                            )
 
 
-                }
-            </div>
-             </div>
-        </Box>
+                        }
+                    </div>
+                </div>
+            </Box>
         </Paper>
-        )
+    )
 }
