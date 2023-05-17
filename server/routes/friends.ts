@@ -1,8 +1,9 @@
 import Joi from "joi";
-import { addFriend, checkSelf, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
+import { addFriend, checkFriendRequest, checkFriends, checkSelf, deleteFriend, findFriendDetail, findFriends } from "../dao/friend-dao";
 import { isElementAccessExpression } from "typescript";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { jwtDecodeUser } from "../auth/jwt";
+import { getUserID } from "../dao/user-dao";
 
 var express = require('express');
 var router = express.Router();
@@ -66,18 +67,30 @@ router.get('/detail/:id', async (req, res) => {
 
 })
 
-// router.post('/checkfollow', async (req, res) => {
-//     const authID = jwtDecodeUser(req.headers.authorization)
-//     const payloadValidate = Joi.object<IPayload>({
-//         friendID: Joi.string().required()
-//     }).validate(req.body)
-//     if (payloadValidate.error) {
-//         console.log(payloadValidate.error)
-//     } else {
-//         const ifFollow = await checkFollow(authID, payloadValidate.value.friendID)
-//         res.json(ifFollow)
-//     }
-// })
+router.post('/checkStatus', async (req, res) => {
+    const authID = jwtDecodeUser(req.headers.authorization)
+    const payloadValidate = Joi.object<IPayload>({
+        friendID: Joi.string().required()
+    }).validate(req.body)
+    if (payloadValidate.error) {
+        console.log(payloadValidate.error)
+    } else {
+        const userID = await getUserID(authID)
+        const ifFriends = await checkFriends(userID, payloadValidate.value.friendID)
+        if(ifFriends){
+            res.json("friends")
+        }else{
+        const request = await checkFriendRequest(userID, payloadValidate.value.friendID)
+        if(request == "request"){
+            res.json("requested")
+        }else if(request == "incomingRequest"){
+            res.json("incomingRequest")
+        }else{
+            res.json("none")
+        }
+        }
+    }
+})
 
 router.post('/checkself', async (req, res) => {
     const authID = jwtDecodeUser(req.headers.authorization)
