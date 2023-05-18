@@ -87,9 +87,8 @@ export default function FriendDetail() {
         setStatus("none")
     }
 
-    async function handleDeny() {
-        socket.emit("denyRequest", location.state.id)
-        setStatus("none")
+    async function handleCheckRequest() {
+        navigate("/notification/")
     }
 
     useEffect(() => {
@@ -197,7 +196,7 @@ export default function FriendDetail() {
                                         (
                                             <Button variant="contained"
                                                 sx={{ width: "40%", marginLeft: "10%" }}
-                                                onClick={handleDeny}
+                                                onClick={handleCheckRequest}
                                             >
                                                 Pending
                                             </Button>

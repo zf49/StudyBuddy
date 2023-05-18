@@ -36,6 +36,9 @@ export default function Notification() {
         return (
             () => {
                 socket.off("getNotifications")
+                socket.off("newNotification", (newNotification: INotification) => {
+                    setNotifications((notifications) => [newNotification, ...notifications])
+                })
                 socket.emit("leaveNotification")
             }
         )
@@ -117,6 +120,16 @@ export default function Notification() {
                                                         <TableCell style={{ width: 50, cursor: "pointer" }} onClick={() => handleChat(notification.sender)}>{notification.senderName}</TableCell>
                                                         <TableCell onClick={() => handleChat(notification.sender)} align="left" style={{ overflow: "hidden", maxWidth: 10, cursor: "pointer" }}>{notification.msg}</TableCell>
                                                         <TableCell onClick={() => handleChat(notification.sender)} style={{ width: 180, cursor: "pointer" }}>{dayjs(notification.sendTime).format("DD/MM/YYYY HH:mm:ss")}</TableCell>
+                                                        <TableCell style={{ width: 100 }}><Button variant="contained" style={{ marginLeft: 10, width: 20 }} onClick={() => handleDeleteMsg(notification._id)}>Clear</Button></TableCell>
+                                                    </TableRow>
+                                                )
+                                            } else if(notification.type == "refused") {
+                                                return (
+                                                    <TableRow>
+                                                        <TableCell style={{ width: 20, cursor: "pointer" }} onClick={() => handleFriendProfile(notification.sender)}><Avatar alt="Remy Sharp" src={notification.senderPic} /></TableCell>
+                                                        <TableCell style={{ width: 50, cursor: "pointer" }} onClick={() => handleFriendProfile(notification.sender)}>{notification.senderName}</TableCell>
+                                                        <TableCell onClick={() => handleFriendProfile(notification.sender)} align="left" style={{ overflow: "hidden", maxWidth: 10, cursor: "pointer" }}>{notification.msg}</TableCell>
+                                                        <TableCell onClick={() => handleFriendProfile(notification.sender)} style={{ width: 180, cursor: "pointer" }}>{dayjs(notification.sendTime).format("DD/MM/YYYY HH:mm:ss")}</TableCell>
                                                         <TableCell style={{ width: 100 }}><Button variant="contained" style={{ marginLeft: 10, width: 20 }} onClick={() => handleDeleteMsg(notification._id)}>Clear</Button></TableCell>
                                                     </TableRow>
                                                 )
