@@ -274,7 +274,6 @@ export default function createSocketIoConnection(server) {
             io.sockets.in(friendID).emit("getNotifications", targetNotifications)
             io.sockets.in(friendID).emit("getNotificationCount", targetNotifications.length)
             io.sockets.in(friendID).emit("statusChange")
-            socket.emit("statusChange")
         })
 
 
