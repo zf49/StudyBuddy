@@ -1,6 +1,12 @@
 import { Friend } from "../schema/friend-schema";
 import { User } from "../schema/user-schema";
 
+  
+  
+
+
+
+
 
 export async function addFriend(authID: string, friendID: string) {
     const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()

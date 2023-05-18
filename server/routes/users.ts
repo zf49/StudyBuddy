@@ -5,7 +5,19 @@ import { checkAuthID, createUser, getUserProfile, searchUser, updateUserProfile 
 import { IUser } from '../schema/user-schema';
 import { getUserByID, userRecommand} from './../controller/userController'
 
+const jwt = require('jsonwebtoken');
+const jwksRsa = require('jwks-rsa');
+import jwtDecode, { JwtPayload } from "jwt-decode";
+
+
+
+
+
+
 const HTTP_CREATED = 201;
+
+
+
 const HTTP_NOT_FOUND = 404;
 const HTTP_NO_CONTENT = 204;
 const HTTP_BAD_REQUEST = 400;
@@ -67,6 +79,8 @@ router.patch('/profile/:authID', async (req, res, next) => {
 
 /* GET users listing. */
 router.get('/:uniID', async (req, res, next) => {
+
+
   const uniIDValidate = Joi.string().required().validate(req.params.uniID)
   if (uniIDValidate.error) {
     console.error(uniIDValidate.error)
@@ -76,15 +90,42 @@ router.get('/:uniID', async (req, res, next) => {
   }
 });
 
+
+
+
+
 // Get users login Email
-router.get('/authID/:authID', async (req, res) => {
+router.get('/authID/:authID',async (req, res) => {
+
+
+
+//   const userToken = req.headers.authorization
+//   const token = userToken.split(' ')
+//   const decoded = jwtDecode<JwtPayload>(token[1])
+  
+//   const authID = decoded.sub  
+
+
+// console.log('authID123123123123',authID)
+// const isHave: object = await checkAuthID(authID);
+//     res.send(isHave)
+
+
+
+
+
+
   const authIDValidate = Joi.string().required().validate(req.params.authID)
+
+  console.log(authIDValidate.value,"123123123123")
+
   if (authIDValidate.error) {
     console.error(authIDValidate.error)
   } else {
     const isHave: object = await checkAuthID(authIDValidate.value);
     res.send(isHave)
   }
+
 });
 
 // user recommend

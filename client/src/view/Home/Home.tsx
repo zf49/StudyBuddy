@@ -8,17 +8,7 @@ import axios from 'axios'
 import RateReviewIcon from '@mui/icons-material/RateReview';
 
 import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import ListItemText from '@mui/material/ListItemText';
-import ListItem from '@mui/material/ListItem';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
-import { TransitionProps } from '@mui/material/transitions';
+
 import FloatingButton from './FloatingButton';
 import { useAuth0 } from '@auth0/auth0-react';
 import QuestionDialog from './QuestionDialog';
@@ -61,14 +51,18 @@ export interface IReply {
 
 const Home = () => {
 
-    const { user } = useAuth0()
+    const { user,getAccessTokenSilently } = useAuth0()
 
     const [allQuestion, setAllQuestion] = useState<IQuestion[]>([]);
     const [allQuestionFlag, setAllQuestionFlag] = useState<IQuestion[]>([]);
 
+    
 
-    const fetchAllQuestionsAndAuthor = () => {
-        axios.get('http://localhost:8080/question/allQuestion').then((res) => {
+
+    const fetchAllQuestionsAndAuthor = async () => {
+        const token = await getAccessTokenSilently()
+
+        axios.get('http://localhost:8080/question/allQuestion',{headers: {Authorization: `Bearer ${token}`}}).then((res) => {
             console.log(res.data)
             setAllQuestion(res.data)
         })
@@ -93,10 +87,17 @@ const Home = () => {
         semester: '',
         course: ''
     });
+
+
+   
     const handleClickOpen = async (item: IQuestion) => {
+        const token = await getAccessTokenSilently()
+
         await axios.post('http://localhost:8080/users/api/getUserProfile', {
-            "authID": item.authorId
-        }).then((res) => {
+            "authID": item.authorId,
+            headers: {Authorization: `Bearer ${token}`},
+
+            }).then((res) => {
             console.log('asdasda', res.data.name)
             setQuestion({ ...item, authorName: res.data.name });
             setOpen(true);
@@ -108,10 +109,10 @@ const Home = () => {
     };
 
 
-    const deleteQuestion = (questionId:string)=>{
+    const deleteQuestion = async (questionId:string)=>{
         console.log(questionId)
-
-        axios.delete(`http://localhost:8080/question/deletequestion/${questionId}`).then((res)=>{
+        const token = await getAccessTokenSilently()
+        axios.delete(`http://localhost:8080/question/deletequestion/${questionId}`,{headers: {Authorization: `Bearer ${token}`}}).then((res)=>{
             setAllQuestion(res.data)
         })
     }

@@ -6,7 +6,8 @@ var router = express.Router();
 
 
 // get search user result
-router.get('/', async (req,res)=>{
+router.get('/', async (req,res)=>{ 
+
     const course:ICourse[] = await getCourses()
     res.json(course)
 })

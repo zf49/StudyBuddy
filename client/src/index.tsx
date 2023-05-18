@@ -15,6 +15,8 @@ root.render(
     clientId="c5yHIO5uqKX3SkUfWnTMkSyx5dwiD69W"
     authorizationParams={{
       redirect_uri: window.location.origin,
+      audience: "https://dev-6-070568.us.auth0.com/api/v2/"
+
     }}
   >
      <Provider store={store}>

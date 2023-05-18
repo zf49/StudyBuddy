@@ -20,13 +20,8 @@ import { ICourse } from '../Profile/Course';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Recommendation from './Recommendation';
-import TestRoll from './testroll';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    fontWeight: 'bold',
-    borderBottom: `1px solid ${theme.palette.divider}`,
-}));
-
+import { useAuth0 } from '@auth0/auth0-react';
 
 
 
@@ -37,6 +32,7 @@ export default function Search() {
     const [searchTerm, setSearchTerm] = useState<string>('');
 
     const [searchRes, setSearchRes] = useState<IUserDetail[]>(users);
+    const { getAccessTokenSilently } = useAuth0()
 
     const [flag, setFlag] = useState(true)
     const dispatch = useDispatch()
@@ -55,10 +51,13 @@ export default function Search() {
     };
 
     // main logic of search user
-    const handleSearchClick = () => {
+    const handleSearchClick = async () => {
         // TODO: logic of search friend
+
+        const token = await getAccessTokenSilently()    
+
         setFlag(false)
-        axios.post(`http://localhost:8080/users/${searchTerm}`, { signal: controller.signal }).then((res) => {
+        axios.post(`http://localhost:8080/users/${searchTerm}`, { signal: controller.signal,headers: { Authorization: `Bearer ${token}` } }).then((res) => {
             if (res.data.length !== 0) {
                 setSearchRes(res.data)
                 dispatch(storeUser(res.data))

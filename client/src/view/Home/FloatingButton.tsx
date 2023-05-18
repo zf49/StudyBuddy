@@ -31,10 +31,6 @@ interface IProps{
 
 }
 
-interface Position {
-    x: number;
-    y: number;
-  }
 
 export default function FloatingButton(props:IProps) {
     
@@ -44,7 +40,6 @@ export default function FloatingButton(props:IProps) {
         setAnchorEl(event.currentTarget);
     };
 
-    const [allQues, setAllQues] = useState(props.allQuestion)
 
 
     const {user} = useAuth0()
@@ -88,9 +83,16 @@ export default function FloatingButton(props:IProps) {
     const [courses, setcourses] = useState<ICourse[]>([])
 
     useEffect(() => {
-        axios.get('http://localhost:8080/courses').then((res) => {
+
+        const setCourse = async ()=>{
+
+            const token = await getAccessTokenSilently()
+
+            axios.get('http://localhost:8080/courses',{headers: {Authorization: `Bearer ${token}`}}).then((res) => {
             setcourses(res.data)
         })
+        }
+        setCourse()
     }, [])
 
 
@@ -115,7 +117,10 @@ export default function FloatingButton(props:IProps) {
         setCourse(event.target.value);
       };
 
-    const postQuestion = () => {
+       const {getAccessTokenSilently} = useAuth0()
+
+
+    const postQuestion = async () => {
         const question:IPostQuestion = {
             "title":title,
             "semester":semester,
@@ -124,7 +129,10 @@ export default function FloatingButton(props:IProps) {
             "authId":user?.sub
         }
         console.log(question)
-        axios.post('http://localhost:8080/question/postquestion',question).then((res)=>{
+
+        const token = await getAccessTokenSilently()
+
+        axios.post('http://localhost:8080/question/postquestion',question,{headers: {Authorization: `Bearer ${token}`}}).then((res)=>{
             props.setAllQuestion(res.data.data)
         })
         handlePostClose()

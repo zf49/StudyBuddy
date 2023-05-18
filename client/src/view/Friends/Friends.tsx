@@ -23,14 +23,15 @@ export interface IFriend {
 
 export default function Friends() {
 
-    const { user, isAuthenticated } = useAuth0();
+    const { user, isAuthenticated ,getAccessTokenSilently} = useAuth0();
     const [friends, setFriends] = React.useState<IFriend[]>()
     const navigate = useNavigate()
     const controller = new AbortController()
 
     async function getFriends() {
         if (user) {
-            const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`,{signal: controller.signal})
+            const token = await getAccessTokenSilently()
+            const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`,{signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
             const dbDataValidate = Joi.array().items(
                 Joi.object<IFriend>({
                 name: Joi.string().required(),

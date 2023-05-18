@@ -33,7 +33,7 @@ const ReplyDialog: React.FC<Props> = (props) => {
   const { open, onClose, onSubmit,commentId, setAllQuestion,makeComment,questionId,setQuestion} = props;
   const [comment, setComment] = React.useState('');
 
-    const {user} = useAuth0()
+    const {user,getAccessTokenSilently} = useAuth0()
 
    
 
@@ -45,7 +45,9 @@ const ReplyDialog: React.FC<Props> = (props) => {
         "content":comment
       }
 
-    await axios.post('http://localhost:8080/reply/postNewReply',newReply).then((res)=>{
+const token = await getAccessTokenSilently()
+
+    await axios.post('http://localhost:8080/reply/postNewReply',newReply,{headers: {Authorization: `Bearer ${token}`}}).then((res)=>{
        setAllQuestion(res.data)
 
        res.data.map((item: IQuestion) => {

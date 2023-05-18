@@ -47,14 +47,14 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
     setComment(event.target.value);
   };
 
-  const { user } = useAuth0()
+  const { user ,getAccessTokenSilently} = useAuth0()
 
   const [questionId, setQuestionId] = useState('')
 
-  const makeComment = (questionId: string) => {
+  const makeComment = async (questionId: string) => {
 
     setQuestionId(questionId)
-
+const token = await getAccessTokenSilently()
     const postComment = {
       "comment": comment,
       "questionId": questionId,
@@ -62,7 +62,7 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
     }
     if(comment!==""){
     //TODO:post to backend
-    axios.post("http://localhost:8080/comment/postcomment", postComment)
+    axios.post("http://localhost:8080/comment/postcomment", {postComment,headers: {Authorization: `Bearer ${token}`}})
       .then((res) => {
         setAllQuestion(res.data)
         res.data.map((item: IQuestion) => {

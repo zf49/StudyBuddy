@@ -9,15 +9,28 @@ import { IUserDetail } from "../Profile/Profile";
 export default function Recommendation() {
   const [recommand, setRecommand] = useState<IUserDetail[]>([]);
   const navigate = useNavigate();
-  const { user } = useAuth0();
+  const { user ,getAccessTokenSilently} = useAuth0();
 
   useEffect(() => {
+
+
+
       console.log(user?.sub)
-    axios
-      .post("http://localhost:8080/users/api/recomand",{authID: user?.sub }).then((res) => {
-        console.log(res.data);
-        setRecommand(res.data);
-      });
+    const setReocmmand = async()=>{
+        const token = await getAccessTokenSilently()
+        axios
+        .post("http://localhost:8080/users/api/recomand",{authID: user?.sub, headers: { Authorization: `Bearer ${token}` } }).then((res) => {
+          console.log(res.data);
+          setRecommand(res.data);
+        });
+
+    }
+
+    
+
+
+
+
   }, []);
 
   const handleClick = (id: string) => {

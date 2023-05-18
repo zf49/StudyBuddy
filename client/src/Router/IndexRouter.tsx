@@ -19,41 +19,54 @@ import FriendDetail from '../view/Friends/FriendDetail'
 
 export default function IndexRouter() {
   const [userExists, setUserExists] = useState(false);
-  const { user, isAuthenticated, isLoading } = useAuth0()
+  const { user, isAuthenticated, isLoading} = useAuth0()
   const navigate = useNavigate()
 
   const userStore = useSelector((state: RootState) => state.storeUser);
+  const { getAccessTokenSilently } = useAuth0()
+
+
 
   useEffect(() => {
-
-    const userExistsFromStorage = sessionStorage.getItem('userExists');
+    const fetchData = async () => {
+      const abort = new AbortController();
+      const signal = abort.signal;
+  
+      try {
+        const userExistsFromStorage = sessionStorage.getItem('userExists');
         setUserExists(userExistsFromStorage === 'true');
-
-    const abort = new AbortController()
-
-    if (isAuthenticated && user) {
-      axios.get(`http://localhost:8080/users/authID/${user.sub}`, {
-        signal: abort.signal
-      })
-        .then(response => {
-          if (response.data.length == 0) {
-            sessionStorage.setItem('userExists', 'false')
+  
+        const token = await getAccessTokenSilently();
+  
+        if (isAuthenticated && user && token) {
+          const response = await axios.get(`http://localhost:8080/users/authID/${user.sub}`, {
+            headers: { Authorization: `Bearer ${token}` },
+            signal: signal
+          });
+  
+          if (response.data.length === 0) {
+            sessionStorage.setItem('userExists', 'false');
             setUserExists(false);
-
-            navigate('/signup')
+            navigate('/signup');
           } else {
             sessionStorage.setItem('userExists', 'true');
-
             setUserExists(true);
           }
-        })
-    }
+        }
+      } catch (error) {
+        //err 
+        console.error(error);
+      }
+    };
+  
+    fetchData();
+  
     return () => {
+      const abort = new AbortController();
       abort.abort();
-    }
-
-  }, [user, isAuthenticated])
-
+    };
+  }, [user, isAuthenticated]);
+  
 
   const changeUserState = (state: boolean) => {
     setUserExists(state)

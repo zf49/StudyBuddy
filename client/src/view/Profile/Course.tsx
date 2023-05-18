@@ -15,6 +15,7 @@ import { makeStyles } from '@mui/styles';
 import Joi from 'joi';
 import { Input } from '@mui/material';
 import { StyledTextField } from './Profile';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -57,33 +58,48 @@ export default function Course(props:ICourseProps) {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1; 
     const currentDay = currentDate.getDate();
+    const { getAccessTokenSilently } = useAuth0()
 
-
-  useEffect(() => {
-    axios.get('http://localhost:8080/courses', {signal: controller.signal}).then((res) => {
-      const dbCourseValidate = Joi.array().items(
-        Joi.object<ICourse>({
-          course_code: Joi.string().required(),
-          course_name: Joi.string().required(),
-          CourseNName: Joi.string().required(),
-        }).unknown(true)
-      ).validate(res.data)
-      if(dbCourseValidate.error){
-        console.error(dbCourseValidate.error)
-    }else{
-      setCourseName(dbCourseValidate.value)
-    }
-    })
-    const arr:string[] = []
-    props.selectedCourse.map((item)=>{
-      arr.push(item.CourseNName)
-    })
-    setcourseToArrary(arr)
-        return () => {
-          controller.abort()
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const token = await getAccessTokenSilently();
+          const response = await axios.get('http://localhost:8080/courses', {
+            signal: controller.signal,
+            headers: { Authorization: `Bearer ${token}` },
+          });
+    
+          const dbCourseValidate = Joi.array()
+            .items(
+              Joi.object<ICourse>({
+                course_code: Joi.string().required(),
+                course_name: Joi.string().required(),
+                CourseNName: Joi.string().required(),
+              }).unknown(true)
+            ).validate(response.data);
+    
+          if (dbCourseValidate.error) {
+            console.error(dbCourseValidate.error);
+          } else {
+            setCourseName(dbCourseValidate.value);
+          }
+    
+          const arr: string[] = [];
+          props.selectedCourse.map((item) => {
+            arr.push(item.CourseNName);
+          });
+          setcourseToArrary(arr);
+        } catch (error) {
+          console.error(error);
         }
-    }, [props.selectedCourse])
-
+      };
+    
+      fetchData();
+    
+      return () => {
+        controller.abort();
+      };
+    }, [props.selectedCourse]);
 
   const handleChange = (e: SelectChangeEvent<string[]>) => {
     const selectedValues = e.target.value as string[];

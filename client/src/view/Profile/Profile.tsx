@@ -81,7 +81,7 @@ export default function Profile() {
     matchedCount:0
   });
 
-  const { user, isAuthenticated } = useAuth0();
+  const { user, isAuthenticated,getAccessTokenSilently } = useAuth0();
 
   // select option
   const [selectedFaculty, setSelectedFaculty] = useState<string>("");
@@ -122,63 +122,69 @@ export default function Profile() {
   const filteredMajors = majors.filter((major) => major.faculty === selectedFaculty);
 
   // get userprofile
-  useEffect(() => {
-    if (user && isAuthenticated) {
-      // setUserProfile;
-      axios.get(`http://localhost:8080/users/${user.sub}`, {
-        signal: controller.signal
-      }).then((res) => {
-        const dbUserValidate = Joi.object<IUserDetail>({
-          name: Joi.string().required(),
-          uniID: Joi.string().required(),
-          gender: Joi.string().required().allow(null, ''),
-          email: Joi.string().required().allow(null, ''),
-          faculty: Joi.string().required().allow(null, ''),
-          major: Joi.string().required().allow(null, ''),
-          authID: Joi.string().required(),
-          userAvatar: Joi.string().required(),
-          _id: Joi.string().required(),
-          courses: Joi.array().items(
-            Joi.object<ICourse>({
-              course_code: Joi.string().required(),
-              course_name: Joi.string().required(),
-              CourseNName: Joi.string().required(),
-            }).unknown(true)
-          ).required().allow(null)
-        }).unknown(true).validate(res.data)
-        if (dbUserValidate.error) {
-          console.log(dbUserValidate.error)
-        } else {
-          setUserProfile(dbUserValidate.value)
-          setSelectedFaculty(dbUserValidate.value.faculty)
-
+    useEffect(() => {
+      const fetchData = async () => {
+        if (user && isAuthenticated) {
+          // setUserProfile;
+          const token = await getAccessTokenSilently()
+          axios.get(`http://localhost:8080/users/${user.sub}`, {
+            signal: controller.signal,
+            headers: { Authorization: `Bearer ${token}` }
+          }).then((res) => {
+            const dbUserValidate = Joi.object<IUserDetail>({
+              name: Joi.string().required(),
+              uniID: Joi.string().required(),
+              gender: Joi.string().required().allow(null, ''),
+              email: Joi.string().required().allow(null, ''),
+              faculty: Joi.string().required().allow(null, ''),
+              major: Joi.string().required().allow(null, ''),
+              authID: Joi.string().required(),
+              userAvatar: Joi.string().required(),
+              _id: Joi.string().required(),
+              courses: Joi.array().items(
+                Joi.object<ICourse>({
+                  course_code: Joi.string().required(),
+                  course_name: Joi.string().required(),
+                  CourseNName: Joi.string().required(),
+                }).unknown(true)
+              ).required().allow(null)
+            }).unknown(true).validate(res.data[0])
+            if (dbUserValidate.error) {
+              console.log(dbUserValidate.error)
+            } else {
+              setUserProfile(dbUserValidate.value)
+              setSelectedFaculty(dbUserValidate.value.faculty)
+  
+            }
+          });
+          axios.get("http://localhost:8080/major/", {
+            signal: controller.signal,
+            headers: { Authorization: `Bearer ${token}` }
+          }).then((res) => {
+            const dbFacultiesValidate = Joi.array().items(Joi.string().required()).required().validate(res.data.faculties)
+            if (dbFacultiesValidate.error) {
+              console.log(dbFacultiesValidate.error)
+            } else {
+              setFaculties(dbFacultiesValidate.value)
+            }
+            const dbMajorsValidate = Joi.array().items(
+              Joi.object<IMajor>({
+                faculty: Joi.string().required(),
+                major: Joi.string().required()
+              }).unknown(true)
+            ).validate(res.data.majors)
+            if (dbMajorsValidate.error) {
+              console.log(dbMajorsValidate.error)
+            } else {
+              setMajors(dbMajorsValidate.value)
+            }
+          })
         }
-      });
-      axios.get("http://localhost:8080/major/", {
-        signal: controller.signal
-      }).then((res) => {
-        const dbFacultiesValidate = Joi.array().items(Joi.string().required()).required().validate(res.data.faculties)
-        if (dbFacultiesValidate.error) {
-          console.log(dbFacultiesValidate.error)
-        } else {
-          setFaculties(dbFacultiesValidate.value)
-        }
-        const dbMajorsValidate = Joi.array().items(
-          Joi.object<IMajor>({
-            faculty: Joi.string().required(),
-            major: Joi.string().required()
-          }).unknown(true)
-        ).validate(res.data.majors)
-        if (dbMajorsValidate.error) {
-          console.log(dbMajorsValidate.error)
-        } else {
-          setMajors(dbMajorsValidate.value)
-        }
-      })
-    }
-    return () => {
-      controller.abort();
-    }
+      }
+      fetchData()
+      return () => {
+        controller.abort();
+      }
   }, [user, isAuthenticated]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -196,7 +202,8 @@ export default function Profile() {
     if (userProfile.name === '' || userProfile.uniID === '') {
       handleError()
     } else {
-      await axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile, { signal: controller.signal }).then((res) => {
+      const token = await getAccessTokenSilently()
+       axios.patch(`http://localhost:8080/users/profile/${userProfile.authID}`, userProfile, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } }).then((res) => {
         const acknowledgedValidate = Joi.boolean().required().validate(res.data.acknowledged)
         if (acknowledgedValidate.error) {
           console.log(acknowledgedValidate.error)
