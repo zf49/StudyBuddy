@@ -235,12 +235,46 @@ export default function createSocketIoConnection(server) {
             }, 100)
         })
 
-        socket.on("denyRequest", async () => {
-
+        socket.on("denyRequest", async (friendID) => {
+            await deleteNotificationBySender(friendID, userID, "request")
+            await deleteNotificationBySender(userID, friendID, "pendingRequest")
+            const userInfo: IUser = (await getUserProfile(authID))[0]
+            const currentTime: Date = dayjs().toDate()
+            const notification = await addNotification(userID, friendID, userInfo.name, userInfo.userAvatar, "They've refused your friend request!", currentTime, "refused")
+            const notifications = await retriveNotification(userID)
+            socket.emit("getNotifications", notifications)
+            socket.emit("getNotificationCount", notifications.length)
+            var targetUserChat: string = null
+            const listenerName = `joinedChat${notification.id.toString()}`
+            socket.on(listenerName, (joinedChat: string) => {
+                targetUserChat = joinedChat
+            })
+            io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
+            setTimeout(async () => {
+                socket.off(listenerName, (joinedChat: string) => {
+                    targetUserChat = joinedChat
+                })
+                if (targetUserChat != "notification") {
+                    io.sockets.in(friendID).emit("newNotificationAlert", notification)
+                }
+                const notifications = await retriveNotification(friendID)
+                io.sockets.in(friendID).emit("getNotifications", notifications)
+                io.sockets.in(friendID).emit("getNotificationCount", notifications.length)
+                io.sockets.in(friendID).emit("statusChange")
+            }, 100)
         })
 
-        socket.on("cancelRequest", async () => {
-
+        socket.on("cancelRequest", async (friendID) => {
+            await deleteNotificationBySender(userID, friendID, "request")
+            await deleteNotificationBySender(friendID, userID, "pendingRequest")
+            const notifications = await retriveNotification(userID)
+            socket.emit("getNotifications", notifications)
+            socket.emit("getNotificationCount", notifications.length)
+            const targetNotifications = await retriveNotification(friendID)
+            io.sockets.in(friendID).emit("getNotifications", targetNotifications)
+            io.sockets.in(friendID).emit("getNotificationCount", targetNotifications.length)
+            io.sockets.in(friendID).emit("statusChange")
+            socket.emit("statusChange")
         })
 
 
@@ -249,7 +283,7 @@ export default function createSocketIoConnection(server) {
 
 
         async function onDisconnect() {
-
+            console.log("disconnect")
         }
     }
 
