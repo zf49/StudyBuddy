@@ -1,6 +1,10 @@
 import { addQuestion, deleteQuestionById, getAllQuestion } from "../../dao/question-dao";
 import { IQuestion } from "../../schema/question_schema";
 
+
+
+
+
 export const checkAllQuestion = async(req,res)=>{
 
    const allQuestions =  await getAllQuestion();

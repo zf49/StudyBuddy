@@ -23,8 +23,7 @@ function TestRoll() {
   return (
     <div>
         <>{console.log(isBottom)}</>
-      {/* {isBottom ? <p>已经到达页面底部</p> : null} */}
-      <div style={{ height: '100px' }}>页面内容</div>
+      <div style={{ height: '100px' }}>xxxxx</div>
     </div>
   );
 }
