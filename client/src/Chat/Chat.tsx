@@ -103,7 +103,7 @@ export default function Chat() {
                 // </div> 
                 <div>
                     <div style={{ textAlign: "center" }}>
-                        <h1>
+                        <h1 onClick={()=>handleProfile(location.state.value)}>
                             {friendName}
                         </h1>
                     </div>
