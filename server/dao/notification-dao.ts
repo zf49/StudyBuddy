@@ -4,7 +4,7 @@ import { Notification } from "../schema/notification-schema";
 
 
 export async function retriveNotification(userID: string) {
-    return await Notification.find({ "receiver": userID })
+    return await Notification.find({ "receiver": userID }).sort({sendTime:-1})
 }
 
 
