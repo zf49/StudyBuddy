@@ -190,7 +190,7 @@ export default function FriendDetail() {
                                         sx={{ width: "40%", marginLeft: "10%" }}
                                         onClick={handleCancelRequest}
                                     >
-                                        Pending
+                                        Cancel request
                                     </Button>
                                     : (status == "incomingRequest" ?
                                         (
