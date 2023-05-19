@@ -1,43 +1,23 @@
-import React, { useEffect, useSyncExternalStore } from 'react';
-import axios from 'axios';
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { useState } from "react";
-import { TextField } from "@mui/material";
-import styled from "@mui/styled-engine";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
-import { SelectChangeEvent } from "@mui/material/Select";
-import { Alert, Slide } from '@mui/material';
-import { deepPurple } from '@mui/material/colors';
-import { IMajor, IMajorApiReturn } from '../SignUp/SignUp';
-import Stack from '@mui/material/Stack';
-import Fade from '@mui/material/Fade';
-import { Collapse, } from '@mui/material';
-import { TransitionProps } from '@mui/material/transitions';
-import ListItemText from '@mui/material/ListItemText';
-import ListItem from '@mui/material/ListItem';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Paper from '@mui/material/Paper';
-import ImageList from '@mui/material/ImageList';
 import { useAuth0 } from '@auth0/auth0-react';
-import ImageListItem from '@mui/material/ImageListItem'; import {
+import CloseIcon from '@mui/icons-material/Close';
+import {
     Avatar,
     Button,
-    Container,
+
     Dialog,
-    DialogTitle,
+
     DialogContent,
-    DialogActions,
-    Grid,
-    IconButton,
-    Typography,
+
+
+    IconButton, Slide, Typography
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-
-
+import AppBar from '@mui/material/AppBar';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import Toolbar from '@mui/material/Toolbar';
+import { TransitionProps } from '@mui/material/transitions';
+import styled from "@mui/styled-engine";
+import React, { useState } from 'react';
 
 
 const StyledContainer = styled("div")({
@@ -53,8 +33,8 @@ const StyledContainer = styled("div")({
 interface IUserAvatar {
     isOpen: boolean,
     handleClose: (close: boolean) => void,
-    setUserPic:(picSrc:string)=>void,
-    userPic:string
+    setUserPic: (picSrc: string) => void,
+    userPic: string
 }
 
 interface Image {
@@ -89,13 +69,13 @@ const avatars = [
 export default function UserAvatar(props: IUserAvatar) {
     // dialog open or not
 
-    
+
     const [selectedAvatar, setSelectedAvatar] = useState<number | null>(null);
-    const { user,isAuthenticated } = useAuth0();
-    const [defaultAvatar, setDefaultAvatar] = useState<string[]|null>(avatars)
+    const { user, isAuthenticated } = useAuth0();
+    const [defaultAvatar, setDefaultAvatar] = useState<string[] | null>(avatars)
     const [avatar, setAvatar] = useState(props.userPic);
 
-  
+
 
 
 
@@ -139,7 +119,7 @@ export default function UserAvatar(props: IUserAvatar) {
 
     return (
         <>
-        {/* {console.log(user?.picture)} */}
+            {/* {console.log(user?.picture)} */}
             <Dialog
                 fullScreen
                 open={props.isOpen}
@@ -181,8 +161,7 @@ export default function UserAvatar(props: IUserAvatar) {
                     <StyledContainer>
                         <ImageList sx={{ width: 500, height: 450 }} cols={3} >
                             {avatars.map((avatar, index) => (
-                                <StyledContainer>
-
+                                <StyledContainer key={`avatar-${index}`}>
                                     <ImageListItem key={index}>
                                         <Avatar
                                             sx={{ width: 80, height: 80 }}

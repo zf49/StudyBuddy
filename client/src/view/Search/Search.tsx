@@ -31,7 +31,7 @@ export default function Search() {
     // define key word
     const [searchTerm, setSearchTerm] = useState<string>('');
 
-    const [searchRes, setSearchRes] = useState<IUserDetail[]>(users);
+    const [searchRes, setSearchRes] = useState<IUserDetail[]>([]);
     const { getAccessTokenSilently } = useAuth0()
 
     const [flag, setFlag] = useState(true)
@@ -47,22 +47,27 @@ export default function Search() {
 
     // handel key word change 
     const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
         setSearchTerm(e.target.value);
+
     };
 
     // main logic of search user
     const handleSearchClick = async () => {
         // TODO: logic of search friend
 
-        const token = await getAccessTokenSilently()    
+        if(searchTerm === ''){
+            setFlag(true) 
+        }else{
 
+
+        const token = await getAccessTokenSilently()    
         setFlag(false)
-        axios.post(`http://localhost:8080/users/${searchTerm}`, { signal: controller.signal,headers: { Authorization: `Bearer ${token}` } }).then((res) => {
-            if (res.data.length !== 0) {
+        await axios.post(`http://localhost:8080/users/${searchTerm}`, { signal: controller.signal},{headers: { Authorization: `Bearer ${token}` } }).then((res) => {
                 setSearchRes(res.data)
                 dispatch(storeUser(res.data))
-            }
         })
+    }
     };
 
     // when user press Enter, show search result 
@@ -148,7 +153,7 @@ export default function Search() {
                     {flag ? <Recommendation /> :
 
                         <Box display="flex" flexDirection="column" alignItems="center">
-                            {searchRes.map((item) => (
+                            {searchRes.length>0?searchRes.map((item) => (
                                 <Box
                                     key={item._id}
                                     sx={{
@@ -197,7 +202,7 @@ export default function Search() {
                                         <ArrowForwardIcon />
                                     </IconButton>
                                 </Box>
-                            ))}
+                            )):<div style={{marginTop:'1em'}}>No User! Input another keyword again!</div>}
                         </Box>
 
                     }

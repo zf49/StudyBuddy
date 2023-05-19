@@ -31,8 +31,6 @@ router.post("/add", async (req, res) => {
 
         console.log("userFriends",userFriendsArr)
 
-
-
         await addFriend(payloadValidate.value.authID, payloadValidate.value.friendID)
         const sendEmail:boolean = await emailSend(payloadValidate.value.authID,payloadValidate.value.friendID);
         

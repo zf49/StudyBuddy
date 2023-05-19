@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'
 import FriendDetail from '../view/Friends/FriendDetail'
+import Loading from '../view/Loading/Loading'
 
 
 
@@ -76,7 +77,7 @@ export default function IndexRouter() {
     {
       path: '/',
       element:
-        isLoading ? <div>Loading...</div> : (
+        isLoading ?<Loading/> : (
           isAuthenticated ? (
             <SandBox />
           ) : (
@@ -123,6 +124,10 @@ export default function IndexRouter() {
     {
       path: '/login',
       element: <Login />
+    },
+    {
+      path: '/loading',
+      element: <Loading />
     }
   ])
 

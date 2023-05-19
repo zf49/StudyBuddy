@@ -62,7 +62,7 @@ const token = await getAccessTokenSilently()
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog keepMounted open={open} onClose={onClose}>
       <DialogTitle>Reply to Comment</DialogTitle>
       <DialogContent>
         <DialogContentText>

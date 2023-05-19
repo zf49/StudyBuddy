@@ -22,7 +22,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Dispatch, SetStateAction } from 'react';
 import ReplyDialog from './ReplyDialog';
-
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+import React from 'react';
 
 type Props = {
   open: boolean;
@@ -32,7 +34,14 @@ type Props = {
   setQuestion: Dispatch<SetStateAction<IQuestion>>
 };
 
-
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion, setQuestion }) => {
 
@@ -54,7 +63,7 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
   const makeComment = async (questionId: string) => {
 
     setQuestionId(questionId)
-const token = await getAccessTokenSilently()
+    const token = await getAccessTokenSilently()
     const postComment = {
       "comment": comment,
       "questionId": questionId,
@@ -62,8 +71,7 @@ const token = await getAccessTokenSilently()
     }
     if(comment!==""){
     //TODO:post to backend
-    axios.post("http://localhost:8080/comment/postcomment", {postComment,headers: {Authorization: `Bearer ${token}`}})
-      .then((res) => {
+    await axios.post("http://localhost:8080/comment/postcomment", postComment,{headers: {Authorization: `Bearer ${token}`}}).then((res) => {
         setAllQuestion(res.data)
         res.data.map((item: IQuestion) => {
           if (item._id === question._id) {
@@ -99,6 +107,9 @@ const token = await getAccessTokenSilently()
       <Dialog
         fullScreen
         open={open}
+        aria-describedby="alert-dialog-slide-description"
+        TransitionComponent={Transition}
+
         onClose={handleClose}
       >
         <AppBar sx={{ position: 'relative' }}>

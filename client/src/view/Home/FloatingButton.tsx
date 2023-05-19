@@ -88,7 +88,7 @@ export default function FloatingButton(props:IProps) {
 
             const token = await getAccessTokenSilently()
 
-            axios.get('http://localhost:8080/courses',{headers: {Authorization: `Bearer ${token}`}}).then((res) => {
+            await axios.get('http://localhost:8080/courses',{headers: {Authorization: `Bearer ${token}`}}).then((res) => {
             setcourses(res.data)
         })
         }
@@ -132,7 +132,7 @@ export default function FloatingButton(props:IProps) {
 
         const token = await getAccessTokenSilently()
 
-        axios.post('http://localhost:8080/question/postquestion',question,{headers: {Authorization: `Bearer ${token}`}}).then((res)=>{
+        await axios.post('http://localhost:8080/question/postquestion',question,{headers: {Authorization: `Bearer ${token}`}}).then((res)=>{
             props.setAllQuestion(res.data.data)
         })
         handlePostClose()

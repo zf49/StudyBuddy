@@ -81,9 +81,9 @@ export const userRecommand = async (req, res) => {
 
 
 export const getUserByID = async (req,res)=>{
-  console.log(req.body)
   const userProfile = await getUserProfile(req.body.authID)
 
+  console.log('userProfile',userProfile)
   res.json(userProfile)
 
 }

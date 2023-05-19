@@ -42,10 +42,6 @@ export default function TopBar() {
   const { logout } = useAuth0();
 
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuth(event.target.checked);
-  };
-
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -72,7 +68,7 @@ export default function TopBar() {
   return (
     <div className={classes.root}>
       
-      <AppBar position="fixed">
+      <AppBar position="fixed" sx={{backgroundColor: 'rgba(33, 150, 243, 0.7)'}}>
         <Toolbar>
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={()=>{
               // console.log('123')

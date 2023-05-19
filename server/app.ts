@@ -39,30 +39,30 @@ const client = jwksClient({
   jwksUri: 'https://dev-6-070568.us.auth0.com/.well-known/jwks.json',
 });
 
-const checkJwt = jwt({
-  secret: (header, callback) => {
-    client.getSigningKey(header.kid, (err, key) => {
-      if (err) {
-        callback(err);
-      } else {
-        const publicKey = key.getPublicKey();
-        callback(null, publicKey);
-      }
-    });
-  },
-  audience: 'https://dev-6-070568.us.auth0.com/api/v2/',
-  issuer: 'https://dev-6-070568.us.auth0.com/',
-  algorithms: ['RS256'],
-  verify: (req, payload, done) => {
-    if (payload) {
-      req.user = payload;
-      console.log('success');
-      done();
-    } else {
-      console.log('failed');
-    }
-  },
-});
+// const checkJwt = jwt({
+//   secret: (header, callback) => {
+//     client.getSigningKey(header.kid, (err, key) => {
+//       if (err) {
+//         callback(err);
+//       } else {
+//         const publicKey = key.getPublicKey();
+//         callback(null, publicKey);
+//       }
+//     });
+//   },
+//   audience: 'https://dev-6-070568.us.auth0.com/api/v2/',
+//   issuer: 'https://dev-6-070568.us.auth0.com/',
+//   algorithms: ['RS256'],
+//   verify: (req, payload, done) => {
+//     if (payload) {
+//       req.user = payload;
+//       console.log('success');
+//       done();
+//     } else {
+//       console.log('failed');
+//     }
+//   },
+// });
 
 // app.use(checkJwt);
 
@@ -78,12 +78,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
+
+const checkJwt = jwt({
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 60,
+    jwksUri: 'https://dev-6-070568.us.auth0.com/.well-known/jwks.json' 
+  }),
+
+  audience: 'https://dev-6-070568.us.auth0.com/api/v2/', 
+  issuer: 'https://dev-6-070568.us.auth0.com/', 
+  algorithms: ['RS256'] 
+});
+
+
+app.use(checkJwt)
+
 app.use('/',indexRouter);
 app.use('/users', usersRouter);
 app.use('/major', majorRouter);
-app.use('/friends', friendsRouter)
+app.use('/friends',friendsRouter)
 app.use('/courses', courseRouter)
-app.use('/question', questionRouter)
+app.use('/question',questionRouter)
 app.use('/reply', replyRouter)
 app.use('/comment',commentRouter)
 

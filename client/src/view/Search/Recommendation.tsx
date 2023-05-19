@@ -18,15 +18,15 @@ export default function Recommendation() {
       console.log(user?.sub)
     const setReocmmand = async()=>{
         const token = await getAccessTokenSilently()
-        axios
-        .post("http://localhost:8080/users/api/recomand",{authID: user?.sub, headers: { Authorization: `Bearer ${token}` } }).then((res) => {
+
+        await axios.post("http://localhost:8080/users/api/recomand",{'authID': user?.sub},{ headers: { Authorization: `Bearer ${token}` } }).then((res) => {
           console.log(res.data);
           setRecommand(res.data);
         });
 
     }
 
-    
+        setReocmmand()
 
 
 
@@ -51,7 +51,7 @@ export default function Recommendation() {
                 <List sx={{ width: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
                     <Avatar src={item.userAvatar}  sx={{ alignSelf: "center" }}/>
                   <ListItemText primary={item.name} sx={{ textAlign: "center" }} />
-                  <ListItemText primary={item.matchedCount > 0 ? "Same course" : "Same Major"} secondary={item.matchedCount > 0 ? item.courses.map((item) => <>{item.course_code + ","}</>) : item.major} />
+                  <ListItemText primary={item.matchedCount > 0 ? "Same course" : "Same Major"} secondary={item.matchedCount > 0 ? item.courses.map((item) => <>{item.course_code + " "}</>) : item.major} />
                 </List>
               </Paper>
             </Grid>

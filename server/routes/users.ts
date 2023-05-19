@@ -25,8 +25,11 @@ const HTTP_BAD_REQUEST = 400;
 
 // get search user result
 router.post('/:keyword', async (req, res) => {
+ 
   const keywordValidate = Joi.string().required().validate(req.params.keyword)
+  
   if (keywordValidate.error) {
+
     console.error(keywordValidate.error)
   } else {
     const userResult = await searchUser(keywordValidate.value)
@@ -50,7 +53,7 @@ router.patch('/profile/:authID', async (req, res, next) => {
       major: Joi.string().required().allow(null, ''),
       authID: Joi.string().required(),
       userAvatar: Joi.string().required(),
-      // semester: Joi.string().required(),
+      semester: Joi.string().required(),
       courses: Joi.array().items(
         Joi.object({
           course_code: Joi.string().required(),
@@ -80,40 +83,20 @@ router.patch('/profile/:authID', async (req, res, next) => {
 /* GET users listing. */
 router.get('/:uniID', async (req, res, next) => {
 
-
   const uniIDValidate = Joi.string().required().validate(req.params.uniID)
   if (uniIDValidate.error) {
     console.error(uniIDValidate.error)
   } else {
     const user = await getUserProfile(uniIDValidate.value)
+
+    console.log('user',user)
     res.json(user);
   }
 });
 
 
-
-
-
 // Get users login Email
 router.get('/authID/:authID',async (req, res) => {
-
-
-
-//   const userToken = req.headers.authorization
-//   const token = userToken.split(' ')
-//   const decoded = jwtDecode<JwtPayload>(token[1])
-  
-//   const authID = decoded.sub  
-
-
-// console.log('authID123123123123',authID)
-// const isHave: object = await checkAuthID(authID);
-//     res.send(isHave)
-
-
-
-
-
 
   const authIDValidate = Joi.string().required().validate(req.params.authID)
 

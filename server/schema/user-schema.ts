@@ -12,7 +12,9 @@ export interface IUser {
     major: string,
     authID: string,
     userAvatar: string,
-    courses:ICourse[]
+    courses:ICourse[],
+    semester: string,
+
 }
 
 const userSchema = new Schema<IUser>({
@@ -24,7 +26,7 @@ const userSchema = new Schema<IUser>({
     major: String,
     authID:String,
     userAvatar:String,
-    // semester: String,
+    semester: String,
     courses:[Object]
 })
 

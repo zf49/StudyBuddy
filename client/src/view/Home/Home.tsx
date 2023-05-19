@@ -51,18 +51,18 @@ export interface IReply {
 
 const Home = () => {
 
-    const { user,getAccessTokenSilently } = useAuth0()
+    const { user, getAccessTokenSilently } = useAuth0()
 
     const [allQuestion, setAllQuestion] = useState<IQuestion[]>([]);
     const [allQuestionFlag, setAllQuestionFlag] = useState<IQuestion[]>([]);
 
-    
+
 
 
     const fetchAllQuestionsAndAuthor = async () => {
         const token = await getAccessTokenSilently()
 
-        axios.get('http://localhost:8080/question/allQuestion',{headers: {Authorization: `Bearer ${token}`}}).then((res) => {
+        axios.get('http://localhost:8080/question/allQuestion', { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
             console.log(res.data)
             setAllQuestion(res.data)
         })
@@ -89,19 +89,21 @@ const Home = () => {
     });
 
 
-   
+
     const handleClickOpen = async (item: IQuestion) => {
         const token = await getAccessTokenSilently()
 
         await axios.post('http://localhost:8080/users/api/getUserProfile', {
-            "authID": item.authorId,
-            headers: {Authorization: `Bearer ${token}`},
+            "authID": item.authorId
+        },
+            {
+                headers: { Authorization: `Bearer ${token}` }
 
             }).then((res) => {
-            console.log('asdasda', res.data.name)
-            setQuestion({ ...item, authorName: res.data.name });
-            setOpen(true);
-        })
+                console.log('asdasda', res.data.name)
+                setQuestion({ ...item, authorName: res.data.name });
+                setOpen(true);
+            })
     };
 
     const handleClose = () => {
@@ -109,10 +111,10 @@ const Home = () => {
     };
 
 
-    const deleteQuestion = async (questionId:string)=>{
+    const deleteQuestion = async (questionId: string) => {
         console.log(questionId)
         const token = await getAccessTokenSilently()
-        axios.delete(`http://localhost:8080/question/deletequestion/${questionId}`,{headers: {Authorization: `Bearer ${token}`}}).then((res)=>{
+        axios.delete(`http://localhost:8080/question/deletequestion/${questionId}`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
             setAllQuestion(res.data)
         })
     }
@@ -125,17 +127,19 @@ const Home = () => {
                 {allQuestion.map((item) => (
                     <Grid item xs={12} key={item._id} >
                         <Paper style={{ position: 'relative', padding: 8 }}>
-                            <div onClick={() => handleClickOpen(item)}>
-                                <h1 style={{ display: 'inline-block', marginRight: 16 }}>{item.title}</h1>
-                                {item.semester ? <Chip label={item.semester} style={{ float: 'right' }} /> : null}
-                                {item.course ? <Chip label={item.course} style={{ float: 'right', marginRight: 8 }} /> : null}
+                            <div onClick={() => handleClickOpen(item)} style={{ display: 'flex', alignItems: 'center' }}>
+                                <div style={{ marginRight: 16 }}>
+                                    <h1 style={{ margin: 0 }}>{item.title}</h1>
+                                    {item.semester ? <Chip label={item.semester} style={{ marginTop: 8 ,fontSize: '0.4em', height: '2em', borderRadius: '1em' }} /> : null}
+                                    {item.course ? <Chip label={item.course} style={{ marginTop: 8,fontSize: '0.4em', height: '2em', borderRadius: '1em'   }} /> : null}
+                                </div>
                             </div>
                             <h3>{item.content}</h3>
                             <div style={{ position: 'absolute', bottom: 0, right: 0 }}>
-                                {item.authorId === user?.sub ? <Button onClick={()=>deleteQuestion(item._id)}>Delete</Button> : null}
+                                {item.authorId === user?.sub ? <Button color="error" onClick={() => deleteQuestion(item._id)}>Delete</Button> : null}
                             </div>
                         </Paper>
-                        
+
                     </Grid>
                 ))}
                 <FloatingButton allQuestion={allQuestion} setAllQuestion={setAllQuestion} fetchAllQuestionsAndAuthor={fetchAllQuestionsAndAuthor} />
