@@ -40,3 +40,6 @@ export const updateUserProfile = async (authId:string,user:object)=>{
     return updatedUser
  }
  
+ export async function getUserID(authID: string) {
+    return (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf().toString()
+}

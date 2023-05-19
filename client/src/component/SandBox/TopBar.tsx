@@ -62,7 +62,7 @@ export default function TopBar(connection: IConnection) {
     setAnchorEl(null);
   };
 
-  const handleNotification = () =>{
+  const handleNotification = () => {
     navigate("/notification/")
   }
 
@@ -86,20 +86,21 @@ export default function TopBar(connection: IConnection) {
 
   useEffect(() => {
     if (connection.connection) {
-      console.log("2")
       socket.on("newNotification", () => {
         setNotificationCount((count) => count + 1)
       })
       socket.on("newNotificationAlert", (notification) => {
         setNotificationCount((count) => count + 1)
-        new Notification(notification.senderName,{body: `${notification.msg}`})
+        new Notification(notification.senderName, { body: `${notification.msg}` })
       })
       socket.on("getNotificationCount", (notificationCount) => {
         setNotificationCount(notificationCount)
       })
-      setTimeout(()=>{socket.emit("getNotificationCount")},100)
-      
+      setTimeout(() => { socket.emit("getNotificationCount") }, 100)
+
     }
+
+
   }, [connection.connection])
 
 
