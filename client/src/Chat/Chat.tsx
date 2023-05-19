@@ -71,12 +71,14 @@ export default function Chat() {
 
     const handleSend = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
-            const payload = {
-                friendID: location.state.id,
-                msg: msg
+            if (msg) {
+                const payload = {
+                    friendID: location.state.id,
+                    msg: msg
+                }
+                socket.emit("sendMsg", payload)
+                setMsg("")
             }
-            socket.emit("sendMsg", payload)
-            setMsg("")
         }
     }
 
@@ -103,7 +105,7 @@ export default function Chat() {
                 // </div> 
                 <div>
                     <div style={{ textAlign: "center" }}>
-                        <h1 style={{cursor: "pointer"}} onClick={()=>handleProfile(location.state.id)}>
+                        <h1 style={{ cursor: "pointer" }} onClick={() => handleProfile(location.state.id)}>
                             {friendName}
                         </h1>
                     </div>
@@ -113,10 +115,10 @@ export default function Chat() {
                                 <div>
                                     <div style={{ display: "flex" }}>
                                         <div>
-                                            <Avatar src={msg.senderPic} onClick={()=>handleProfile(msg.sender)} style={{ cursor: "pointer" }} />
+                                            <Avatar src={msg.senderPic} onClick={() => handleProfile(msg.sender)} style={{ cursor: "pointer" }} />
                                         </div>
                                         <div style={{ marginTop: "5px", marginLeft: "10px" }}>
-                                            <b style={{ fontSize: "20px", cursor: "pointer" }} onClick={()=>handleProfile(msg.sender)}>{msg.senderName}</b>
+                                            <b style={{ fontSize: "20px", cursor: "pointer" }} onClick={() => handleProfile(msg.sender)}>{msg.senderName}</b>
                                         </div>
                                         <div style={{ marginTop: "10px", marginLeft: "10px" }}>
                                             <small style={{ color: "gray" }}>{dayjs(msg.sendTime).format("DD/MM/YYYY HH:mm:ss")}</small>
