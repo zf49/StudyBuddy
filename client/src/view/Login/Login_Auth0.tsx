@@ -63,15 +63,28 @@ export default function Login() {
 
   return (
     <>
-    <RootBox>
+{/* <React.Fragment>
+      <AppAppBar />
+      <ProductHero />
+      <ProductValues />
+      <ProductCategories />
+      <ProductHowItWorks />
+      <ProductCTA />
+      <ProductSmokingHero /> */}
+      <RootBox>
       <ImageBox>
         <StyledImage src={image} alt="example" />
         <StyledButton variant="contained" color='secondary' onClick={()=>{
             handleLoginClick()
         }}>Login</StyledButton>
       </ImageBox>
-     
     </RootBox>
+      {/* <AppFooter />
+    </React.Fragment> */}
+
+
+
+    
 
 </>
     
