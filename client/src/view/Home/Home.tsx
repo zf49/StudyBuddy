@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Grid, Paper, Fab, Menu, MenuItem, IconButton, Badge, TextField, Chip, } from '@mui/material';
-import UpIcon from '@mui/icons-material/KeyboardArrowUp';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import CreateIcon from '@mui/icons-material/Create';
-import axios from 'axios'
-import RateReviewIcon from '@mui/icons-material/RateReview';
+import { Grid, Paper, Chip, InputLabel, OutlinedInput, } from '@mui/material';
 
+import axios from 'axios'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Button from '@mui/material/Button';
 
 import FloatingButton from './FloatingButton';
 import { useAuth0 } from '@auth0/auth0-react';
 import QuestionDialog from './QuestionDialog';
-
+import ArticleIcon from '@mui/icons-material/Article';
+import CreateIcon from '@mui/icons-material/Create';
+import TextField from '@mui/material/TextField';
+import NewQuestionDialog from './NewQuestionDialog';
 
 
 export interface IQuestion {
@@ -118,29 +118,65 @@ const Home = () => {
             setAllQuestion(res.data)
         })
     }
-
-
+    const [showDialog, setShowDialog] = useState(false);
+    const handleButtonDialogClick = () => {
+        setShowDialog(true);
+    };
 
     return (
         <div style={{ marginBottom: '1em' }}>
             <Grid container spacing={2}>
+                <Grid item xs={12}>
+                <Paper style={{ position: 'relative', padding: 8 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Button
+              variant="outlined"
+              startIcon={<CreateIcon />}
+              onClick={handleButtonDialogClick}
+              style={{ marginRight: 8 }}
+            >
+              Post new Question
+            </Button>
+
+            <Button
+              variant="outlined"
+              startIcon={<CreateIcon />}
+              onClick={()=>{console.log('asasd')}}
+              style={{ marginLeft: 8 }}
+            >
+              My Question
+            </Button>
+          </div>
+
+          <NewQuestionDialog
+            showDialog={showDialog}
+            setShowDialog={setShowDialog}
+            allQuestion={allQuestion}
+            setAllQuestion={setAllQuestion}
+            fetchAllQuestionsAndAuthor={fetchAllQuestionsAndAuthor}
+          />
+        </Paper>
+                </Grid>
+
+
+
                 {allQuestion.map((item) => (
-                    <Grid item xs={12} key={item._id} >
+                    <Grid item xs={12} key={item._id}>
                         <Paper style={{ position: 'relative', padding: 8 }}>
                             <div onClick={() => handleClickOpen(item)} style={{ display: 'flex', alignItems: 'center' }}>
-                                <div style={{ marginRight: 16 }}>
+                                <div style={{ marginRight: 16, wordBreak: 'break-word' }}>
                                     <h1 style={{ margin: 0 }}>{item.title}</h1>
-                                    {item.semester ? <Chip label={item.semester} style={{ marginTop: 8 ,fontSize: '0.4em', height: '2em', borderRadius: '1em' }} /> : null}
-                                    {item.course ? <Chip label={item.course} style={{ marginTop: 8,fontSize: '0.4em', height: '2em', borderRadius: '1em'   }} /> : null}
+                                    {item.semester ? <Chip label={item.semester} style={{ marginTop: 8, fontSize: '0.4em', height: '2em', borderRadius: '1em' }} /> : null}
+                                    {item.course ? <Chip label={item.course} style={{ marginTop: 8, fontSize: '0.4em', height: '2em', borderRadius: '1em' }} /> : null}
                                 </div>
                             </div>
-                            <h3>{item.content}</h3>
+                            <h3 style={{ wordBreak: 'break-word' }}>{item.content}</h3>
                             <div style={{ position: 'absolute', bottom: 0, right: 0 }}>
-                                {item.authorId === user?.sub ? <Button color="error" onClick={() => deleteQuestion(item._id)}>Delete</Button> : null}
+                                {item.authorId === user?.sub ? <Button color="error" onClick={() => deleteQuestion(item._id)}><DeleteOutlineIcon /></Button> : null}
                             </div>
                         </Paper>
-
                     </Grid>
+
                 ))}
                 <FloatingButton allQuestion={allQuestion} setAllQuestion={setAllQuestion} fetchAllQuestionsAndAuthor={fetchAllQuestionsAndAuthor} />
             </Grid>

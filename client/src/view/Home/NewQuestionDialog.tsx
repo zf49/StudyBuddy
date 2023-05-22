@@ -1,86 +1,40 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
-import { Grid, Paper, Fab, Menu, MenuItem, IconButton, Badge, Box, } from '@mui/material';
-import UpIcon from '@mui/icons-material/KeyboardArrowUp';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import CreateIcon from '@mui/icons-material/Create';
-import axios from 'axios'
-import RateReviewIcon from '@mui/icons-material/RateReview';
-import ArticleIcon from '@mui/icons-material/Article';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import FormDialog from './MyQuestionDialog';
-import { ICourse } from '../Profile/Course';
 import { useAuth0 } from '@auth0/auth0-react';
+import { Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, MenuItem, TextField } from '@mui/material'
+import React from 'react'
+import { useState, useEffect } from 'react';
+import { IPostQuestion } from './FloatingButton';
+import axios from 'axios'
+import { ICourse } from '../Profile/Course';
 import { IQuestion } from './Home';
 
-export interface IPostQuestion {
-    title:string, content:string, semester:string, course:string,authId:string|undefined,
-}
 
 
 export interface IProps{
     allQuestion:IQuestion[],
     setAllQuestion: React.Dispatch<React.SetStateAction<IQuestion[]>>,
-    fetchAllQuestionsAndAuthor:()=>void
+    fetchAllQuestionsAndAuthor:()=>void,
+    showDialog:boolean,
+    setShowDialog:React.Dispatch<React.SetStateAction<boolean>>
 
 }
 
 
-export default function FloatingButton(props:IProps) {
-    
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+export default function NewQuestionDialog(props:IProps) {
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-
-
-    const {user} = useAuth0()
-
-    const [flag, setFlag] = useState(false)
-
-    const handleMyQuestion = ()=>{
-
-        setFlag(true)
-
-        const filteredQuestions = props.allQuestion.filter(question => question.authorId === user?.sub);
-        // console.log(filteredQuestions)
-        props.setAllQuestion(filteredQuestions)
-        handleButtonClose()
-    }
-
-    const handleAllQuestion = ()=>{
-        setFlag(false)
-        props.fetchAllQuestionsAndAuthor()
-        handleButtonClose()
-    }
-
-
-
-    const handleButtonClose = () => {
-
-        setAnchorEl(null);
-    };
-
-    const [openPost, setOpenPost] = React.useState(false);
-
-    const handlePostClickOpen = () => {
-        setOpenPost(true);
-    };
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [semester, setSemester] = useState('');
+    const [course, setCourse] = useState('');
+    const [courses, setcourses] = useState<ICourse[]>([])
+    const [message, setMessage] = React.useState<boolean>(false);
 
     const handlePostClose = () => {
-        setOpenPost(false);
+        console.log('123')
+
+        props.setShowDialog(false)
+        // console.log('123')
+
     };
-
-
-    const [courses, setcourses] = useState<ICourse[]>([])
 
     useEffect(() => {
 
@@ -95,20 +49,14 @@ export default function FloatingButton(props:IProps) {
         setCourse()
     }, [])
 
-
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const [semester, setSemester] = useState('');
-    const [course, setCourse] = useState('');
-
     const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(event.target.value);
       };
-    
+
       const handleContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setContent(event.target.value);
       };
-    
+
       const handleSemesterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSemester(event.target.value);
       };
@@ -117,10 +65,11 @@ export default function FloatingButton(props:IProps) {
         setCourse(event.target.value);
       };
 
-       const {getAccessTokenSilently} = useAuth0()
+      const {user,getAccessTokenSilently} = useAuth0()
 
 
-    const postQuestion = async () => {
+
+      const postQuestion = async () => {
         const question:IPostQuestion = {
             "title":title,
             "semester":semester,
@@ -128,60 +77,29 @@ export default function FloatingButton(props:IProps) {
             "course":course,
             "authId":user?.sub
         }
-        console.log(question)
+        // console.log(question)
 
+        
         const token = await getAccessTokenSilently()
-
+        if(question.title && question.content){
         await axios.post('http://localhost:8080/question/postquestion',question,{headers: {Authorization: `Bearer ${token}`}}).then((res)=>{
             props.setAllQuestion(res.data.data)
         })
         handlePostClose()
+    }else{
+        setMessage(true)
+    }
     }
 
     return (
         <div>
-            <Fab
-              
-                style={{
-                    position: 'fixed',
-                    bottom: 50,
-                    right: 30,
-                }}
-                color="secondary"
-                aria-label="add"
-                onClick={handleClick}
-            >
-                <UpIcon />
-            </Fab>
-            <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleButtonClose}
-            >
-                <MenuItem onClick={handlePostClickOpen}>
-                    <IconButton size="large" color="inherit">
 
-                        <CreateIcon />
-                    </IconButton>
-                    <p>Post Question</p>
-                </MenuItem>
-                {!flag?<MenuItem onClick={handleMyQuestion}>
-                    <IconButton size="large" color="inherit">
-                        <RateReviewIcon />
-                    </IconButton>
-                    <p>My Question</p>
-                </MenuItem>:<MenuItem onClick={handleAllQuestion}>
-                    <IconButton size="large" color="inherit">
-                        <ArticleIcon />
-                    </IconButton>
-                    <p>All Question</p>
-                </MenuItem>}
-            </Menu>
-
-             <div>
-
-                <Dialog open={openPost} onClose={handlePostClose}>
+                <Dialog 
+                open={props.showDialog}
+                 onClose={handlePostClose}>
                     <DialogTitle>Post New Question</DialogTitle>
+                    <div>
+                        {message && <Alert severity="error">"All required fields must be filled in!"</Alert>}</div>
                     <DialogContent>
                         <Box
                             sx={{
@@ -251,15 +169,14 @@ export default function FloatingButton(props:IProps) {
                         </TextField>
                     </DialogContent>
 
-
+                        
                     <DialogActions>
-                        <Button onClick={handlePostClose}>Cancel</Button>
+                        <Button onClick={()=>handlePostClose()}>Cancel</Button>
                         <Button onClick={postQuestion}>Post</Button>
                     </DialogActions>
                 </Dialog>
             </div> 
 
 
-        </div>
     )
 }

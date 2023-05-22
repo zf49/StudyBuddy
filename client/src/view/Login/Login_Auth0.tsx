@@ -62,7 +62,7 @@ export default function Login() {
   };
 
   return (
-      <>
+    <>
     <RootBox>
       <ImageBox>
         <StyledImage src={image} alt="example" />

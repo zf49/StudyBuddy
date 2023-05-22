@@ -56,7 +56,7 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
     setComment(event.target.value);
   };
 
-  const { user ,getAccessTokenSilently} = useAuth0()
+  const { user, getAccessTokenSilently } = useAuth0()
 
   const [questionId, setQuestionId] = useState('')
 
@@ -69,9 +69,9 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
       "questionId": questionId,
       "comment_author_id": user?.sub
     }
-    if(comment!==""){
-    //TODO:post to backend
-    await axios.post("http://localhost:8080/comment/postcomment", postComment,{headers: {Authorization: `Bearer ${token}`}}).then((res) => {
+    if (comment !== "") {
+      //TODO:post to backend
+      await axios.post("http://localhost:8080/comment/postcomment", postComment, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
         setAllQuestion(res.data)
         res.data.map((item: IQuestion) => {
           if (item._id === question._id) {
@@ -87,7 +87,7 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
   const [commentId, setCommentId] = useState('')
 
 
-  const replyComment = (commentId:string) => {
+  const replyComment = (commentId: string) => {
     setCommentId(commentId)
     handleReplyOpen()
   }
@@ -112,7 +112,7 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
 
         onClose={handleClose}
       >
-        <AppBar sx={{ position: 'relative' }}>
+        <AppBar sx={{ position: 'relative'}}>
           <Toolbar>
             <IconButton
               edge="start"
@@ -122,17 +122,17 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
             >
               <CloseIcon />
             </IconButton>
-            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+            <Typography sx={{ ml: 2, flex: 1, wordBreak: 'break-word'}} variant="h6" component="div">
               {question.title}
             </Typography>
           </Toolbar>
         </AppBar>
-        <Paper elevation={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
-  <h3>{question.content}</h3>
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize:'10%',marginRight:'10em'}}>
-    <p style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>{"Author name: " + question.authorName+"  "+new Date(question.createdAt).toLocaleString()}</p>
-  </div>
-</Paper>
+        <Paper elevation={12} style={{ justifyContent: 'space-between'}}>
+          <h3 style={{wordBreak: 'break-word',margin:'1em'}}>{question.content}</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: '10%', marginRight: '10em',marginTop:'0' }}>
+            <p style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>{"Author name: " + question.authorName + "  " + new Date(question.createdAt).toLocaleString()}</p>
+          </div>
+        </Paper>
         <div style={{ textAlign: 'center' }}>
           <Paper elevation={3} sx={{ marginTop: '1em' }}>
             <TextField
@@ -148,7 +148,7 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
           </Paper>
           <Divider />
           <div>{question.comments.map((comment) => {
-            return <Paper elevation={12} sx={{marginBottom:'1em'}}>
+            return <Paper elevation={12} sx={{ marginBottom: '1em' }}>
               <Grid container>
                 <Grid item xs={12}>
 
@@ -158,22 +158,22 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
 
                   <p>{new Date(comment.createdAt).toLocaleString()} </p>
                 </Grid>
-                <Grid item xs={6}>             
-                <Button onClick={()=>replyComment(comment._id)}>reply</Button>
+                <Grid item xs={6}>
+                  <Button onClick={() => replyComment(comment._id)}>reply</Button>
                 </Grid>
-                {comment.replies.map((item)=>{
-                 return <Grid item xs={12}>
-                 <p>{item.content} </p>
-                  
-                 <p>{new Date(item.createdAt).toLocaleString()} </p>
-               </Grid>
+                {comment.replies.map((item) => {
+                  return <Grid item xs={12}>
+                    <p>{item.content} </p>
+
+                    <p>{new Date(item.createdAt).toLocaleString()} </p>
+                  </Grid>
                 })}
 
               </Grid>
             </Paper>
           })}</div>
 
-      <ReplyDialog open={openReply} onClose={handleReplyClose} onSubmit={handleSubmit} commentId={commentId} setAllQuestion={setAllQuestion} questionId={questionId} makeComment={makeComment} setQuestion={setQuestion}/>
+          <ReplyDialog open={openReply} onClose={handleReplyClose} onSubmit={handleSubmit} commentId={commentId} setAllQuestion={setAllQuestion} questionId={questionId} makeComment={makeComment} setQuestion={setQuestion} />
 
         </div>
       </Dialog>
