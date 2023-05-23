@@ -30,10 +30,8 @@ export default function NewQuestionDialog(props:IProps) {
 
     const handlePostClose = () => {
         console.log('123')
-
+        setMessage(false)
         props.setShowDialog(false)
-        // console.log('123')
-
     };
 
     useEffect(() => {
@@ -81,7 +79,7 @@ export default function NewQuestionDialog(props:IProps) {
 
         
         const token = await getAccessTokenSilently()
-        if(question.title && question.content){
+        if(question.title && question.content&&question.semester&&question.course){
         await axios.post('http://localhost:8080/question/postquestion',question,{headers: {Authorization: `Bearer ${token}`}}).then((res)=>{
             props.setAllQuestion(res.data.data)
         })
@@ -114,7 +112,7 @@ export default function NewQuestionDialog(props:IProps) {
                                 label="Title"
                                 variant="standard"
                                 onChange={handleTitleChange}
-
+                                value={title}
                             />
                         </Box>
                     </DialogContent>
@@ -132,6 +130,7 @@ export default function NewQuestionDialog(props:IProps) {
                                 multiline
                                 rows={4}
                                 onChange={handleContentChange}
+                                value={content}
                             />
                         </Box>
                     </DialogContent>

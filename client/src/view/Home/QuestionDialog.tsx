@@ -150,22 +150,35 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
           <div>{question.comments.map((comment) => {
             return <Paper elevation={12} sx={{ marginBottom: '1em' }}>
               <Grid container>
-                <Grid item xs={12}>
+
+              <Grid item xs>
+
+         
+</Grid>
+                <Grid item xs={6}>
 
                   <h3>{comment.content}</h3>
+                  {/* <Button onClick={() => replyComment(comment._id)}>reply</Button> */}
                 </Grid>
-                <Grid item xs={6}>
+
+                <Grid item xs>
+                <Button onClick={() => replyComment(comment._id)}>reply</Button>
+              </Grid>
+
+
+                <Grid item xs={12}>
 
                   <p>{new Date(comment.createdAt).toLocaleString()} </p>
+                  <hr/>
+
                 </Grid>
-                <Grid item xs={6}>
-                  <Button onClick={() => replyComment(comment._id)}>reply</Button>
-                </Grid>
+               
                 {comment.replies.map((item) => {
                   return <Grid item xs={12}>
                     <p>{item.content} </p>
 
                     <p>{new Date(item.createdAt).toLocaleString()} </p>
+                    <hr/>
                   </Grid>
                 })}
 

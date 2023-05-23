@@ -5,7 +5,7 @@ import dogPic from './../../ICON/dog.png'
 import { useAuth0 } from "@auth0/auth0-react";
 import  { useNavigate } from 'react-router-dom'
 import React from 'react';
-import ProductHero from './ProductionHero';
+import ProductHero from './HomeBG';
 import ProductValues from './ProductValues';
 
 export const RootBox = styled(Box)({
@@ -69,14 +69,7 @@ export default function Login() {
 <React.Fragment>
       {/* <AppAppBar /> */}
       <ProductHero />
-      <RootBox>
-      <ImageBox>
-        <StyledImage src={image} alt="example" />
-        <StyledButton variant="contained" color='secondary' onClick={()=>{
-            handleLoginClick()
-        }}>Login</StyledButton>
-      </ImageBox>
-    </RootBox>
+      
       <ProductValues />
       {/* <ProductCategories />
       <ProductHowItWorks />

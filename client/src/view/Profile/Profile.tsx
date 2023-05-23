@@ -144,7 +144,7 @@ export default function Profile() {
             authID: Joi.string().required(),
             userAvatar: Joi.string().required(),
             _id: Joi.string().required(),
-            semester:Joi.string().required().allow(null, ''),
+            semester:Joi.string().allow(null, ''),
             courses: Joi.array().items(
               Joi.object<ICourse>({
                 course_code: Joi.string().required(),
@@ -154,13 +154,15 @@ export default function Profile() {
             ).required().allow(null)
           }).unknown(true).validate(res.data)
 
+          console.log(dbUserValidate)
+
           if (dbUserValidate.error) {
-            console.log(dbUserValidate.error)
+            console.log('dbUserValidate.error',dbUserValidate.error)
           } else {
             console.log('useEffect updateUserProfile', dbUserValidate.value)
             updateUserProfile(dbUserValidate.value)
             setSelectedFaculty(dbUserValidate.value.faculty)
-            
+            console.log(userProfile)
             // updateUserProfile(res.data)
             // setSelectedFaculty(res.data.faculty)
 

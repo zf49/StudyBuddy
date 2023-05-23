@@ -133,6 +133,7 @@ const Home = () => {
         const token = await getAccessTokenSilently()
         axios.delete(`http://localhost:8080/question/deletequestion/${questionId}`, { headers: { Authorization: `Bearer ${token}` } }).then((res) => {
             setAllQuestion(res.data)
+            setFlag(false)
         })
     }
     const [showDialog, setShowDialog] = useState(false);

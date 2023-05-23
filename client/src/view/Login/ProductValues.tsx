@@ -21,8 +21,7 @@ function ProductValues() {
   return (
     <Box
       component="section"
-      //TODO :Bgcolor
-      sx={{ display: 'flex', overflow: 'hidden', bgcolor: '' }}
+      sx={{ display: 'flex', overflow: 'hidden', bgcolor: 'white',opacity: '0.95' }}
     >
       <Container sx={{ mt: 15, mb: 30, display: 'flex', position: 'relative' }}>
         <Box
@@ -40,13 +39,13 @@ function ProductValues() {
                 alt="suitcase"
                 sx={{ height: 100 }}
               />
-              <Typography variant="h6" sx={{ my: 5 }}>
+              <Typography variant="h5" sx={{ my: 5 }}>
                 Find your classmates or friends
               </Typography>
-              <Typography variant="h5">
+              <Typography variant="h6">
                 
                 {
-                  'Discover a vibrant community of University of Auckland students, where you can connect with peers from diverse disciplines and forge valuable connections for your academic journey. Whether you are seeking study groups, networking opportunities, or simply a sense of belonging, this platform brings together a wide range of UoA students, fostering collaboration, support, and a shared passion for learning'
+                  'Connect and collaborate with University of Auckland students from diverse fields, fostering academic growth, networking, and a sense of belonging.'
                 }
               </Typography>
             </Box>
@@ -59,12 +58,12 @@ function ProductValues() {
                 alt="graph"
                 sx={{ height: 100 }}
               />
-              <Typography variant="h6" sx={{ my: 5 }}>
+              <Typography variant="h5" sx={{ my: 5 }}>
               Ask your questions about study
               </Typography>
-              <Typography variant="h5">
+              <Typography variant="h6">
                 {
-                  'Engage in dynamic conversations and foster a sense of community through our interactive posting and reply feature. Share your thoughts, ask questions, and join in discussions with fellow users. Whether you are seeking advice, sharing insights, or sparking meaningful exchanges, our platform provides a space for you to express yourself and connect with others.'
+                  'Our interactive platform enables vibrant conversations, fostering community and connection as users engage in discussions, share insights, and seek advice, sparking meaningful exchanges among fellow users.'
                 }
               </Typography>
             </Box>
@@ -77,11 +76,11 @@ function ProductValues() {
                 alt="clock"
                 sx={{ height: 100 }}
               />
-              <Typography variant="h6" sx={{ my: 5 }}>
-                Talk to your friends
+              <Typography variant="h5" sx={{ my: 5 }}>
+                Follow and talk to your buddies
               </Typography>
-              <Typography variant="h5">
-                {'Expand your social network and stay connected with friends through our user-friendly friend addition and chat functionality. Easily find and add friends, and enjoy seamless conversations with them. Whether you want to catch up, share exciting news, or simply have a casual chat, our platform provides a convenient way to stay in touch and nurture meaningful connections with your friends'}
+              <Typography variant="h6">
+                {'Easily connect and chat with friends, expanding your social network and fostering meaningful connections.'}
               </Typography>
             </Box>
           </Grid>
