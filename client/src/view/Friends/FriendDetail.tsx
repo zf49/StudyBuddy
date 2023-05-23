@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import { useAuth0 } from "@auth0/auth0-react"
 import Joi from "joi"
 import { socket } from "../SandBox"
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 export interface IFriendDetail {
@@ -32,6 +33,7 @@ export default function FriendDetail() {
     const [self, setSelf] = React.useState<Boolean>()
     const { user, isAuthenticated } = useAuth0();
     const { getAccessTokenSilently } = useAuth0()
+    const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const payload: IPayload = {
         friendID: location.state.id
     }
@@ -65,7 +67,6 @@ export default function FriendDetail() {
         } else {
             setSelf(dbSelfValidate.value)
         }
-
     }
 
     function handleReturn() {
@@ -92,132 +93,136 @@ export default function FriendDetail() {
     }
 
     useEffect(() => {
-        socket.on("statusChange", async ()=>{
+        socket.on("statusChange", async () => {
             const token = await getAccessTokenSilently()
             const dbStatus: string = (await axios.post('http://localhost:8080/friends/checkStatus', payload, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } })).data
-        setStatus(dbStatus)
+            setStatus(dbStatus)
         })
 
-        getFriendDetail()
-
+        getFriendDetail().finally(() => setIsLoading(false))
         return () => {
             controller.abort()
             socket.off("statusChange")
         }
     }, [])
 
-    return (
-        <Paper elevation={24}>
-            <Box>
-                <div style={{ width: "80%", textAlign: "center", margin: "0 auto", paddingTop: "2em", paddingBottom: "2em", wordWrap: 'break-word' }}>
-                    <div>
-                        <Avatar sx={{ width: 56, height: 56, margin: "0 auto" }}
-                            src={friendDetail?.userAvatar} />
-                    </div>
-                    <div style={{ marginBottom: "20px" }}>
-                        <Typography variant="h4" gutterBottom>
-                            {friendDetail?.name}
-                        </Typography>
-                    </div>
-                    <div style={{ textAlign: "left", marginBottom: "10px" }}>
-                        <Typography variant="h6" gutterBottom>
-                            UniID: {friendDetail?.uniID}
-                        </Typography>
-                    </div>
-                    <div style={{ textAlign: "left", marginBottom: "10px" }}>
-                        {friendDetail?.gender ?
-                            <Typography variant="h6" gutterBottom>
-                                Gender: {friendDetail?.gender}
-                            </Typography>
-                            :
-                            <Typography variant="h6" gutterBottom>
-                                Gender: Prefer Not To Tell
-                            </Typography>
-                        }
-                    </div>
-                    <div style={{ textAlign: "left", width: "100%", marginBottom: "10px" }}>
-                        {friendDetail?.email ?
-                            <Typography variant="h6" gutterBottom>
-                                Email: {friendDetail?.email}
-                            </Typography>
-                            :
-                            <Typography variant="h6" gutterBottom>
-                                Email: Prefer Not To Tell
-                            </Typography>
-                        }
-                    </div>
-                    <div style={{ textAlign: "left", marginBottom: "10px" }}>
-                        {friendDetail?.faculty ?
-                            <Typography variant="h6" gutterBottom>
-                                Faculty: {friendDetail?.faculty}
-                            </Typography>
-                            :
-                            <Typography variant="h6" gutterBottom>
-                                Faculty: Prefer Not To Tell
-                            </Typography>
-                        }
-                    </div>
-                    <div style={{ textAlign: "left", marginBottom: "10px" }}>
-                        {friendDetail?.major ?
-                            <Typography variant="h6" gutterBottom>
-                                Major: {friendDetail?.major}
-                            </Typography>
-                            :
-                            <Typography variant="h6" gutterBottom>
-                                Major: Prefer Not To Tell
-                            </Typography>
-                        }
 
-                    </div>
-                    <div>
-                        <Button variant="contained"
-                            sx={{ width: "40%" }}
-                            onClick={handleReturn}
-                        >
-                            back
-                        </Button>
-                        {!self &&
-                            (status == "none" ?
+    return (
+        <div>
+            {isLoading ? <div style={{ textAlign: "center" }}><CircularProgress size={150} style={{ marginTop: "40vh" }} /></div> :
+                <Paper elevation={24}>
+                    <Box>
+                        <div style={{ width: "80%", textAlign: "center", margin: "0 auto", paddingTop: "2em", paddingBottom: "2em", wordWrap: 'break-word' }}>
+                            <div>
+                                <Avatar sx={{ width: 56, height: 56, margin: "0 auto" }}
+                                    src={friendDetail?.userAvatar} />
+                            </div>
+                            <div style={{ marginBottom: "20px" }}>
+                                <Typography variant="h4" gutterBottom>
+                                    {friendDetail?.name}
+                                </Typography>
+                            </div>
+                            <div style={{ textAlign: "left", marginBottom: "10px" }}>
+                                <Typography variant="h6" gutterBottom>
+                                    UniID: {friendDetail?.uniID}
+                                </Typography>
+                            </div>
+                            <div style={{ textAlign: "left", marginBottom: "10px" }}>
+                                {friendDetail?.gender ?
+                                    <Typography variant="h6" gutterBottom>
+                                        Gender: {friendDetail?.gender}
+                                    </Typography>
+                                    :
+                                    <Typography variant="h6" gutterBottom>
+                                        Gender: Prefer Not To Tell
+                                    </Typography>
+                                }
+                            </div>
+                            <div style={{ textAlign: "left", width: "100%", marginBottom: "10px" }}>
+                                {friendDetail?.email ?
+                                    <Typography variant="h6" gutterBottom>
+                                        Email: {friendDetail?.email}
+                                    </Typography>
+                                    :
+                                    <Typography variant="h6" gutterBottom>
+                                        Email: Prefer Not To Tell
+                                    </Typography>
+                                }
+                            </div>
+                            <div style={{ textAlign: "left", marginBottom: "10px" }}>
+                                {friendDetail?.faculty ?
+                                    <Typography variant="h6" gutterBottom>
+                                        Faculty: {friendDetail?.faculty}
+                                    </Typography>
+                                    :
+                                    <Typography variant="h6" gutterBottom>
+                                        Faculty: Prefer Not To Tell
+                                    </Typography>
+                                }
+                            </div>
+                            <div style={{ textAlign: "left", marginBottom: "10px" }}>
+                                {friendDetail?.major ?
+                                    <Typography variant="h6" gutterBottom>
+                                        Major: {friendDetail?.major}
+                                    </Typography>
+                                    :
+                                    <Typography variant="h6" gutterBottom>
+                                        Major: Prefer Not To Tell
+                                    </Typography>
+                                }
+
+                            </div>
+                            <div>
                                 <Button variant="contained"
-                                    sx={{ width: "40%", marginLeft: "10%" }}
-                                    onClick={handleSendRequest}
+                                    sx={{ width: "40%" }}
+                                    onClick={handleReturn}
                                 >
-                                    Send Request
+                                    back
                                 </Button>
-                                :
-                                (status == "requested" ?
-                                    <Button variant="contained"
-                                        sx={{ width: "40%", marginLeft: "10%" }}
-                                        onClick={handleCancelRequest}
-                                    >
-                                        Cancel request
-                                    </Button>
-                                    : (status == "incomingRequest" ?
-                                        (
+                                {!self &&
+                                    (status == "none" ?
+                                        <Button variant="contained"
+                                            sx={{ width: "40%", marginLeft: "10%" }}
+                                            onClick={handleSendRequest}
+                                        >
+                                            Send Request
+                                        </Button>
+                                        :
+                                        (status == "requested" ?
                                             <Button variant="contained"
                                                 sx={{ width: "40%", marginLeft: "10%" }}
-                                                onClick={handleCheckRequest}
+                                                onClick={handleCancelRequest}
                                             >
-                                                Pending
+                                                Cancel request
                                             </Button>
-                                        ) : (
-                                            status == "friends" &&
-                                            <Button variant="contained"
-                                                sx={{ width: "40%", marginLeft: "10%" }}
-                                                onClick={handleUnfriend}
-                                            >
-                                                Unfriend
-                                            </Button>
+                                            : (status == "incomingRequest" ?
+                                                (
+                                                    <Button variant="contained"
+                                                        sx={{ width: "40%", marginLeft: "10%" }}
+                                                        onClick={handleCheckRequest}
+                                                    >
+                                                        Pending
+                                                    </Button>
+                                                ) : (
+                                                    status == "friends" &&
+                                                    <Button variant="contained"
+                                                        sx={{ width: "40%", marginLeft: "10%" }}
+                                                        onClick={handleUnfriend}
+                                                    >
+                                                        Unfriend
+                                                    </Button>
+                                                )
+                                            )
                                         )
                                     )
-                                )
-                            )
 
 
-                        }
-                    </div>
-                </div>
-            </Box>
-        </Paper>
+                                }
+                            </div>
+                        </div>
+                    </Box>
+                </Paper>
+            }
+        </div>
     )
 }
