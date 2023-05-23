@@ -162,6 +162,8 @@ export default function createSocketIoConnection(server) {
                 //     }
                 // }, 100)
 
+            } else{
+                socket.emit("notFriends")
             }
         })
 
