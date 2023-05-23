@@ -129,10 +129,10 @@ export default function Profile() {
       if (user && isAuthenticated) {
         // setUserProfile;
         const token = await getAccessTokenSilently()
-        axios.get(`http://localhost:8080/users/getprofile`, {
+        const resProfile = await axios.get(`http://localhost:8080/users/getprofile`, {
           signal: controller.signal,
           headers: { Authorization: `Bearer ${token}` }
-        }).then((res) => {
+        })
           const dbUserValidate = Joi.object<IUserDetail>({
             name: Joi.string().required(),
             uniID: Joi.string().required(),
@@ -150,7 +150,7 @@ export default function Profile() {
                 CourseNName: Joi.string().required(),
               }).unknown(true)
             ).required().allow(null)
-          }).unknown(true).validate(res.data[0])
+          }).unknown(true).validate(resProfile.data[0])
           if (dbUserValidate.error) {
             console.log(dbUserValidate.error)
           } else {
@@ -158,12 +158,12 @@ export default function Profile() {
             setSelectedFaculty(dbUserValidate.value.faculty)
 
           }
-        });
-        axios.get("http://localhost:8080/major/", {
+        
+        const resMajor = await axios.get("http://localhost:8080/major/", {
           signal: controller.signal,
           headers: { Authorization: `Bearer ${token}` }
-        }).then((res) => {
-          const dbFacultiesValidate = Joi.array().items(Joi.string().required()).required().validate(res.data.faculties)
+        })
+          const dbFacultiesValidate = Joi.array().items(Joi.string().required()).required().validate(resMajor.data.faculties)
           if (dbFacultiesValidate.error) {
             console.log(dbFacultiesValidate.error)
           } else {
@@ -174,13 +174,13 @@ export default function Profile() {
               faculty: Joi.string().required(),
               major: Joi.string().required()
             }).unknown(true)
-          ).validate(res.data.majors)
+          ).validate(resMajor.data.majors)
           if (dbMajorsValidate.error) {
             console.log(dbMajorsValidate.error)
           } else {
             setMajors(dbMajorsValidate.value)
           }
-        })
+        
       }
     }
     fetchData().finally(() => setIsLoading(false))
