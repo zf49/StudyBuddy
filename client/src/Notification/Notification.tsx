@@ -25,13 +25,13 @@ export default function Notification() {
 
 
     useEffect(() => {
-        socket.emit("getNotifications")
         socket.on("getNotifications", (notifications: INotification[]) => {
             setNotifications(notifications)
         })
         socket.on("newNotification", (newNotification: INotification) => {
             setNotifications((notifications) => [newNotification, ...notifications])
         })
+        socket.emit("getNotifications")
 
         return (
             () => {
