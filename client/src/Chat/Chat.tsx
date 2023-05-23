@@ -6,6 +6,8 @@ import TextField from '@mui/material/TextField';
 import { Avatar, Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import dayjs from "dayjs";
 import { socket } from "../view/SandBox";
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 export interface IMsg {
     sender: string,
@@ -29,13 +31,14 @@ export default function Chat() {
     const [msgs, setMsgs] = React.useState<IMsg[]>([])
     const [msg, setMsg] = React.useState<string>()
     const [friendName, setFriendName] = React.useState<string>()
+    const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const navigate = useNavigate()
 
     useEffect(() => {
         async function getChat() {
             const token = await getAccessTokenSilently()
             const friendID = location.state.id
-            socket.emit("startChat", friendID)
+            
             socket.on("notFriends", () => {
                 setFriendStatus(false)
             })
@@ -43,11 +46,12 @@ export default function Chat() {
                 setFriendStatus(true)
                 setMsgs(msgs)
                 setFriendName(friendName)
+                setIsLoading(false)
             })
             socket.on("newMsg", (newMsg: IMsg) => {
                 setMsgs((msgs) => [...msgs, newMsg])
             })
-
+            socket.emit("startChat", friendID)
         }
         getChat()
         return (
@@ -94,7 +98,8 @@ export default function Chat() {
 
     return (
         <div style={{ height: "100%" }}>
-            {friendStatus ?
+            {isLoading ? <div style={{textAlign: "center"}}><CircularProgress size={150} style={{marginTop: "40vh"}}/></div> :
+            (friendStatus ?
                 // <div>
                 //     <TextField
                 //             id="msg"
@@ -141,8 +146,10 @@ export default function Chat() {
                         sx={{ marginTop: "5vh", borderRadius: 1, border: 1 }}
                     />
                 </div>
-                : <div>You're not friends yet</div>}
+                : <div>You're not friends yet</div>)
+                            }
         </div>
+                            
     )
 
 
