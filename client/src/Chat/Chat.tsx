@@ -7,7 +7,7 @@ import { Avatar, Box, Paper, Table, TableBody, TableCell, TableContainer, TableH
 import dayjs from "dayjs";
 import { socket } from "../view/SandBox";
 import CircularProgress from '@mui/material/CircularProgress';
-
+import Button from '@mui/material/Button';
 
 export interface IMsg {
     sender: string,
@@ -38,9 +38,10 @@ export default function Chat() {
         async function getChat() {
             const token = await getAccessTokenSilently()
             const friendID = location.state.id
-            
+
             socket.on("notFriends", () => {
                 setFriendStatus(false)
+                setIsLoading(false)
             })
             socket.on("friends", (msgs, friendName) => {
                 setFriendStatus(true)
@@ -96,60 +97,75 @@ export default function Chat() {
         navigate("/frienddetail/", { state: { "id": sender } })
     }
 
+    function handleReturn() {
+        navigate(-1)
+    }
+
     return (
         <div style={{ height: "100%" }}>
-            {isLoading ? <div style={{textAlign: "center"}}><CircularProgress size={150} style={{marginTop: "40vh"}}/></div> :
-            (friendStatus ?
-                // <div>
-                //     <TextField
-                //             id="msg"
-                //             onChange={handleMsg}
-                //             onKeyDown={handleSend}
-                //             fullWidth
-                //         />
-                // </div> 
-                <div>
-                    <div style={{ textAlign: "center" }}>
-                        <h1 style={{ cursor: "pointer" }} onClick={() => handleProfile(location.state.id)}>
-                            {friendName}
-                        </h1>
-                    </div>
-                    <Paper elevation={24}>
-                        <div id="msgBox" style={{ height: "70vh", overflow: "scroll", padding: 20 }}>
-                            {msgs?.map((msg) => (
-                                <div>
-                                    <div style={{ display: "flex" }}>
-                                        <div>
-                                            <Avatar src={msg.senderPic} onClick={() => handleProfile(msg.sender)} style={{ cursor: "pointer" }} />
-                                        </div>
-                                        <div style={{ marginTop: "5px", marginLeft: "10px" }}>
-                                            <b style={{ fontSize: "20px", cursor: "pointer" }} onClick={() => handleProfile(msg.sender)}>{msg.senderName}</b>
-                                        </div>
-                                        <div style={{ marginTop: "10px", marginLeft: "10px" }}>
-                                            <small style={{ color: "gray" }}>{dayjs(msg.sendTime).format("DD/MM/YYYY HH:mm:ss")}</small>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p style={{ fontSize: "16px" }}>{msg.msg}</p>
-                                    </div>
-                                </div>
-                            ))}
+            {isLoading ? <div style={{ textAlign: "center" }}><CircularProgress size={150} style={{ marginTop: "40vh" }} /></div> :
+                (friendStatus ?
+                    // <div>
+                    //     <TextField
+                    //             id="msg"
+                    //             onChange={handleMsg}
+                    //             onKeyDown={handleSend}
+                    //             fullWidth
+                    //         />
+                    // </div> 
+                    <div>
+                        <Button variant="contained"
+                            sx={{ width: 100 }}
+                            onClick={handleReturn}
+                        >
+                            &lt;back
+                        </Button>
+                        <div style={{ textAlign: "center" }}>
+                            <h1 style={{ cursor: "pointer" }} onClick={() => handleProfile(location.state.id)}>
+                                {friendName}
+                            </h1>
                         </div>
-                    </Paper>
-                    <TextField
-                        id="msg"
-                        onChange={handleMsg}
-                        onKeyDown={handleSend}
-                        value={msg}
-                        label="Type Message Here"
-                        fullWidth
-                        sx={{ marginTop: "5vh", borderRadius: 1, border: 1 }}
-                    />
-                </div>
-                : <div>You're not friends yet</div>)
-                            }
+                        <Paper elevation={24}>
+                            <div id="msgBox" style={{ height: "70vh", overflow: "scroll", padding: 20 }}>
+                                {msgs?.map((msg) => (
+                                    <div>
+                                        <div style={{ display: "flex" }}>
+                                            <div>
+                                                <Avatar src={msg.senderPic} onClick={() => handleProfile(msg.sender)} style={{ cursor: "pointer" }} />
+                                            </div>
+                                            <div style={{ marginTop: "5px", marginLeft: "10px" }}>
+                                                <b style={{ fontSize: "20px", cursor: "pointer" }} onClick={() => handleProfile(msg.sender)}>{msg.senderName}</b>
+                                            </div>
+                                            <div style={{ marginTop: "10px", marginLeft: "10px" }}>
+                                                <small style={{ color: "gray" }}>{dayjs(msg.sendTime).format("DD/MM/YYYY HH:mm:ss")}</small>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p style={{ fontSize: "16px" }}>{msg.msg}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </Paper>
+                        <TextField
+                            id="msg"
+                            onChange={handleMsg}
+                            onKeyDown={handleSend}
+                            value={msg}
+                            label="Type Message Here"
+                            fullWidth
+                            sx={{ marginTop: "5vh", borderRadius: 1, border: 1 }}
+                        />
+                    </div>
+                    : <div><Button variant="contained"
+                        sx={{ width: 100 }}
+                        onClick={handleReturn}
+                    >
+                        &lt;back
+                    </Button>You're not friends yet</div>)
+            }
         </div>
-                            
+
     )
 
 

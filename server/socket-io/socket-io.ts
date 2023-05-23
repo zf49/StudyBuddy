@@ -58,7 +58,7 @@ export default function createSocketIoConnection(server) {
                 socket.emit("getNotificationCount", notificationCount)
 
             } else {
-                console.log("not followed")
+                socket.emit("notFriends")
             }
         })
 
