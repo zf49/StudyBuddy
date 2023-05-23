@@ -18,7 +18,7 @@ import {io, Socket} from "socket.io-client"
 import React from 'react'
 import Chat from '../Chat/Chat'
 import Notification from '../Notification/Notification'
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 export default function IndexRouter() {
@@ -73,7 +73,7 @@ export default function IndexRouter() {
     {
       path: '/',
       element:
-        isLoading ? <div>Loading...</div> : (
+        isLoading ? <div style={{textAlign: "center"}}><CircularProgress size={150} style={{marginTop: "40vh"}}/></div> : (
           isAuthenticated ? (
             <SandBox userExists = {userExists}/>
           ) : (

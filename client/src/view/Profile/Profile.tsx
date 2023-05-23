@@ -33,7 +33,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import UserAvatar from './UserAvatar';
 import Course, { ICourse } from './Course';
 import Joi from 'joi';
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const StyledContainer = styled("div")({
   margin: "0 auto",
@@ -91,6 +91,8 @@ export default function Profile() {
   const controller = new AbortController()
 
   const { getAccessTokenSilently } = useAuth0()
+
+  const [isLoading, setIsLoading] = React.useState<boolean>(true)
 
   const handleFacultyChange = (e: SelectChangeEvent<string>) => {
     const { name, value } = e.target;
@@ -181,7 +183,7 @@ export default function Profile() {
         })
       }
     }
-    fetchData()
+    fetchData().finally(() => setIsLoading(false))
     return () => {
       controller.abort();
     }
@@ -262,131 +264,134 @@ export default function Profile() {
   }
 
   return (
+    <div>
+      {isLoading ? <div style={{ textAlign: "center" }}><CircularProgress size={150} style={{ marginTop: "40vh" }} /></div> :
+        <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
+          <Stack spacing={2}>
+            {showSuccessAlert && (
+              <Fade in={showSuccessAlert} timeout={1000} >
+                <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)} sx={{ position: 'fixed', zIndex: '1', width: '80vw', left: '0', right: '0', margin: '-3em auto' }}>
+                  This is a success alert
+                </Alert>
+              </Fade>
+            )}
+            {showErrorAlert && (
+              <Fade in={showErrorAlert} timeout={1000}>
+                <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)} sx={{ position: 'fixed', zIndex: '1', width: '80vw', left: '0', right: '0', margin: '-3em auto' }}>
+                  This is an error alert — check it out!
+                </Alert>
+              </Fade>
+            )}
+          </Stack>
+          <div >
+            <h1>Edit Profile</h1>
+            <div style={{
+              'display': 'flex',
+              'justifyContent': 'center'
+            }}>
+              <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56, marginBottom: "1rem" }}
+                src={userProfile.userAvatar}
+                onClick={handleClickOpen}
+              ></Avatar>
 
-    <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
-      <Stack spacing={2}>
-        {showSuccessAlert && (
-          <Fade in={showSuccessAlert} timeout={1000} >
-            <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)} sx={{ position: 'fixed', zIndex: '1', width: '80vw', left: '0', right: '0', margin: '-3em auto' }}>
-              This is a success alert
-            </Alert>
-          </Fade>
-        )}
-        {showErrorAlert && (
-          <Fade in={showErrorAlert} timeout={1000}>
-            <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)} sx={{ position: 'fixed', zIndex: '1', width: '80vw', left: '0', right: '0', margin: '-3em auto' }}>
-              This is an error alert — check it out!
-            </Alert>
-          </Fade>
-        )}
-      </Stack>
-      <div >
-        <h1>Edit Profile</h1>
-        <div style={{
-          'display': 'flex',
-          'justifyContent': 'center'
-        }}>
-          <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56, marginBottom: "1rem" }}
-            src={userProfile.userAvatar}
-            onClick={handleClickOpen}
-          ></Avatar>
-
-          {/* user Avatar */}
-          <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar} />
-        </div>
-
-
-        <Paper elevation={24} >
-
-          <form style={{ padding: '1em' }}>
-            <StyledTextField
-              label="Name"
-              name="name"
-              value={userProfile.name}
-              onChange={handleChange}
-            />
-            <StyledTextField
-              label="University ID"
-              name="uniID"
-              value={userProfile.uniID}
-              onChange={handleChange} sx={{ opacity: 1 }}
-
-            />
-            <>
-              <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
-                <InputLabel id="gender-label">Gender</InputLabel>
-                <Select
-                  labelId="gender-label"
-                  id="gender-select"
-                  label="Gender"
-                  name="gender"
-                  value={userProfile.gender}
-                  onChange={handleGenderChange}
-                  sx={{ textAlign: 'left' }}
-                >
-                  <MenuItem value="">
-                    <em>Prefer Not To Tell</em>
-                  </MenuItem>
-                  <MenuItem value={"Male"}>Male</MenuItem>
-                  <MenuItem value={"Female"}>Female</MenuItem>
-                  <MenuItem value={"Other"}>Other</MenuItem>
-                </Select>
-              </FormControl>
-            </>
-            <StyledTextField
-              label="Email"
-              name="email"
-              value={userProfile.email}
-              onChange={handleChange}
-            />
-            <div>
-              <FormControl sx={{ width: "100%" }} style={{ textAlign: 'left', marginBottom: "10px" }}>
-                <InputLabel id="faculty-label">Faculty</InputLabel>
-                <Select
-                  labelId="faculty-label"
-                  id="faculty-select"
-                  value={userProfile.faculty}
-                  label="Faculty"
-                  name="faculty"
-                  onChange={handleFacultyChange}
-                >
-                  {faculties.map((faculty) => (
-                    <MenuItem key={faculty} value={faculty}>
-                      {faculty}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              {/* user Avatar */}
+              <UserAvatar isOpen={open} handleClose={handleClose} setUserPic={setUserPic} userPic={userProfile.userAvatar} />
             </div>
-            <div >
-              <FormControl sx={{ width: "100%", textAlign: 'left' }} >
-                <InputLabel id="major-label">Major</InputLabel>
-                <Select
-                  labelId="major-label"
-                  id="major-select"
-                  value={userProfile.major}
-                  label="Major"
-                  name="major"
-                  onChange={handleMajorChange}
-                  disabled={!selectedFaculty}
-                >
-                  {filteredMajors.map((major, index) => (
-                    <MenuItem key={index} value={major.major}>
-                      {major.major}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <Course selectedCourse={userProfile.courses} setCourse={setCourse} />
-              </FormControl>
-            </div>
-          </form>
-        </Paper>
-        <StyledButton variant="contained" onClick={handleSaveChanges} style={{ marginTop: "10px", marginBottom: "3em" }}>
-          Save Changes
-        </StyledButton>
-        {/* </form>
+
+
+            <Paper elevation={24} >
+
+              <form style={{ padding: '1em' }}>
+                <StyledTextField
+                  label="Name"
+                  name="name"
+                  value={userProfile.name}
+                  onChange={handleChange}
+                />
+                <StyledTextField
+                  label="University ID"
+                  name="uniID"
+                  value={userProfile.uniID}
+                  onChange={handleChange} sx={{ opacity: 1 }}
+
+                />
+                <>
+                  <FormControl sx={{ width: "100%" }} style={{ marginBottom: "10px" }}>
+                    <InputLabel id="gender-label">Gender</InputLabel>
+                    <Select
+                      labelId="gender-label"
+                      id="gender-select"
+                      label="Gender"
+                      name="gender"
+                      value={userProfile.gender}
+                      onChange={handleGenderChange}
+                      sx={{ textAlign: 'left' }}
+                    >
+                      <MenuItem value="">
+                        <em>Prefer Not To Tell</em>
+                      </MenuItem>
+                      <MenuItem value={"Male"}>Male</MenuItem>
+                      <MenuItem value={"Female"}>Female</MenuItem>
+                      <MenuItem value={"Other"}>Other</MenuItem>
+                    </Select>
+                  </FormControl>
+                </>
+                <StyledTextField
+                  label="Email"
+                  name="email"
+                  value={userProfile.email}
+                  onChange={handleChange}
+                />
+                <div>
+                  <FormControl sx={{ width: "100%" }} style={{ textAlign: 'left', marginBottom: "10px" }}>
+                    <InputLabel id="faculty-label">Faculty</InputLabel>
+                    <Select
+                      labelId="faculty-label"
+                      id="faculty-select"
+                      value={userProfile.faculty}
+                      label="Faculty"
+                      name="faculty"
+                      onChange={handleFacultyChange}
+                    >
+                      {faculties.map((faculty) => (
+                        <MenuItem key={faculty} value={faculty}>
+                          {faculty}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+                <div >
+                  <FormControl sx={{ width: "100%", textAlign: 'left' }} >
+                    <InputLabel id="major-label">Major</InputLabel>
+                    <Select
+                      labelId="major-label"
+                      id="major-select"
+                      value={userProfile.major}
+                      label="Major"
+                      name="major"
+                      onChange={handleMajorChange}
+                      disabled={!selectedFaculty}
+                    >
+                      {filteredMajors.map((major, index) => (
+                        <MenuItem key={index} value={major.major}>
+                          {major.major}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <Course selectedCourse={userProfile.courses} setCourse={setCourse} />
+                  </FormControl>
+                </div>
+              </form>
+            </Paper>
+            <StyledButton variant="contained" onClick={handleSaveChanges} style={{ marginTop: "10px", marginBottom: "3em" }}>
+              Save Changes
+            </StyledButton>
+            {/* </form>
           </Paper> */}
-      </div>
+          </div>
+        </div>
+      }
     </div>
   );
 }

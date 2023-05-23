@@ -21,6 +21,8 @@ import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, Tab
 import { styled } from '@mui/material/styles';
 import { useAuth0 } from '@auth0/auth0-react';
 
+import CircularProgress from '@mui/material/CircularProgress';
+
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontWeight: 'bold',
     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -36,6 +38,8 @@ export default function Search() {
     const [searchTerm, setSearchTerm] = useState<string>('');
 
     const [searchRes, setSearchRes] = useState<IUserDetail[]>(users);
+
+    const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
     const [flag, setFlag] = useState(false)
     const dispatch = useDispatch()
@@ -57,18 +61,22 @@ export default function Search() {
 
     // main logic of search user
     async function handleSearchClick() {
-        // TODO: logic of search friend
-        const token = await getAccessTokenSilently()    
+        if (searchTerm) {
+            setIsLoading(true)
+            // TODO: logic of search friend
+            const token = await getAccessTokenSilently()
 
-        const res = await axios.get(`http://localhost:8080/users/search/${searchTerm}`, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } })
-        console.log("123")    
-        if (res.data.length === 0) {
+            const res = await axios.get(`http://localhost:8080/users/search/${searchTerm}`, { signal: controller.signal, headers: { Authorization: `Bearer ${token}` } })
+            console.log("123")
+            if (res.data.length === 0) {
                 setFlag(false)
             } else {
                 setFlag(true)
                 setSearchRes(res.data)
                 dispatch(storeUser(res.data))
             }
+            setIsLoading(false)
+        }
     };
 
     // when user press Enter, show search result 
@@ -154,43 +162,46 @@ export default function Search() {
                         onSubmit={handleDataChange}
                     />
                 </Grid>
-
-                <Box sx={{ p: 2 }}>
-                    <Paper elevation={24}>
-                        <TableContainer component={Paper} >
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <StyledTableCell></StyledTableCell>
-                                        <StyledTableCell>Name</StyledTableCell>
-                                        <StyledTableCell>UniID</StyledTableCell>
-                                        <StyledTableCell>Email</StyledTableCell>
-                                        <StyledTableCell>Faculty</StyledTableCell>
-                                        <StyledTableCell>Major</StyledTableCell>
-                                        <StyledTableCell>Courses</StyledTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {searchRes.map((item) => (
-                                        <TableRow key={item._id} onClick={() => handleFriendDetail(item._id)}>
-                                            <TableCell><Avatar alt="Remy Sharp" src={item.userAvatar} /></TableCell>
-                                            <TableCell>{item.name}</TableCell>
-                                            <TableCell>{item.uniID}</TableCell>
-                                            <TableCell>{item.email}</TableCell>
-                                            <TableCell>{item.faculty}</TableCell>
-                                            <TableCell>{item.major}</TableCell>
-                                            <TableCell>{item.courses.map((item) => {
-                                                return <Chip style={{
-                                                    marginBottom: '0.2em'
-                                                }} key={item.course_code} label={item.CourseNName}></Chip>
-                                            })}</TableCell>
+                {isLoading ? <CircularProgress size={150} style={{ marginTop: "10vh" }} /> :
+                    <Box sx={{ p: 2 }}>
+                        <Paper elevation={24}>
+                            <TableContainer component={Paper} >
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <StyledTableCell></StyledTableCell>
+                                            <StyledTableCell>Name</StyledTableCell>
+                                            <StyledTableCell>UniID</StyledTableCell>
+                                            <StyledTableCell>Email</StyledTableCell>
+                                            <StyledTableCell>Faculty</StyledTableCell>
+                                            <StyledTableCell>Major</StyledTableCell>
+                                            <StyledTableCell>Courses</StyledTableCell>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Paper>
-                </Box>
+                                    </TableHead>
+
+                                    <TableBody>
+                                        {searchRes.map((item) => (
+                                            <TableRow key={item._id} onClick={() => handleFriendDetail(item._id)}>
+                                                <TableCell><Avatar alt="Remy Sharp" src={item.userAvatar} /></TableCell>
+                                                <TableCell>{item.name}</TableCell>
+                                                <TableCell>{item.uniID}</TableCell>
+                                                <TableCell>{item.email}</TableCell>
+                                                <TableCell>{item.faculty}</TableCell>
+                                                <TableCell>{item.major}</TableCell>
+                                                <TableCell>{item.courses.map((item) => {
+                                                    return <Chip style={{
+                                                        marginBottom: '0.2em'
+                                                    }} key={item.course_code} label={item.CourseNName}></Chip>
+                                                })}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+
+                                </Table>
+                            </TableContainer>
+                        </Paper>
+                    </Box>
+                }
             </div>
         </div>
     );

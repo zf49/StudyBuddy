@@ -26,7 +26,6 @@ interface INotification {
 }
 
 export default function createSocketIoConnection(server) {
-    console.log(1)
     const io = new Server(server)
 
     io.on("connection", (socket) => onConnection(socket))
@@ -41,14 +40,12 @@ export default function createSocketIoConnection(server) {
         const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf().toString()
         var joinedChat: string = null
         socket.join(userID)
-        console.log(`joined${userID}`)
 
         socket.on("Ping", () => {
             socket.emit("Pong")
         })
 
         socket.on("startChat", async (friendID: string) => {
-            console.log("startChat")
             const follow = await checkFriends(userID, friendID)
             const followBack = await checkFriends(friendID, userID)
             const friendName = (await findFriendDetail(friendID)).name
@@ -91,48 +88,85 @@ export default function createSocketIoConnection(server) {
                     sendTime: currentTime
                 }
                 socket.emit("newMsg", newMsg)
-                var targetUserChat: string = null
-                const listenerName = `joinedChat${msg.id.toString()}`
-                socket.on(listenerName, (joinedChat: string) => {
-                    targetUserChat = joinedChat
-                })
-                io.sockets.in(payload.friendID).emit("checkChat", msg.id.toString(), userID)
-                setTimeout(async () => {
-                    socket.off(listenerName, (joinedChat: string) => {
+                if (io.sockets.adapter.rooms.get(payload.friendID)) {
+                    var targetUserChat: string = null
+                    const listenerName = `joinedChat${msg.id.toString()}`
+                    socket.on(listenerName, async (joinedChat: string) => {
                         targetUserChat = joinedChat
-                    })
-                    if (targetUserChat == userID) {
-                        io.sockets.in(payload.friendID).emit("newMsg", newMsg)
-                        console.log("in chat")
-                    } else if (targetUserChat == "notification") {
-                        const notification = await addNotification(newMsg.sender, newMsg.receiver, newMsg.senderName, newMsg.senderPic, newMsg.msg, newMsg.sendTime, "msg")
-                        const newNotification: INotification = {
-                            _id: notification._id.toString(),
-                            sender: notification.sender,
-                            receiver: notification.receiver,
-                            senderName: notification.senderName,
-                            senderPic: notification.senderPic,
-                            msg: notification.msg,
-                            sendTime: notification.sendTime,
-                            type: notification.type
+                        if (targetUserChat == userID) {
+                            io.sockets.in(payload.friendID).emit("newMsg", newMsg)
+                        } else if (targetUserChat == "notification") {
+                            const notification = await addNotification(newMsg.sender, newMsg.receiver, newMsg.senderName, newMsg.senderPic, newMsg.msg, newMsg.sendTime, "msg")
+                            const newNotification: INotification = {
+                                _id: notification._id.toString(),
+                                sender: notification.sender,
+                                receiver: notification.receiver,
+                                senderName: notification.senderName,
+                                senderPic: notification.senderPic,
+                                msg: notification.msg,
+                                sendTime: notification.sendTime,
+                                type: notification.type
 
+                            }
+                            io.sockets.in(payload.friendID).emit("newNotification", newNotification)
+                        } else {
+                            const notification = await addNotification(newMsg.sender, newMsg.receiver, newMsg.senderName, newMsg.senderPic, newMsg.msg, newMsg.sendTime, "msg")
+                            io.sockets.in(payload.friendID).emit("newNotificationAlert", notification)
                         }
-                        io.sockets.in(payload.friendID).emit("newNotification", newNotification)
-                        console.log(newNotification)
-                    } else {
+                        socket.removeAllListeners(listenerName)
+                        if (timeout) {
+                            clearTimeout(timeout)
+                        }
+                    })
+                    io.sockets.in(payload.friendID).emit("checkChat", msg.id.toString(), userID)
+                    const timeout = setTimeout(async () => {
+                        socket.removeAllListeners(listenerName)
                         const notification = await addNotification(newMsg.sender, newMsg.receiver, newMsg.senderName, newMsg.senderPic, newMsg.msg, newMsg.sendTime, "msg")
-                        io.sockets.in(payload.friendID).emit("newNotificationAlert", notification)
+                    }, 5000)
+                } else {
+                    const notification = await addNotification(newMsg.sender, newMsg.receiver, newMsg.senderName, newMsg.senderPic, newMsg.msg, newMsg.sendTime, "msg")
+                }
 
-                    }
-                }, 100)
+                // var targetUserChat: string = null
+                // const listenerName = `joinedChat${msg.id.toString()}`
+                // socket.on(listenerName, (joinedChat: string) => {
+                //     targetUserChat = joinedChat
+                // })
+                // io.sockets.in(payload.friendID).emit("checkChat", msg.id.toString(), userID)
+                // setTimeout(async () => {
+                //     socket.off(listenerName, (joinedChat: string) => {
+                //         targetUserChat = joinedChat
+                //     })
+                //     if (targetUserChat == userID) {
+                //         io.sockets.in(payload.friendID).emit("newMsg", newMsg)
+                //         console.log("in chat")
+                //     } else if (targetUserChat == "notification") {
+                //         const notification = await addNotification(newMsg.sender, newMsg.receiver, newMsg.senderName, newMsg.senderPic, newMsg.msg, newMsg.sendTime, "msg")
+                //         const newNotification: INotification = {
+                //             _id: notification._id.toString(),
+                //             sender: notification.sender,
+                //             receiver: notification.receiver,
+                //             senderName: notification.senderName,
+                //             senderPic: notification.senderPic,
+                //             msg: notification.msg,
+                //             sendTime: notification.sendTime,
+                //             type: notification.type
+
+                //         }
+                //         io.sockets.in(payload.friendID).emit("newNotification", newNotification)
+                //         console.log(newNotification)
+                //     } else {
+                //         const notification = await addNotification(newMsg.sender, newMsg.receiver, newMsg.senderName, newMsg.senderPic, newMsg.msg, newMsg.sendTime, "msg")
+                //         io.sockets.in(payload.friendID).emit("newNotificationAlert", notification)
+
+                //     }
+                // }, 100)
 
             }
         })
 
         socket.on("getNotificationCount", async () => {
-            console.log("count")
             const notificationCount = (await retriveNotification(userID)).length
-            console.log(notificationCount)
             socket.emit("getNotificationCount", notificationCount)
         })
 
@@ -179,24 +213,50 @@ export default function createSocketIoConnection(server) {
             const userInfo: IUser = (await getUserProfile(authID))[0]
             const currentTime: Date = dayjs().toDate()
             const notification = await addNotification(userID, friendID, userInfo.name, userInfo.userAvatar, "Requested to be your friend", currentTime, "request")
-            var targetUserChat: string = null
-            const listenerName = `joinedChat${notification.id.toString()}`
-            socket.on(listenerName, (joinedChat: string) => {
-                targetUserChat = joinedChat
-            })
-            io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
-            setTimeout(async () => {
-                socket.off(listenerName, (joinedChat: string) => {
+            if (io.sockets.adapter.rooms.get(friendID)) {
+                var targetUserChat: string = null
+                const listenerName = `joinedChat${notification.id.toString()}`
+                socket.on(listenerName, async (joinedChat: string) => {
                     targetUserChat = joinedChat
+                    if (targetUserChat == "notification") {
+                        io.sockets.in(friendID).emit("newNotification", notification)
+                    } else {
+                        io.sockets.in(friendID).emit("newNotificationAlert", notification)
+                    }
+                    io.sockets.in(friendID).emit("statusChange")
+                    socket.removeAllListeners(listenerName)
+                    if (timeout) {
+                        clearTimeout(timeout)
+                    }
                 })
-                if (targetUserChat == "notification") {
-                    io.sockets.in(friendID).emit("newNotification", notification)
-                } else {
-                    io.sockets.in(friendID).emit("newNotificationAlert", notification)
+                io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
+                const timeout = setTimeout(async () => {
+                    socket.removeAllListeners(listenerName)
+                }, 5000)
+            }
 
-                }
-                io.sockets.in(friendID).emit("statusChange")
-            }, 100)
+
+
+
+
+            // var targetUserChat: string = null
+            // const listenerName = `joinedChat${notification.id.toString()}`
+            // socket.on(listenerName, (joinedChat: string) => {
+            //     targetUserChat = joinedChat
+            // })
+            // io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
+            // setTimeout(async () => {
+            //     socket.off(listenerName, (joinedChat: string) => {
+            //         targetUserChat = joinedChat
+            //     })
+            //     if (targetUserChat == "notification") {
+            //         io.sockets.in(friendID).emit("newNotification", notification)
+            //     } else {
+            //         io.sockets.in(friendID).emit("newNotificationAlert", notification)
+
+            //     }
+            //     io.sockets.in(friendID).emit("statusChange")
+            // }, 100)
             const friendInfo: IUser = await findFriendDetail(friendID)
             const selfNotification = await addNotification(friendID, userID, friendInfo.name, friendInfo.userAvatar, "Pending friend request", currentTime, "pendingRequest")
             socket.emit("newNotification", selfNotification)
@@ -215,24 +275,49 @@ export default function createSocketIoConnection(server) {
             const notifications = await retriveNotification(userID)
             socket.emit("getNotifications", notifications)
             socket.emit("getNotificationCount", notifications.length)
-            var targetUserChat: string = null
-            const listenerName = `joinedChat${notification.id.toString()}`
-            socket.on(listenerName, (joinedChat: string) => {
-                targetUserChat = joinedChat
-            })
-            io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
-            setTimeout(async () => {
-                socket.off(listenerName, (joinedChat: string) => {
+
+            if (io.sockets.adapter.rooms.get(friendID)) {
+                var targetUserChat: string = null
+                const listenerName = `joinedChat${notification.id.toString()}`
+                socket.on(listenerName, async (joinedChat: string) => {
                     targetUserChat = joinedChat
+                    if (targetUserChat != "notification") {
+                        io.sockets.in(friendID).emit("newNotificationAlert", notification)
+                    }
+                    const notifications = await retriveNotification(friendID)
+                    io.sockets.in(friendID).emit("getNotifications", notifications)
+                    io.sockets.in(friendID).emit("getNotificationCount", notifications.length)
+                    io.sockets.in(friendID).emit("statusChange")
+                    socket.removeAllListeners(listenerName)
+                    if (timeout) {
+                        clearTimeout(timeout)
+                    }
                 })
-                if (targetUserChat != "notification") {
-                    io.sockets.in(friendID).emit("newNotificationAlert", notification)
-                }
-                const notifications = await retriveNotification(friendID)
-                io.sockets.in(friendID).emit("getNotifications", notifications)
-                io.sockets.in(friendID).emit("getNotificationCount", notifications.length)
-                io.sockets.in(friendID).emit("statusChange")
-            }, 100)
+                io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
+                const timeout = setTimeout(async () => {
+                    socket.removeAllListeners(listenerName)
+                }, 5000)
+            }
+
+
+            // var targetUserChat: string = null
+            // const listenerName = `joinedChat${notification.id.toString()}`
+            // socket.on(listenerName, (joinedChat: string) => {
+            //     targetUserChat = joinedChat
+            // })
+            // io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
+            // setTimeout(async () => {
+            //     socket.off(listenerName, (joinedChat: string) => {
+            //         targetUserChat = joinedChat
+            //     })
+            //     if (targetUserChat != "notification") {
+            //         io.sockets.in(friendID).emit("newNotificationAlert", notification)
+            //     }
+            //     const notifications = await retriveNotification(friendID)
+            //     io.sockets.in(friendID).emit("getNotifications", notifications)
+            //     io.sockets.in(friendID).emit("getNotificationCount", notifications.length)
+            //     io.sockets.in(friendID).emit("statusChange")
+            // }, 100)
         })
 
         socket.on("denyRequest", async (friendID) => {
@@ -244,24 +329,52 @@ export default function createSocketIoConnection(server) {
             const notifications = await retriveNotification(userID)
             socket.emit("getNotifications", notifications)
             socket.emit("getNotificationCount", notifications.length)
-            var targetUserChat: string = null
-            const listenerName = `joinedChat${notification.id.toString()}`
-            socket.on(listenerName, (joinedChat: string) => {
-                targetUserChat = joinedChat
-            })
-            io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
-            setTimeout(async () => {
-                socket.off(listenerName, (joinedChat: string) => {
+
+            if (io.sockets.adapter.rooms.get(friendID)) {
+                var targetUserChat: string = null
+                const listenerName = `joinedChat${notification.id.toString()}`
+                socket.on(listenerName, async (joinedChat: string) => {
                     targetUserChat = joinedChat
+                    if (targetUserChat != "notification") {
+                        io.sockets.in(friendID).emit("newNotificationAlert", notification)
+                    }
+                    const notifications = await retriveNotification(friendID)
+                    io.sockets.in(friendID).emit("getNotifications", notifications)
+                    io.sockets.in(friendID).emit("getNotificationCount", notifications.length)
+                    io.sockets.in(friendID).emit("statusChange")
+                    socket.removeAllListeners(listenerName)
+                    if (timeout) {
+                        clearTimeout(timeout)
+                    }
                 })
-                if (targetUserChat != "notification") {
-                    io.sockets.in(friendID).emit("newNotificationAlert", notification)
-                }
-                const notifications = await retriveNotification(friendID)
-                io.sockets.in(friendID).emit("getNotifications", notifications)
-                io.sockets.in(friendID).emit("getNotificationCount", notifications.length)
-                io.sockets.in(friendID).emit("statusChange")
-            }, 100)
+                io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
+                const timeout = setTimeout(async () => {
+                    socket.removeAllListeners(listenerName)
+                }, 5000)
+            }
+
+
+
+
+
+            // var targetUserChat: string = null
+            // const listenerName = `joinedChat${notification.id.toString()}`
+            // socket.on(listenerName, (joinedChat: string) => {
+            //     targetUserChat = joinedChat
+            // })
+            // io.sockets.in(friendID).emit("checkChat", notification.id.toString(), userID)
+            // setTimeout(async () => {
+            //     socket.off(listenerName, (joinedChat: string) => {
+            //         targetUserChat = joinedChat
+            //     })
+            //     if (targetUserChat != "notification") {
+            //         io.sockets.in(friendID).emit("newNotificationAlert", notification)
+            //     }
+            //     const notifications = await retriveNotification(friendID)
+            //     io.sockets.in(friendID).emit("getNotifications", notifications)
+            //     io.sockets.in(friendID).emit("getNotificationCount", notifications.length)
+            //     io.sockets.in(friendID).emit("statusChange")
+            // }, 100)
         })
 
         socket.on("cancelRequest", async (friendID) => {
