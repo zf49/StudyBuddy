@@ -62,7 +62,11 @@ export default function Chat() {
                         } else {
                             setScrollHeight((scrollHeight) => {
                                 if (scrollHeight) {
+                                    console.log(scrollHeight)
                                     const msgBox = document.getElementById("msgBox")
+                                    if (msgBox) {
+                                        console.log(msgBox.scrollHeight)
+                                    }
                                     msgBox?.scroll(0, msgBox.scrollHeight - scrollHeight)
                                     return msgBox?.scrollHeight
                                 }
@@ -77,18 +81,25 @@ export default function Chat() {
 
             socket.on("newMsg", (newMsg: IMsg) => {
                 setResult((result) => {
-                setMsgs((msgs) => {
+                    setMsgs((msgs) => {
                         if (msgs.length == result * 15) {
+                            setHasMore("more")
+                            const msgBox = document.getElementById("msgBox")
+                            setScrollHeight(msgBox?.scrollHeight)
                             const newMsgs = [...msgs]
                             newMsgs.shift()
                             return [...newMsgs, newMsg]
                         } else {
+                            const msgBox = document.getElementById("msgBox")
+                            setScrollHeight(msgBox?.scrollHeight)
                             return [...msgs, newMsg]
-                        } 
+                        }
                     })
                     return result
                 })
-                scrollToBottom()
+                setTimeout(() => {
+                    scrollToBottom()
+                }, 50)
             })
 
             socket.emit("startChat", friendID, result)
@@ -123,10 +134,9 @@ export default function Chat() {
     }
 
     const scrollToBottom = () => {
-        
-            const msgBox = document.getElementById("msgBox")
-            msgBox?.scroll(0, msgBox.scrollHeight)
-        
+        const msgBox = document.getElementById("msgBox")
+        msgBox?.scroll(0, msgBox.scrollHeight)
+
 
     }
 
@@ -171,7 +181,7 @@ export default function Chat() {
                         <Paper elevation={24}>
                             <div id="msgBox" style={{ height: "70vh", overflow: "scroll", padding: 20 }}>
                                 {hasMore == "more" &&
-                                    <div style={{textAlign: "center"}}>
+                                    <div style={{ textAlign: "center" }}>
                                         <Button variant="contained"
                                             sx={{ width: 150 }}
                                             onClick={handleLoadMore}
