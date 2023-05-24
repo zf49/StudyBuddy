@@ -271,14 +271,14 @@ export default function Profile() {
             {showSuccessAlert && (
               <Fade in={showSuccessAlert} timeout={1000} >
                 <Alert variant="filled" severity="success" onClose={() => setShowSuccessAlert(false)} sx={{ position: 'fixed', zIndex: '1', width: '80vw', left: '0', right: '0', margin: '-3em auto' }}>
-                  This is a success alert
+                  Update successful
                 </Alert>
               </Fade>
             )}
             {showErrorAlert && (
               <Fade in={showErrorAlert} timeout={1000}>
                 <Alert variant="filled" severity="error" onClose={() => setShowErrorAlert(false)} sx={{ position: 'fixed', zIndex: '1', width: '80vw', left: '0', right: '0', margin: '-3em auto' }}>
-                  This is an error alert — check it out!
+                Update failed
                 </Alert>
               </Fade>
             )}
