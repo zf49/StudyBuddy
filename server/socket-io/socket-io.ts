@@ -45,14 +45,18 @@ export default function createSocketIoConnection(server) {
             socket.emit("Pong")
         })
 
-        socket.on("startChat", async (friendID: string) => {
+        socket.on("startChat", async (friendID: string, result: number) => {
             const follow = await checkFriends(userID, friendID)
             const followBack = await checkFriends(friendID, userID)
             const friendName = (await findFriendDetail(friendID)).name
             if (follow || followBack) {
                 joinedChat = friendID
-                const msgs = await retriveMsg(userID, friendID)
-                socket.emit("friends", msgs, friendName)
+                const msgs = await retriveMsg(userID, friendID, result)
+                if (msgs.length == 15 * result) {
+                    socket.emit("friends", msgs, friendName, "more")
+                } else {
+                    socket.emit("friends", msgs, friendName, "none")
+                }
                 await deleteMsgNotifications(friendID, userID, "msg")
                 const notificationCount = (await retriveNotification(userID)).length
                 socket.emit("getNotificationCount", notificationCount)
@@ -162,7 +166,7 @@ export default function createSocketIoConnection(server) {
                 //     }
                 // }, 100)
 
-            } else{
+            } else {
                 socket.emit("notFriends")
             }
         })

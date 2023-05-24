@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { socket } from "../view/SandBox";
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
+import { wait } from "@testing-library/user-event/dist/utils";
 
 export interface IMsg {
     sender: string,
@@ -32,6 +33,9 @@ export default function Chat() {
     const [msg, setMsg] = React.useState<string>()
     const [friendName, setFriendName] = React.useState<string>()
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
+    const [result, setResult] = React.useState<number>(1)
+    const [hasMore, setHasMore] = React.useState<string>("none")
+    const [scrollHeight, setScrollHeight] = React.useState<number>()
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -43,16 +47,51 @@ export default function Chat() {
                 setFriendStatus(false)
                 setIsLoading(false)
             })
-            socket.on("friends", (msgs, friendName) => {
+            socket.on("friends", (msgs, friendName, hasMore) => {
                 setFriendStatus(true)
                 setMsgs(msgs)
                 setFriendName(friendName)
                 setIsLoading(false)
+                setHasMore(hasMore)
+                setTimeout(() => {
+                    setResult((result) => {
+                        if (result == 1) {
+                            scrollToBottom()
+                            const msgBox = document.getElementById("msgBox")
+                            setScrollHeight(msgBox?.scrollHeight)
+                        } else {
+                            setScrollHeight((scrollHeight) => {
+                                if (scrollHeight) {
+                                    const msgBox = document.getElementById("msgBox")
+                                    msgBox?.scroll(0, msgBox.scrollHeight - scrollHeight)
+                                    return msgBox?.scrollHeight
+                                }
+                            })
+                        }
+                        return result
+                    })
+                }, 100)
+
+
             })
+
             socket.on("newMsg", (newMsg: IMsg) => {
-                setMsgs((msgs) => [...msgs, newMsg])
+                setResult((result) => {
+                setMsgs((msgs) => {
+                        if (msgs.length == result * 15) {
+                            const newMsgs = [...msgs]
+                            newMsgs.shift()
+                            return [...newMsgs, newMsg]
+                        } else {
+                            return [...msgs, newMsg]
+                        } 
+                    })
+                    return result
+                })
+                scrollToBottom()
             })
-            socket.emit("startChat", friendID)
+
+            socket.emit("startChat", friendID, result)
         }
         getChat()
         return (
@@ -65,10 +104,6 @@ export default function Chat() {
 
         )
     }, [])
-
-    useEffect(() => {
-        scrollToBottom()
-    }, [msgs])
 
     const handleMsg = (event: ChangeEvent<HTMLInputElement>) => {
         setMsg(event.target.value)
@@ -88,8 +123,10 @@ export default function Chat() {
     }
 
     const scrollToBottom = () => {
-        const msgBox = document.getElementById("msgBox")
-        msgBox?.scroll(0, msgBox.scrollHeight)
+        
+            const msgBox = document.getElementById("msgBox")
+            msgBox?.scroll(0, msgBox.scrollHeight)
+        
 
     }
 
@@ -99,6 +136,12 @@ export default function Chat() {
 
     function handleReturn() {
         navigate(-1)
+    }
+
+    const handleLoadMore = () => {
+        const friendID = location.state.id
+        socket.emit("startChat", friendID, result + 1)
+        setResult((result) => result + 1)
     }
 
     return (
@@ -127,6 +170,15 @@ export default function Chat() {
                         </div>
                         <Paper elevation={24}>
                             <div id="msgBox" style={{ height: "70vh", overflow: "scroll", padding: 20 }}>
+                                {hasMore == "more" &&
+                                    <div style={{textAlign: "center"}}>
+                                        <Button variant="contained"
+                                            sx={{ width: 150 }}
+                                            onClick={handleLoadMore}
+                                        >
+                                            Load more
+                                        </Button>
+                                    </div>}
                                 {msgs?.map((msg) => (
                                     <div>
                                         <div style={{ display: "flex" }}>
