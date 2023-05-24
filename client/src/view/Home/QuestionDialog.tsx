@@ -3,7 +3,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import { IQuestion } from './Home';
 import { useState, useEffect } from 'react';
-import { Grid, Paper, Fab, Menu, MenuItem, IconButton, Badge, TextField, } from '@mui/material';
+import { Grid, Paper, Fab, Menu, MenuItem, IconButton, Badge, TextField, Box, } from '@mui/material';
 import UpIcon from '@mui/icons-material/KeyboardArrowUp';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import CreateIcon from '@mui/icons-material/Create';
@@ -25,6 +25,10 @@ import ReplyDialog from './ReplyDialog';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import React from 'react';
+import SendIcon from '@mui/icons-material/Send';
+import QuickreplyIcon from '@mui/icons-material/Quickreply';
+
+
 
 type Props = {
   open: boolean;
@@ -103,94 +107,73 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
   };
 
   return (
-    <div>
-      <Dialog
-        fullScreen
-        open={open}
-        aria-describedby="alert-dialog-slide-description"
-        TransitionComponent={Transition}
+<div>
+  <Dialog
+    fullScreen
+    open={open}
+    aria-describedby="alert-dialog-slide-description"
+    TransitionComponent={Transition}
+    onClose={handleClose}
+  >
+    <AppBar sx={{ position: 'relative' }}>
+      <Toolbar>
+        <IconButton
+          edge="start"
+          color="inherit"
+          onClick={handleClose}
+          aria-label="close"
+        >
+          <CloseIcon />
+        </IconButton>
+        <Typography sx={{ ml: 2, flex: 1, wordBreak: 'break-word' }} variant="h6" component="div">
+        </Typography>
+      </Toolbar>
+    </AppBar>
+    <Box sx={{ p: 3, mt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Typography variant="h4" sx={{ ml: 2, flex: 1, wordBreak: 'break-word' }}>{question.title}</Typography>
+      <Typography variant="body1" sx={{ ml: 2, flex: 1, wordBreak: 'break-word' }}>{question.content}</Typography>
+      <Typography variant="caption" align="right">{"Author name: " + question.authorName + "  " + new Date(question.createdAt).toLocaleString()}</Typography>
+    </Box>
+    <Box sx={{ p: 3, mt: 1 }}>
+      <Grid container spacing={2} direction="column">
+        <Grid item>
+          <TextField
+            id="filled-textarea"
+            label="Comment"
+            multiline
+            variant="filled"
+            fullWidth
+            value={comment}
+            onChange={handleCommentChange}
+          />
+        </Grid>
+        <Grid item>
+          <Button variant="contained" fullWidth onClick={() => makeComment(question._id)}><SendIcon/>Submit</Button>
+        </Grid>
+      </Grid>
+    </Box>
+    {question.comments.map((comment) => {
+      return (
+        <Box key={comment._id} sx={{ p: 3, mt: 1, display: 'flex', flexDirection: 'column', gap: 2, boxShadow: 3,margin:'1em' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+            <Typography variant="body1">{comment.content}</Typography>
+            <Typography variant="caption" align="right">{new Date(comment.createdAt).toLocaleString()}</Typography>
+          </Box>
+          <Button variant="contained" onClick={() => replyComment(comment._id)}><QuickreplyIcon/>Reply</Button>
+          {comment.replies.map((item, index) => (
+            <Box key={index} sx={{ p: 2, mt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Typography variant="body2">{item.content}</Typography>
+              <Typography variant="caption" align="right">{new Date(item.createdAt).toLocaleString()}</Typography>
+              <Divider/>
+            </Box>
+          ))}
+        </Box>
+      )
+    })}
+    <ReplyDialog open={openReply} onClose={handleReplyClose} onSubmit={handleSubmit} commentId={commentId} setAllQuestion={setAllQuestion} questionId={questionId} makeComment={makeComment} setQuestion={setQuestion} />
+  </Dialog>
+</div>
 
-        onClose={handleClose}
-      >
-        <AppBar sx={{ position: 'relative'}}>
-          <Toolbar>
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-            <Typography sx={{ ml: 2, flex: 1, wordBreak: 'break-word'}} variant="h6" component="div">
-              {question.title}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Paper elevation={12} style={{ justifyContent: 'space-between'}}>
-          <h3 style={{wordBreak: 'break-word',margin:'1em'}}>{question.content}</h3>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: '10%', marginRight: '10em',marginTop:'0' }}>
-            <p style={{ display: 'inline-block', whiteSpace: 'nowrap' }}>{"Author name: " + question.authorName + "  " + new Date(question.createdAt).toLocaleString()}</p>
-          </div>
-        </Paper>
-        <div style={{ textAlign: 'center' }}>
-          <Paper elevation={3} sx={{ marginTop: '1em' }}>
-            <TextField
-              id="filled-textarea"
-              label="Comment"
-              multiline
-              variant="filled"
-              fullWidth
-              value={comment}
-              onChange={handleCommentChange}
-            />
-            <Button sx={{ width: '80%' }} onClick={() => makeComment(question._id)}>Submit</Button>
-          </Paper>
-          <Divider />
-          <div>{question.comments.map((comment) => {
-            return <Paper elevation={12} sx={{ marginBottom: '1em' }}>
-              <Grid container>
-
-              <Grid item xs>
-
-         
-</Grid>
-                <Grid item xs={6}>
-
-                  <h3>{comment.content}</h3>
-                  {/* <Button onClick={() => replyComment(comment._id)}>reply</Button> */}
-                </Grid>
-
-                <Grid item xs>
-                <Button onClick={() => replyComment(comment._id)}>reply</Button>
-              </Grid>
-
-
-                <Grid item xs={12}>
-
-                  <p>{new Date(comment.createdAt).toLocaleString()} </p>
-                  <hr/>
-
-                </Grid>
-               
-                {comment.replies.map((item) => {
-                  return <Grid item xs={12}>
-                    <p>{item.content} </p>
-
-                    <p>{new Date(item.createdAt).toLocaleString()} </p>
-                    <hr/>
-                  </Grid>
-                })}
-
-              </Grid>
-            </Paper>
-          })}</div>
-
-          <ReplyDialog open={openReply} onClose={handleReplyClose} onSubmit={handleSubmit} commentId={commentId} setAllQuestion={setAllQuestion} questionId={questionId} makeComment={makeComment} setQuestion={setQuestion} />
-
-        </div>
-      </Dialog>
-    </div>
   );
 };
 

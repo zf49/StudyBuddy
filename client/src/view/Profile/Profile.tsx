@@ -106,7 +106,6 @@ export default function Profile() {
     updateUserProfile({
       major: value,
     });
-    // setSelectedMajor(value);
   };
 
 
@@ -221,7 +220,6 @@ export default function Profile() {
     }
 
     console.log(JSON.stringify(userProfile));
-    // TODO send update request to backend
 
     if (userProfile.name === '' || userProfile.uniID === '') {
       handleError()

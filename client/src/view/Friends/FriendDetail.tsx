@@ -6,7 +6,8 @@ import { useLocation, useNavigate } from "react-router-dom"
 import Button from '@mui/material/Button';
 import { useAuth0 } from "@auth0/auth0-react"
 import Joi from "joi"
-import { ContactUs } from "./EmailNotification"
+import LoadingButton from '@mui/lab/LoadingButton';
+import SendIcon from '@mui/icons-material/Send';
 
 
 export interface IFriendDetail {
@@ -38,6 +39,7 @@ export default function FriendDetail() {
     const searchParams = new URLSearchParams(location.search);
     const friendId = searchParams.get('id');
 
+    const [loading, setLoading] = React.useState(false);
 
     const {getAccessTokenSilently} = useAuth0()
 
@@ -100,8 +102,14 @@ export default function FriendDetail() {
     }
 
     async function handleFollow() {
+        setLoading(true);
+
         const token = await getAccessTokenSilently()
-        await axios.post("http://localhost:8080/friends/add", payload, {signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
+        await axios.post("http://localhost:8080/friends/add", payload, {signal: controller.signal, headers: {Authorization: `Bearer ${token}`}}).then((res)=>{
+            console.log(res.status)
+            setLoading(false);
+
+        })
 
         
         setFollow(true)
@@ -197,15 +205,16 @@ export default function FriendDetail() {
                             Unfollow
                         </Button>
                         :
-                        <Button variant="contained"
+                        <LoadingButton variant="contained"
+                            loading={loading}
+                            endIcon={<SendIcon />}
+                            loadingPosition="end"
                             sx={{ width: "40%", marginLeft: "10%" }}
                             onClick={handleFollow}
                         >
-                            Follow
-                        </Button>
+                        <span>Follow</span>
+                        </LoadingButton>
                     )
-
-
                 }
             </div>
              </div>

@@ -75,7 +75,7 @@ export default function ProductHero() {
         backgroundAttachment:'fixed'
       }}
     >
-      <Typography color="inherit" align="center" variant="h2" sx={{marginTop:'2em'}}>
+      <Typography color="inherit" align="center" variant="h2" sx={{marginTop:'3em'}}>
       Find Your Study Buddies Now!
       </Typography>
       <Typography
@@ -95,7 +95,7 @@ export default function ProductHero() {
         alt="increase priority"
       />
 
-      <Box style={{width:'30%',height:'30%'}}>
+      <Box style={{width:'50%',height:'50%'}}>
       <ImageBox>
       <StyledImage src={hdog} alt="example" />
         <StyledButton variant="contained" color='secondary' onClick={()=>{

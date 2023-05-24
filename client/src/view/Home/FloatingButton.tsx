@@ -14,7 +14,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import FormDialog from './MyQuestionDialog';
 import { ICourse } from '../Profile/Course';
 import { useAuth0 } from '@auth0/auth0-react';
 import { IQuestion } from './Home';

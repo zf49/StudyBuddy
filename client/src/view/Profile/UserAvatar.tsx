@@ -151,11 +151,8 @@ export default function UserAvatar(props: IUserAvatar) {
                             sx={{ width: 200, height: 200 }}
                             src={avatar}
                         />
-                        // TODO upload user avatar
-                        {/* <Button variant="contained" component="label">
-                            Upload
-                            <input hidden accept="image/*" type="file" onChange={handleFileChange}/>
-                        </Button> */}
+                        {/* // TODO upload user avatar */}
+                        
 
                     </StyledContainer>
                     <StyledContainer>
