@@ -148,7 +148,10 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
           />
         </Grid>
         <Grid item>
-          <Button variant="contained" fullWidth onClick={() => makeComment(question._id)}><SendIcon/>Submit</Button>
+          <Button variant="contained" fullWidth onClick={() => makeComment(question._id)}
+          startIcon={<SendIcon/>}
+          >Submit</Button>
+
         </Grid>
       </Grid>
     </Box>
@@ -159,7 +162,9 @@ const QuestionDialog: React.FC<Props> = ({ open, close, question, setAllQuestion
             <Typography variant="body1">{comment.content}</Typography>
             <Typography variant="caption" align="right">{new Date(comment.createdAt).toLocaleString()}</Typography>
           </Box>
-          <Button variant="contained" onClick={() => replyComment(comment._id)}><QuickreplyIcon/>Reply</Button>
+          <Button variant="contained" onClick={() => replyComment(comment._id)}
+          startIcon={<QuickreplyIcon/>}
+          >Reply</Button>
           {comment.replies.map((item, index) => (
             <Box key={index} sx={{ p: 2, mt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
               <Typography variant="body2">{item.content}</Typography>

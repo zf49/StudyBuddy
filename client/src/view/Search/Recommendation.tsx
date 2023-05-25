@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Grid, Paper, List, ListItemAvatar, Avatar, ListItemText, ListItem } from "@mui/material";
+import { Grid, Paper, List, ListItemAvatar, Avatar, ListItemText, ListItem, Chip } from "@mui/material";
 import { IUserDetail } from "../Profile/Profile";
 
 export default function Recommendation() {
@@ -40,7 +40,7 @@ export default function Recommendation() {
 
   return (
     <div style={{ marginBottom: "0.5em" }}>
-      <h3>users u may know</h3>
+      <h3>Users you may know</h3>
       <div style={{ overflow: "auto", maxHeight: "450px" }}>
         <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
           {recommand?.map((item, index) => (
@@ -51,7 +51,8 @@ export default function Recommendation() {
                 <List sx={{ width: "100%", display: "flex", flexDirection: "column", justifyContent: "center" }}>
                     <Avatar src={item.userAvatar}  sx={{ alignSelf: "center" }}/>
                   <ListItemText primary={item.name} sx={{ textAlign: "center" }} />
-                  <ListItemText primary={item.matchedCount > 0 ? "Same course" : "Same Major"} secondary={item.matchedCount > 0 ? item.courses.map((item) => <>{item.course_code + " "}</>) : item.major} />
+                  <ListItemText primary={item.matchedCount > 0 ? "Same course" : "Same Major"} secondary={item.matchedCount > 0 ? item.courses.map((item) => <>{
+                  <Chip label={item.course_code + " "} size="small" sx={{'margin':'0.1em'}}/>}</>) : <Chip label={item.major} size="small" sx={{'margin':'0.1em'}}/>} />
                 </List>
               </Paper>
             </Grid>

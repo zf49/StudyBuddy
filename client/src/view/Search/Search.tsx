@@ -16,7 +16,7 @@ import ResultFilter from './ResultFilter';
 
 import { RootState } from '../../redux/store';
 import { ICourse } from '../Profile/Course';
-
+import SearchIcon from '@mui/icons-material/Search';
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Recommendation from './Recommendation';
@@ -134,7 +134,18 @@ export default function Search() {
                                             <Button onClick={handleClickOpen}>
                                                 <FilterAltIcon />
                                             </Button>
-                                            <Button variant="contained"
+                                            <Button startIcon={<SearchIcon/>}
+                                            sx={{
+                                                bgcolor: "primary.main",
+                                                color: "white",
+                                                borderRadius: "1em",
+                                                textTransform: "none",
+                                                '&:hover': {
+                                                    bgcolor: "primary.dark",
+                                                    transition: "0.3s",
+                                                }
+                                            }}
+                                            variant="contained"
                                                 onClick={handleSearchClick}>
                                                 Search
                                 </Button>
