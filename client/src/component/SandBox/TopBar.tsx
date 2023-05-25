@@ -12,8 +12,8 @@ import PetsIcon from '@mui/icons-material/Pets';
 import {useNavigate} from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 import { Theme } from '@mui/material';
-
-
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 
@@ -113,11 +113,11 @@ export default function TopBar() {
               >
                 <MenuItem onClick={()=>{
                   redirectToProfile()
-                }} >My account</MenuItem>
+                }} ><AccountCircleIcon/>My Profile</MenuItem>
 
-                <MenuItem onClick={()=>{
+                <MenuItem  onClick={()=>{
                   logOut()
-                }}>Log out</MenuItem>
+                }}><LogoutIcon/>Log out</MenuItem>
               </Menu>
               
           </Typography>

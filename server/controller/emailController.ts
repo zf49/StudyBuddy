@@ -43,13 +43,12 @@ export const emailSend = async (authID:string,friendID:string): Promise<boolean>
     //     port: 465,
     //     secure: true
     // })
-    
+    // TODO : get real address
     const mailOptions: MailOptions = {
         from: 'wangzhifang97@live.com',
-        // from: 'wangzhifang000@gmail.com',
         to: 'wangzhifang97@live.com',
         subject: userName[0].name + ' has followed you!',
-        text: '666666'
+        text: userName[0].name+' has already followed you! If you want to check the info of this user, please access Study Buddy!'
     };
     try {
         const info = await transporter.sendMail(mailOptions);

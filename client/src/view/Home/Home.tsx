@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import NewQuestionDialog from './NewQuestionDialog';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import NewspaperIcon from '@mui/icons-material/Newspaper';
+
 export interface IQuestion {
     _id: string;
     authorId: string;
@@ -116,17 +117,13 @@ const Home = () => {
         setFlag(true)
 
         const filteredQuestions = allQuestion.filter(question => question.authorId === user?.sub);
-        // console.log(filteredQuestions)
         setAllQuestion(filteredQuestions)
-        // handleButtonClose()
     }
 
     const handleAllQuestion = ()=>{
         setFlag(false)
         fetchAllQuestionsAndAuthor()
-        
     }
-
 
     const deleteQuestion = async (questionId: string) => {
         console.log(questionId)
@@ -233,7 +230,7 @@ const Home = () => {
                     </Grid>
 
                 ))}
-                {/* <FloatingButton allQuestion={allQuestion} setAllQuestion={setAllQuestion} fetchAllQuestionsAndAuthor={fetchAllQuestionsAndAuthor} /> */}
+                
             </Grid>
             <QuestionDialog open={open} close={handleClose} question={question} setQuestion={setQuestion} setAllQuestion={setAllQuestion} />
         </div>
