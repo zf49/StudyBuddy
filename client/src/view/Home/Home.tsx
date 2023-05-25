@@ -152,6 +152,15 @@ const Home = () => {
               startIcon={<CreateIcon />}
               onClick={handleButtonDialogClick}
               style={{ marginRight: 8 }}
+              sx={{
+                borderRadius: "1em",
+                textTransform: "none",
+                '&:hover': {
+                    bgcolor: "primary.dark",
+                    color:'white',
+                    transition: "0.3s",
+                }
+            }}
             >
               Post new Question
             </Button>
@@ -161,6 +170,15 @@ const Home = () => {
               startIcon={<AssignmentIcon />}
               onClick={filterMyQuestion}
               style={{ marginLeft: 8 }}
+              sx={{
+                borderRadius: "1em",
+                textTransform: "none",
+                '&:hover': {
+                    bgcolor: "primary.dark",
+                    color:'white',
+                    transition: "0.3s",
+                }
+            }}
             >
               My Question
             </Button>:<Button
@@ -168,6 +186,15 @@ const Home = () => {
               startIcon={<NewspaperIcon />}
               onClick={handleAllQuestion}
               style={{ marginLeft: 8 }}
+              sx={{
+                borderRadius: "1em",
+                textTransform: "none",
+                '&:hover': {
+                    bgcolor: "primary.dark",
+                    color:'white',
+                    transition: "0.3s",
+                }
+            }}
             >
               All Question
             </Button>}
@@ -200,7 +227,7 @@ const Home = () => {
                             </div>
                             <h3 style={{ wordBreak: 'break-word' }}>{item.content}</h3>
                             <div style={{ position: 'absolute', bottom: 0, right: 0 }}>
-                                {item.authorId === user?.sub ? <Button color="error" onClick={() => deleteQuestion(item._id)}><DeleteOutlineIcon /></Button> : null}
+                                {item.authorId === user?.sub ? <Button color="error" onClick={() => deleteQuestion(item._id)} ><DeleteOutlineIcon /></Button> : null}
                             </div>
                         </Paper>
                     </Grid>
