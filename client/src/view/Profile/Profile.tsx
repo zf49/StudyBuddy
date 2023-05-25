@@ -325,7 +325,17 @@ export default function Profile() {
           'justifyContent': 'center'
         }}>
           {
-            userProfile && userProfile.userAvatar && <Avatar sx={{ bgcolor: deepPurple[500], width: 56, height: 56, marginBottom: "1rem" }}
+            userProfile && userProfile.userAvatar && <Avatar sx={{ bgcolor: deepPurple[500], width: 100, height: 100, marginBottom: "1rem" ,position: 'relative',
+            '&:hover::after': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                backgroundColor: 'rgba(0,0,0,0.2)',
+            }}}
+            
               src={userProfile.userAvatar}
               onClick={handleClickOpen}
             />
