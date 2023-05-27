@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { emailSend } from "../controller/emailController";
-import { addFriend, checkFollow, checkSelf, deleteFriend, findFriendDetail, findFriends, getUserFriends } from "../dao/friend-dao";
+import { addFriend, checkFollow, checkSelf, deleteFriend, findFellowers, findFriendDetail, findFriends, getUserFriends } from "../dao/friend-dao";
 var express = require('express');
 var router = express.Router();
 
@@ -55,6 +55,29 @@ router.post("/delete", async (req, res) => {
     }
 })
 
+router.get('/fellower/:authID', async (req, res) => {
+    const authIDValidate = Joi.string().required().validate(req.params.authID)
+    if (authIDValidate.error) {
+        console.log(authIDValidate.error)
+    } else {
+        const friends = await findFellowers(authIDValidate.value)
+        console.log('friends',friends)
+
+        // const uniqueFriendsArr = friends.reduce((unique, current) => {
+        //     const friendID = current.friendID;
+        //     if (!unique.some(friend => friend.friendID === friendID)) {
+        //       unique.push(current);
+        //     }
+        //     return unique;
+        //   }, []);
+
+        //   console.log('uniqueFriendsArr',uniqueFriendsArr)
+        res.json(friends)
+    }
+   
+    
+})
+
 
 router.get('/:authID', async (req, res) => {
     const authIDValidate = Joi.string().required().validate(req.params.authID)
@@ -64,16 +87,16 @@ router.get('/:authID', async (req, res) => {
         const friends = await findFriends(authIDValidate.value)
         console.log(friends)
 
-        const uniqueFriendsArr = friends.reduce((unique, current) => {
-            const friendID = current.friendID;
-            if (!unique.some(friend => friend.friendID === friendID)) {
-              unique.push(current);
-            }
-            return unique;
-          }, []);
+        // const uniqueFriendsArr = friends.reduce((unique, current) => {
+        //     const friendID = current.friendID;
+        //     if (!unique.some(friend => friend.friendID === friendID)) {
+        //       unique.push(current);
+        //     }
+        //     return unique;
+        //   }, []);
 
 
-        res.json(uniqueFriendsArr)
+        res.json(friends)
     }
 })
 

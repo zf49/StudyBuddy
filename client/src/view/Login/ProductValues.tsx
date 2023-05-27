@@ -77,10 +77,10 @@ function ProductValues() {
                 sx={{ height: 100 }}
               />
               <Typography variant="h5" sx={{ my: 5 }}>
-                Follow and talk to your buddies
+                Follow and connect to your buddies
               </Typography>
               <Typography variant="h6">
-                {'Easily connect and chat with friends, expanding your social network and fostering meaningful connections.'}
+                {'Easily connect and fellow with other students, expanding your social network and fostering meaningful connections.'}
               </Typography>
             </Box>
           </Grid>

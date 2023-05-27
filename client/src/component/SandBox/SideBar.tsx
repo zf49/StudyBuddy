@@ -11,7 +11,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu'
 import Diversity1Icon from '@mui/icons-material/Diversity1';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import AccessibilityIcon from '@mui/icons-material/Accessibility';
 
 
 const useStyles = makeStyles({
@@ -23,7 +24,7 @@ const useStyles = makeStyles({
   },
 });
 
-type Anchor =  'left';
+type Anchor = 'left';
 
 export default function SideBar() {
 
@@ -61,24 +62,24 @@ export default function SideBar() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {['Home','Search', 'Friends',].map((text, index) => (
-          <ListItem button key={text} onClick={()=>{
+        {['Home', 'Search', 'Fellowing', 'Fellower'].map((text, index) => (
+          <ListItem button key={text} onClick={() => {
             console.log(text)
             navigate(`/${text.toLowerCase()}`)
           }}>
-
-
-
-            <ListItemIcon>{
-            index === 0 ? <HomeIcon /> : index===1?<SearchIcon/>:<Diversity1Icon/>
-
-            }</ListItemIcon>
+            <ListItemIcon>
+              {index === 0 ? <HomeIcon /> :
+                index === 1 ? <SearchIcon /> :
+                  text === 'Fellower' ? <AccessibilityIcon /> :
+                    <Diversity1Icon />
+              }
+            </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
         ))}
       </List>
       <Divider />
-      
+
     </div>
   );
 
@@ -86,8 +87,8 @@ export default function SideBar() {
     <div>
       {(['left'] as Anchor[]).map((anchor) => (
         <React.Fragment key={anchor}>
-          
-          <MenuIcon onClick={toggleDrawer(anchor, true)}/>
+
+          <MenuIcon onClick={toggleDrawer(anchor, true)} />
           <Drawer anchor={anchor} open={state[anchor]} onClose={toggleDrawer(anchor, false)}>
             {list(anchor)}
           </Drawer>

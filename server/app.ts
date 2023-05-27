@@ -92,7 +92,7 @@ const checkJwt = jwt({
   algorithms: ['RS256'] 
 });
 
-
+//TODO
 app.use(checkJwt)
 
 app.use('/',indexRouter);

@@ -27,6 +27,40 @@ export async function getUserFriends(userID: string) {
     return allFriends;
 }
 
+export async function findFellowers(authID: string) {
+    const userIDInDB = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()
+
+    const friends = await Friend.aggregate([
+        { $match: { friendID: userIDInDB } },  
+        { $addFields: { userIDObj: { "$toObjectId": "$userID" } } },  
+        {
+            $lookup: {
+                from: "users",  
+                localField: "userIDObj",  
+                foreignField: "_id",  
+                as: "userInfo" 
+            }
+        },
+        { $unwind: "$userInfo" },
+        { $addFields: { name: "$userInfo.name", uniID: "$userInfo.uniID", ID: "$userInfo._id", avatar: "$userInfo.userAvatar" } },
+        {
+            $project: {
+                _id: false,
+                "name": 1,
+                "uniID": 1,
+                "ID": 1,
+                "avatar": 1
+            }
+        },
+    ])
+
+    console.log(friends)
+    return friends
+
+}
+
+
+
 export async function findFriends(authID: string) {
     const userID = (await User.findOne({ authID: authID }).select({ "_id": true }))._id.valueOf()
     const friends = await Friend.aggregate([

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigate, useNavigate, useRoutes } from 'react-router'
 import NotFound from '../view/404/NoteFound'
 import Friends from '../view/Friends/Friends'
@@ -15,6 +15,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'
 import FriendDetail from '../view/Friends/FriendDetail'
 import Loading from '../view/Loading/Loading'
+import Fellower from '../view/Fellower/Fellower'
 
 
 
@@ -96,8 +97,12 @@ export default function IndexRouter() {
           element: userExists ? <Profile /> : <Navigate to="/signup" />
         },
         {
-          path: "friends",
+          path: "Fellowing",
           element: userExists ? <Friends /> : <Navigate to="/signup" />
+        },
+        {
+          path: "fellower",
+          element: userExists ?<Fellower/> : <Navigate to="/signup" />
         },
         {
           path: "search",

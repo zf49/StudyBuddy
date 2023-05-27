@@ -71,7 +71,7 @@ export const updateUserProfile = async (authId:string,user:object)=>{
 
  export const getUserName = async (authId:string)=>{
 
-  const userName = await User.find({ authID: authId }, {  name: 1 });
+  const userName = await User.find({ authID: authId }, {  name: 1,email:1 });
   
   return userName
 
