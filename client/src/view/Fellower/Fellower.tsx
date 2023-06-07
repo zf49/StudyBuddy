@@ -71,7 +71,7 @@ export default function Fellower() {
             <div> 
             <Box sx={{ p: 2 }}>
                 <Paper elevation={24}>
-                <h1>Fellower</h1>   
+                <h1>Follower</h1>   
 
                     <Table>
                     <TableHead>

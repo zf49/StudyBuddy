@@ -70,7 +70,7 @@ export default function Friends() {
             <div> 
             <Box sx={{ p: 2 }}>
                 <Paper elevation={24}>
-                <h1>Fellowing</h1>   
+                <h1>Following</h1>   
 
                     <Table>
                     <TableHead>

@@ -62,7 +62,7 @@ export default function SideBar() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {['Home', 'Search', 'Fellowing', 'Fellower'].map((text, index) => (
+        {['Home', 'Search', 'Following', 'Follower'].map((text, index) => (
           <ListItem button key={text} onClick={() => {
             console.log(text)
             navigate(`/${text.toLowerCase()}`)
