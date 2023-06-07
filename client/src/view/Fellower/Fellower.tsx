@@ -68,10 +68,11 @@ export default function Fellower() {
     return (
     <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
           <div>
-            <h1>Fellower</h1>   
             <div> 
             <Box sx={{ p: 2 }}>
                 <Paper elevation={24}>
+                <h1>Fellower</h1>   
+
                     <Table>
                     <TableHead>
                         <TableRow>

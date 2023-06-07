@@ -117,8 +117,8 @@ export default function Search() {
     return (
         <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
             <div>
-                <h1>Search Buddies</h1>
                 <Paper sx={{ p: 2 }}>
+                <h1>Search Buddies</h1>
                     <Grid container justifyContent="center" alignItems="center" spacing={2}>
                         <Grid item xs={12}>
                             <TextField

@@ -319,6 +319,8 @@ export default function Profile() {
         )}
       </Stack>
       <div >
+      <Paper elevation={24} >
+
         <h1>Edit Profile</h1>
         <div style={{
           'display': 'flex',
@@ -348,7 +350,6 @@ export default function Profile() {
         </div>
 
 
-        <Paper elevation={24} >
 
           <form style={{ padding: '1em' }}>
             <StyledTextField
