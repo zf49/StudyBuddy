@@ -9,21 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express = require('express');
-var router = express.Router();
-const major_dao_1 = require("../dao/major-dao");
-const HTTP_CREATED = 201;
-const HTTP_NOT_FOUND = 404;
-const HTTP_NO_CONTENT = 204;
-const HTTP_BAD_REQUEST = 400;
-router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const faculties = yield (0, major_dao_1.retriveFaculties)();
-        const majors = yield (0, major_dao_1.retriveMajors)();
-        const data = { faculties: faculties, majors: majors };
-        res.json(data);
-    }
-    catch (_a) {
-    }
-}));
-module.exports = router;
+exports.getCourses = void 0;
+const course_schema_1 = require("../schema/course_schema");
+function getCourses() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const allCourse = yield course_schema_1.Course.find({});
+        return allCourse;
+    });
+}
+exports.getCourses = getCourses;

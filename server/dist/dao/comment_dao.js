@@ -9,21 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express = require('express');
-var router = express.Router();
-const major_dao_1 = require("../dao/major-dao");
-const HTTP_CREATED = 201;
-const HTTP_NOT_FOUND = 404;
-const HTTP_NO_CONTENT = 204;
-const HTTP_BAD_REQUEST = 400;
-router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const faculties = yield (0, major_dao_1.retriveFaculties)();
-        const majors = yield (0, major_dao_1.retriveMajors)();
-        const data = { faculties: faculties, majors: majors };
-        res.json(data);
-    }
-    catch (_a) {
-    }
-}));
-module.exports = router;
+exports.postNewComment = exports.getAllComment = void 0;
+const comment_schema_1 = require("../schema/comment_schema");
+const getAllComment = () => __awaiter(void 0, void 0, void 0, function* () {
+    const allComment = yield comment_schema_1.Comment.find();
+    return allComment;
+});
+exports.getAllComment = getAllComment;
+const postNewComment = (authorId, content, questionId) => __awaiter(void 0, void 0, void 0, function* () {
+    const comment = new comment_schema_1.Comment({
+        authorId,
+        questionId,
+        content
+    });
+    const postComment = yield comment.save();
+    return postComment;
+});
+exports.postNewComment = postNewComment;

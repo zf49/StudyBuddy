@@ -13,7 +13,7 @@ exports.retriveFaculties = exports.retriveMajors = void 0;
 const major_schema_1 = require("../schema/major-schema");
 function retriveMajors() {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield major_schema_1.Major.find();
+        return yield major_schema_1.Major.find({});
     });
 }
 exports.retriveMajors = retriveMajors;

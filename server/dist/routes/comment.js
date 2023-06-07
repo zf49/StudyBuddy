@@ -9,21 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const commentController_1 = require("../controller/commentController/commentController");
 var express = require('express');
 var router = express.Router();
-const major_dao_1 = require("../dao/major-dao");
-const HTTP_CREATED = 201;
-const HTTP_NOT_FOUND = 404;
-const HTTP_NO_CONTENT = 204;
-const HTTP_BAD_REQUEST = 400;
-router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const faculties = yield (0, major_dao_1.retriveFaculties)();
-        const majors = yield (0, major_dao_1.retriveMajors)();
-        const data = { faculties: faculties, majors: majors };
-        res.json(data);
-    }
-    catch (_a) {
-    }
+router.get('/getcomment', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.send('test_comment');
 }));
+router.post('/postcomment', commentController_1.postComment);
 module.exports = router;
