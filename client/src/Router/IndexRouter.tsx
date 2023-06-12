@@ -97,11 +97,11 @@ export default function IndexRouter() {
           element: userExists ? <Profile /> : <Navigate to="/signup" />
         },
         {
-          path: "Fellowing",
+          path: "Following",
           element: userExists ? <Friends /> : <Navigate to="/signup" />
         },
         {
-          path: "fellower",
+          path: "follower",
           element: userExists ?<Fellower/> : <Navigate to="/signup" />
         },
         {
