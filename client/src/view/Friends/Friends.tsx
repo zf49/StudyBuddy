@@ -23,14 +23,15 @@ export interface IFriend {
 
 export default function Friends() {
 
-    const { user, isAuthenticated } = useAuth0();
+    const { user, isAuthenticated ,getAccessTokenSilently} = useAuth0();
     const [friends, setFriends] = React.useState<IFriend[]>()
     const navigate = useNavigate()
     const controller = new AbortController()
 
     async function getFriends() {
         if (user) {
-            const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`,{signal: controller.signal})
+            const token = await getAccessTokenSilently()
+            const dbData = await axios.get(`http://localhost:8080/friends/${user.sub}`,{signal: controller.signal, headers: {Authorization: `Bearer ${token}`}})
             const dbDataValidate = Joi.array().items(
                 Joi.object<IFriend>({
                 name: Joi.string().required(),
@@ -48,12 +49,15 @@ export default function Friends() {
     }
 
     function handleFriendDetail(id: string) {
-        navigate("/frienddetail/", { state: { "id": id }})
+
+        // console.log(id)
+
+        navigate("/frienddetail", { state: { "id": id }})
+
     }
 
     useEffect(() => {
         getFriends()
-
         return () =>{
             controller.abort()
         }
@@ -63,10 +67,11 @@ export default function Friends() {
     return (
     <div style={{ width: "100%", textAlign: "center", margin: "0 auto" }}>
           <div>
-            <h1>My Friends</h1>   
             <div> 
             <Box sx={{ p: 2 }}>
                 <Paper elevation={24}>
+                <h1>Following</h1>   
+
                     <Table>
                     <TableHead>
                         <TableRow>

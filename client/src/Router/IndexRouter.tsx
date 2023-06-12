@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigate, useNavigate, useRoutes } from 'react-router'
 import NotFound from '../view/404/NoteFound'
 import Friends from '../view/Friends/Friends'
@@ -14,41 +14,61 @@ import { useDispatch } from "react-redux";
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store'
 import FriendDetail from '../view/Friends/FriendDetail'
+import Loading from '../view/Loading/Loading'
+import Fellower from '../view/Fellower/Fellower'
 
 
 
 export default function IndexRouter() {
-  const dispatch = useDispatch();
   const [userExists, setUserExists] = useState(false);
-  const { user, isAuthenticated, isLoading } = useAuth0()
+  const { user, isAuthenticated, isLoading} = useAuth0()
   const navigate = useNavigate()
 
   const userStore = useSelector((state: RootState) => state.storeUser);
+  const { getAccessTokenSilently } = useAuth0()
 
 
 
   useEffect(() => {
-    const abort = new AbortController()
-
-    if (isAuthenticated && user) {
-      axios.get(`http://localhost:8080/users/authID/${user.sub}`, {
-        signal: abort.signal
-      })
-        .then(response => {
-          if (response.data.length == 0) {
+    const fetchData = async () => {
+      const abort = new AbortController();
+      const signal = abort.signal;
+  
+      try {
+        const userExistsFromStorage = sessionStorage.getItem('userExists');
+        setUserExists(userExistsFromStorage === 'true');
+  
+        const token = await getAccessTokenSilently();
+  
+        if (isAuthenticated && user && token) {
+          const response = await axios.get(`http://localhost:8080/users/authID/${user.sub}`, {
+            headers: { Authorization: `Bearer ${token}` },
+            signal: signal
+          });
+  
+          if (response.data.length === 0) {
+            sessionStorage.setItem('userExists', 'false');
             setUserExists(false);
-            navigate('/signup')
+            navigate('/signup');
           } else {
+            sessionStorage.setItem('userExists', 'true');
             setUserExists(true);
           }
-        })
-    }
+        }
+      } catch (error) {
+        //err 
+        console.error(error);
+      }
+    };
+  
+    fetchData();
+  
     return () => {
+      const abort = new AbortController();
       abort.abort();
-    }
-
-  }, [user, isAuthenticated])
-
+    };
+  }, [user, isAuthenticated]);
+  
 
   const changeUserState = (state: boolean) => {
     setUserExists(state)
@@ -58,7 +78,7 @@ export default function IndexRouter() {
     {
       path: '/',
       element:
-        isLoading ? <div>Loading...</div> : (
+        isLoading ?<Loading/> : (
           isAuthenticated ? (
             <SandBox />
           ) : (
@@ -77,8 +97,12 @@ export default function IndexRouter() {
           element: userExists ? <Profile /> : <Navigate to="/signup" />
         },
         {
-          path: "friends",
+          path: "Following",
           element: userExists ? <Friends /> : <Navigate to="/signup" />
+        },
+        {
+          path: "follower",
+          element: userExists ?<Fellower/> : <Navigate to="/signup" />
         },
         {
           path: "search",
@@ -105,57 +129,12 @@ export default function IndexRouter() {
     {
       path: '/login',
       element: <Login />
+    },
+    {
+      path: '/loading',
+      element: <Loading />
     }
   ])
-
-
-  // const element = useRoutes([
-  //     {
-  //       path: '/',
-  //       element: isLoading ? <div>Loading...</div> : (
-  //         isAuthenticated ? (
-  //           <SandBox />
-  //         ) : (
-  //           <Navigate to="/login" />
-  //         )
-  //       ),
-  //       children: [
-  //         { index: true, element: <Home /> },
-  //         {
-  //           path: 'home',
-  //           element: userExists ? <Home /> : <Navigate to="/signup" />,
-  //         },
-  //         {
-  //           path: 'profile',
-  //           element: userExists ? <Profile /> : <Navigate to="/signup" />,
-  //         },
-  //         {
-  //           path: 'friends',
-  //           element: userExists ? <Friends /> : <Navigate to="/signup" />,
-  //         },
-  //         {
-  //           path: 'search',
-  //           element: userExists ? <Search /> : <Navigate to="/signup" />,
-  //         },
-  //         {
-  //           path: 'signup',
-  //           element: <SignUp changeUserState={changeUserState}/>,
-  //         },
-  //         {
-  //           path: '*',
-  //           element: <NotFound />,
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       path: '/login',
-  //       element: <Login />,
-  //     },
-  //   ]);
-
-
-
-
 
   return (
     <div>
@@ -164,3 +143,5 @@ export default function IndexRouter() {
     </div>
   )
 }
+
+

@@ -13,6 +13,9 @@ import axios from 'axios';
 import { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import Joi from 'joi';
+import { Input } from '@mui/material';
+import { StyledTextField } from './Profile';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -41,42 +44,64 @@ export interface ICourse {
 
 interface ICourseProps {
   selectedCourse: ICourse[],
-  setCourse: (value: ICourse[]) => void
+  setCourse: (value: ICourse[]) => void,
+  selectedSemester:string,
+  setSemester:(value:string) => void
 }
 
 
-export default function Course(props:ICourseProps) {
+export default function Course(props: ICourseProps) {
 
-    const [courseName, setCourseName] = useState<ICourse[]>()
-    const [courseToArrary, setcourseToArrary] = useState<string[]>([])
-    const controller = new AbortController()
+  const [courseName, setCourseName] = useState<ICourse[]>()
+  const [courseToArrary, setcourseToArrary] = useState<string[]>([])
+  const controller = new AbortController()
 
+
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentDay = currentDate.getDate();
+  const { getAccessTokenSilently } = useAuth0()
 
   useEffect(() => {
-    axios.get('http://localhost:8080/courses', {signal: controller.signal}).then((res) => {
-      const dbCourseValidate = Joi.array().items(
-        Joi.object<ICourse>({
-          course_code: Joi.string().required(),
-          course_name: Joi.string().required(),
-          CourseNName: Joi.string().required(),
-        }).unknown(true)
-      ).validate(res.data)
-      if(dbCourseValidate.error){
-        console.error(dbCourseValidate.error)
-    }else{
-      setCourseName(dbCourseValidate.value)
-    }
-    })
-    const arr:string[] = []
-    props.selectedCourse.map((item)=>{
-      arr.push(item.CourseNName)
-    })
-    setcourseToArrary(arr)
-        return () => {
-          controller.abort()
-        }
-    }, [props.selectedCourse])
+    const fetchData = async () => {
+      try {
+        const token = await getAccessTokenSilently();
+        const response = await axios.get('http://localhost:8080/courses', {
+          signal: controller.signal,
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
+        const dbCourseValidate = Joi.array()
+          .items(
+            Joi.object<ICourse>({
+              course_code: Joi.string().required(),
+              course_name: Joi.string().required(),
+              CourseNName: Joi.string().required(),
+            }).unknown(true)
+          ).validate(response.data);
+
+        if (dbCourseValidate.error) {
+          console.error(dbCourseValidate.error);
+        } else {
+          setCourseName(dbCourseValidate.value);
+        }
+
+        const arr: string[] = [];
+        props.selectedCourse.map((item) => {
+          arr.push(item.CourseNName);
+        });
+        setcourseToArrary(arr);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      controller.abort();
+    };
+  }, [props.selectedCourse]);
 
   const handleChange = (e: SelectChangeEvent<string[]>) => {
     const selectedValues = e.target.value as string[];
@@ -92,10 +117,36 @@ export default function Course(props:ICourseProps) {
     props.setCourse(updatedSelectedCourses);
   };
 
+  const [semester, setSemester] = useState<string>('');
+
+  const handleSemester = (semester:string) => {
+    setSemester(semester);
+    props.setSemester(semester)
+    console.log(semester)
+  };
+
+
   return (
     <>
+      {console.log(currentMonth, currentDay)}
       <div>
         <FormControl style={{ 'width': '100%', marginTop: '10px' }}>
+
+          <StyledTextField
+            label="Semester"
+            name="Semester"
+            select
+            value={props.selectedSemester}
+            onChange={(e)=>handleSemester(e.target.value)}
+            >
+            <MenuItem value="Semester 1">Semester 1</MenuItem>
+            <MenuItem value="Semester 2">Semester 2</MenuItem>
+            <MenuItem value="Later Year">Later Year</MenuItem>
+            <MenuItem value="Summer School">Summer School</MenuItem>
+          </StyledTextField>
+
+        </FormControl>
+        <FormControl style={{ 'width': '100%' }}>
           <InputLabel id="demo-multiple-checkbox-label">Course</InputLabel>
           <Select
             labelId="demo-multiple-checkbox-label"

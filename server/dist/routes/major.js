@@ -20,7 +20,8 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const faculties = yield (0, major_dao_1.retriveFaculties)();
         const majors = yield (0, major_dao_1.retriveMajors)();
-        res.json({ faculties: faculties, majors: majors });
+        const data = { faculties: faculties, majors: majors };
+        res.json(data);
     }
     catch (_a) {
     }

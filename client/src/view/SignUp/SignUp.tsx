@@ -7,11 +7,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import axios from 'axios'
 import Alert from '@mui/material/Alert';
-import Typography from '@mui/material/Typography';
 import Joi from 'joi';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useDispatch } from "react-redux";
-import { storeUser } from "../../redux/reducer/userReducer";
 import { useNavigate } from 'react-router';
 import { StyledContainer } from '../Profile/Profile';
 import { Paper } from '@mui/material';
@@ -35,34 +32,6 @@ interface IApiOptions {
 // @param - possibly give authentication token to this api function
 // @param - possibly give abort signal (research this!)
 
-const apiGetMajor = async (option: IApiOptions): Promise<IMajorApiReturn | null> => {
-    const res = await axios.get("http://localhost:8080/major/", {
-        signal: option.signal
-    })
-
-    // consider console.error to log the failure
-    if (res.status != 200) return null;
-
-    // you can validate data here as well
-    // consider doing this serverside for any user submission data
-    const validationResult = Joi.object<IMajorApiReturn>({
-        faculties: Joi.array().items(Joi.string()),
-        majors: Joi.array().items(
-            Joi.object({
-                faculty: Joi.string().required(),
-                major: Joi.string().required()
-            }).unknown(true)
-        )
-    }).validate(res.data)
-
-    if (validationResult.error) {
-        console.error(validationResult.error)
-        return null;
-    }
-
-    return validationResult.value;
-}
-
 interface ISignUpProps {
     changeUserState: (state: boolean) => void;
 }
@@ -82,10 +51,17 @@ export default function SignUp(props: ISignUpProps) {
     const [majors, setMajors] = React.useState<IMajor[]>([]);
     const [authID, setAuthID] = useState<any>('')
     const navigate = useNavigate()
-    const { user, isAuthenticated } = useAuth0()
+    const { user, isAuthenticated, getAccessTokenSilently } = useAuth0()
     const controller = new AbortController()
 
+    const tokenAuth = async ()=>{
+        const token1 = await getAccessTokenSilently()
+        console.log(token1)
+    }
+    
+
     useEffect(() => {
+        tokenAuth()
         // what happens if user navigates away from this page while this request is running?
         // error: tried to update state of unloaded component
         apiGetMajor({ signal: controller.signal }).then(data => {
@@ -94,6 +70,7 @@ export default function SignUp(props: ISignUpProps) {
                 setMajors(data.majors)
                 if (isAuthenticated && user) {
                     setAuthID(user.sub)
+
                 }
             }
         })
@@ -156,13 +133,47 @@ export default function SignUp(props: ISignUpProps) {
         }
     }
 
+    const apiGetMajor = async (option: IApiOptions): Promise<IMajorApiReturn | null> => {
+        const token = await getAccessTokenSilently()
+        const res = await axios.get("http://localhost:8080/major/", {
+            signal: option.signal,
+            headers: {Authorization: `Bearer ${token}`}       
+        })
+    
+        // consider console.error to log the failure
+        if (res.status != 200) return null;
+    
+        // you can validate data here as well
+        // consider doing this serverside for any user submission data
+        const validationResult = Joi.object<IMajorApiReturn>({
+            faculties: Joi.array().items(Joi.string()),
+            majors: Joi.array().items(
+                Joi.object({
+                    faculty: Joi.string().required(),
+                    major: Joi.string().required()
+                }).unknown(true)
+            )
+        }).validate(res.data)
+    
+        if (validationResult.error) {
+            console.error(validationResult.error)
+            return null;
+        }
+    
+        return validationResult.value;
+    }
+    
+
     async function createUser(user: object) {
+        const token = await getAccessTokenSilently()
         // TODO : persisting stoer data
         console.log(user)
         // dispatch(storeUser(user))
         await axios.post(
             "http://localhost:8080/users/api/register",
-            user
+            user,{
+                headers: {Authorization: `Bearer ${token}`}
+            }
         )
     }
 
@@ -253,9 +264,7 @@ export default function SignUp(props: ISignUpProps) {
                         {majors.map((major: IMajor) => {
                             if (major.faculty == faculty)
                                 return (<MenuItem value={major.major}>{major.major}</MenuItem>)
-
                         })}
-
                     </Select>
                 </FormControl>
             </div>

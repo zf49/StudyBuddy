@@ -12,8 +12,8 @@ import PetsIcon from '@mui/icons-material/Pets';
 import {useNavigate} from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 import { Theme } from '@mui/material';
-
-
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 
@@ -42,10 +42,6 @@ export default function TopBar() {
   const { logout } = useAuth0();
 
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuth(event.target.checked);
-  };
-
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -72,7 +68,7 @@ export default function TopBar() {
   return (
     <div className={classes.root}>
       
-      <AppBar position="fixed">
+      <AppBar position="fixed" sx={{backgroundColor: 'rgba(33, 150, 243, 0.7)'}}>
         <Toolbar>
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={()=>{
               // console.log('123')
@@ -117,11 +113,11 @@ export default function TopBar() {
               >
                 <MenuItem onClick={()=>{
                   redirectToProfile()
-                }} >My account</MenuItem>
+                }} ><AccountCircleIcon/>My Profile</MenuItem>
 
-                <MenuItem onClick={()=>{
+                <MenuItem  onClick={()=>{
                   logOut()
-                }}>Log out</MenuItem>
+                }}><LogoutIcon/>Log out</MenuItem>
               </Menu>
               
           </Typography>

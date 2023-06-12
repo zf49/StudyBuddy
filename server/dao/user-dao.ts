@@ -1,5 +1,6 @@
 
-import {User} from "../schema/user-schema"
+import { ICourse } from "../schema/course_schema";
+import {IUser, User} from "../schema/user-schema"
 
 export async function createUser(user: object) {
     const dbUser = new User(user);
@@ -17,10 +18,37 @@ export async function searchUser(keyword:string) {
           { email: { $regex: keyword, $options: "i" } },
           { faculty: { $regex: keyword, $options: "i" } },
           { major: { $regex: keyword, $options: "i" } },
-        //   { courses: { $regex: keyword, $options: "i" } },
+          { "courses.CourseNName": { $regex: new RegExp(keyword, "i") } }
         ]
       }).sort({name:1}).collation( { locale: 'en', strength: 2 } )
 }
+
+
+
+export async function recommend(courses: ICourse[], usermajor: string) {
+  try {
+  
+    console.log(courses)
+    console.log(usermajor)
+
+
+    const courseCodes = courses.map((course) => course.course_code);
+    const filteredUsers = await User.find({
+      $or: [
+        { major: usermajor },
+        { courses: { $elemMatch: { course_code: { $in: courseCodes } } } }
+      ]
+    });
+
+    console.log("Filtered users: ", filteredUsers);
+    return filteredUsers;
+
+  } catch (error) {
+    console.error("error", error);
+    return []
+  }
+}
+  
 
 export async function checkAuthID(authID:String) {
     return await User.find({'authID':authID})
@@ -28,7 +56,7 @@ export async function checkAuthID(authID:String) {
 
 export const getUserProfile = async (authId:string)=>{
    const userProfile =  await User.find({'authID':authId})
-   return userProfile
+   return userProfile[0]
 }
 
 
@@ -38,5 +66,14 @@ export const updateUserProfile = async (authId:string,user:object)=>{
         {$set: user }
     )
     return updatedUser
+ }
+
+
+ export const getUserName = async (authId:string)=>{
+
+  const userName = await User.find({ authID: authId }, {  name: 1,email:1 });
+  
+  return userName
+
  }
  
